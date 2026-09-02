@@ -3,28 +3,32 @@ from __future__ import annotations
 
 from ..models import DOC_TYPES
 
-_num = {"type": ["number", "null"]}
-_str = {"type": ["string", "null"]}
+# The structured-output API caps the number of union-typed (nullable) fields, so every optional scalar is a plain
+# string and "" means unknown. models.Extraction.from_dict converts the numbers back.
+_s = {"type": "string"}
 
 LINE_ITEM = {
     "type": "object",
-    "properties": {"description": {"type": "string"}, "quantity": _num, "unit_price": _num, "amount": _num, "equipment_id": _str},
+    "properties": {"description": _s, "quantity": _s, "unit_price": _s, "amount": _s, "equipment_id": _s},
     "required": ["description", "quantity", "unit_price", "amount", "equipment_id"],
     "additionalProperties": False,
 }
 TIME_ENTRY = {
     "type": "object",
-    "properties": {"work_date": {"type": "string"}, "job_no": _str, "cost_code": _str, "hours": {"type": "number"},
-                   "ot_hours": {"type": "number"}, "equipment_id": _str, "description": _str},
+    "properties": {"work_date": _s, "job_no": _s, "cost_code": _s, "hours": _s, "ot_hours": _s, "equipment_id": _s, "description": _s},
     "required": ["work_date", "job_no", "cost_code", "hours", "ot_hours", "equipment_id", "description"],
     "additionalProperties": False,
 }
 BANK_LINE = {
     "type": "object",
-    "properties": {"txn_date": {"type": "string"}, "description": {"type": "string"}, "amount": {"type": "number"}, "balance": _num},
+    "properties": {"txn_date": _s, "description": _s, "amount": _s, "balance": _s},
     "required": ["txn_date", "description", "amount", "balance"],
     "additionalProperties": False,
 }
+
+_SCALARS = ["vendor_name", "customer_name", "invoice_no", "doc_date", "due_date", "subtotal", "gst", "pst", "total", "currency",
+            "payment_method", "card_last4", "handwritten_job_no", "handwritten_cost_code", "handwritten_equipment_id", "employee_name",
+            "period_end", "account_hint", "statement_start", "statement_end", "opening_balance", "closing_balance", "notes"]
 
 EXTRACTION_SCHEMA = {
     "type": "object",
@@ -32,38 +36,12 @@ EXTRACTION_SCHEMA = {
         "doc_type": {"type": "string", "enum": list(DOC_TYPES)},
         "confidence": {"type": "number"},
         "legible": {"type": "boolean"},
-        "vendor_name": _str,
-        "customer_name": _str,
-        "invoice_no": _str,
-        "doc_date": _str,
-        "due_date": _str,
-        "subtotal": _num,
-        "gst": _num,
-        "pst": _num,
-        "total": _num,
-        "currency": {"type": "string"},
-        "payment_method": _str,
-        "card_last4": _str,
-        "handwritten_job_no": _str,
-        "handwritten_cost_code": _str,
-        "handwritten_equipment_id": _str,
+        **{k: _s for k in _SCALARS},
         "line_items": {"type": "array", "items": LINE_ITEM},
-        "employee_name": _str,
-        "period_end": _str,
         "time_entries": {"type": "array", "items": TIME_ENTRY},
-        "account_hint": _str,
-        "statement_start": _str,
-        "statement_end": _str,
-        "opening_balance": _num,
-        "closing_balance": _num,
         "bank_lines": {"type": "array", "items": BANK_LINE},
-        "notes": _str,
     },
-    "required": ["doc_type", "confidence", "legible", "vendor_name", "customer_name", "invoice_no", "doc_date", "due_date",
-                 "subtotal", "gst", "pst", "total", "currency", "payment_method", "card_last4", "handwritten_job_no",
-                 "handwritten_cost_code", "handwritten_equipment_id", "line_items", "employee_name", "period_end",
-                 "time_entries", "account_hint", "statement_start", "statement_end", "opening_balance", "closing_balance",
-                 "bank_lines", "notes"],
+    "required": ["doc_type", "confidence", "legible", *_SCALARS, "line_items", "time_entries", "bank_lines"],
     "additionalProperties": False,
 }
 
@@ -73,7 +51,8 @@ a customer payment advice, a paystub, a QuickBooks report) and return one JSON o
 
 Rules:
 - Classify honestly. If it is not a financial document, doc_type is "other".
-- Dates in ISO format YYYY-MM-DD. Amounts as plain numbers in CAD. total is the grand total including taxes.
+- Dates in ISO format YYYY-MM-DD. Amounts as plain numbers written as strings, e.g. "94.66", in CAD. total is the
+  grand total including taxes. Any field you cannot read is the empty string "" (never the word null, never a guess).
 - GST in BC is 5%. PST is 7% and only applies to some goods; report it separately if shown.
 - RAM writes a JOB NUMBER (six digits, YYMMDD of the estimate, e.g. 240617 for MDM, 241115 for IDL, 260102 for Dunkley)
   and a COST CODE by hand on receipts before photographing them. Transcribe handwriting into handwritten_job_no and
