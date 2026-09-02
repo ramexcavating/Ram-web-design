@@ -45,7 +45,7 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
             unit = intake.equipment_unit(conn, ex)
             if unit and ex.doc_type in ("receipt", "vendor_invoice") and not decision.needs_review:
                 eq_folder = intake.equipment_folder(conn, settings, unit)
-                filer.file(d["local_path"], filing.FilingDecision(f"{eq_folder}/01_SERVICE_RECORDS", f"{decision.filename.rsplit('.',1)[0]}_{unit}.{decision.filename.rsplit('.',1)[-1]}"))
+                filer.file(d["local_path"], filing.FilingDecision(f"{eq_folder}/01_SERVICE_RECORDS", f"{decision.filename.rsplit('.',1)[0]}_{unit}.{decision.filename.rsplit('.',1)[-1]}", library="resources"))
             status = "needs_review" if decision.needs_review else "filed"
             conn.execute("UPDATE documents SET doc_type=?, status=?, filed_path=?, extracted_json=?, confidence=?, legible=?, error=NULL WHERE id=?",
                          (ex.doc_type, status, filed, __import__("json").dumps(ex.to_dict()), ex.confidence, 1 if ex.legible else 0, d["id"]))

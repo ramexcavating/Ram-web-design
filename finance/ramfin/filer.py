@@ -30,9 +30,9 @@ class LocalFiler:
 
 
 class SharePointFiler:
-    def __init__(self, graph, finance_drive_id: str, projects_drive_id: str | None = None):
+    def __init__(self, graph, finance_drive_id: str, projects_drive_id: str | None = None, resources_drive_id: str | None = None):
         self.graph = graph
-        self.drives = {"finance": finance_drive_id, "projects": projects_drive_id or finance_drive_id}
+        self.drives = {"finance": finance_drive_id, "projects": projects_drive_id or finance_drive_id, "resources": resources_drive_id or finance_drive_id}
 
     def file(self, local_path: str | Path, decision: FilingDecision) -> str:
         data = Path(local_path).read_bytes()

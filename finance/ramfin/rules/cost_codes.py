@@ -16,18 +16,26 @@ from pathlib import Path
 from .. import db
 
 KEYWORD_HINTS = [
-    # (regex on vendor/description, cost code prefix hint, category)
-    (r"fuel|cardlock|petro|shell|esso|husky|co-?op|four rivers|royalite", "FUEL", "equipment"),
-    (r"brandt|wajax|finning|inland|kubota|bumper ?to ?bumper|napa|parts|hydraulic|tire", "REPAIRS", "equipment"),
-    (r"home hardware|rona|canadian tire|princess auto|small tools", "SMALL_TOOLS", "materials"),
-    (r"gravel|aggregate|pit run|crush|concrete|precast|grosso|lekop|konkast", "MATERIALS", "materials"),
-    (r"rent-?all|rental|united rentals|herc", "RENTALS", "equipment"),
-    (r"insurance|cansure|lloyd", "INSURANCE", "overhead"),
-    (r"hydro|telus|shaw|xplore|rogers|bell", "UTILITIES", "overhead"),
-    (r"quickbooks|intuit|godaddy|microsoft|anthropic|google|adobe|camscanner", "SOFTWARE", "overhead"),
-    (r"acg|accounting|tbj|legal|lawyer", "PROFESSIONAL", "overhead"),
-    (r"worksafe|wcb|cra|receiver general", "STATUTORY", "overhead"),
+    # (regex on vendor/description, RAM standard cost code, label)
+    (r"fuel|diesel|cardlock|petro|shell|esso|husky|co-?op|four rivers", "1-294", "Fuel for Equipment"),
+    (r"brandt|wajax|finning|inland|kubota|bumper ?to ?bumper|uni-?select|lordco|napa|parts|hydraulic|tire|royalite|repair", "1-296", "Equipment Repairs"),
+    (r"home hardware|rona|canadian tire|princess auto|tenaquip|white cap|small tools", "1-293", "Small Tools"),
+    (r"gravel|aggregate|pit run|crush|united concrete", "2-108", "Bulk Backfill Import"),
+    (r"concrete|precast|grosso|lekop|konkast|curb", "2-186", "Concrete Curb and Gutter"),
+    (r"rent-?all|rental|united rentals|herc", "1-298", "Rental Equipment"),
+    (r"insurance|cansure|lloyd|acera", "1-180", "General Liability Insurance"),
+    (r"hydro|fortis|telus|shaw|xplore|rogers|bell", "50-212", "Site Office and utilities"),
+    (r"quickbooks|intuit|godaddy|microsoft|anthropic|adobe|camscanner|equifax|apple", "50-271", "Office Supplies and software"),
+    (r"google ads|wordpress|advertis|sign", "1-312", "Publications & Advertising"),
+    (r"acg|accounting|tbj|cpa", "50-063", "Administration"),
+    (r"legal|lawyer", "1-184", "Legal Costs"),
+    (r"worksafe|wcb|cra|receiver general", "1-170", "WSBC Claims Management"),
+    (r"survey|cansel|lease direct", "1-080", "Survey"),
+    (r"mobe|mobiliz|lowbed|float", "1-042", "Equipment Mobe/Demobe"),
 ]
+
+FUEL_CODES = {"1-292", "1-294", "1-297", "50-292", "50-912"}
+REPAIR_CODES = {"1-295", "1-296", "1-313", "1-314"}
 
 
 def load_csv(conn: sqlite3.Connection, path: str | Path) -> int:
@@ -90,12 +98,9 @@ def suggest(conn: sqlite3.Connection, vendor_id: int | None, vendor_name: str | 
     if row and row["default_cost_code"]:
         return row["default_cost_code"], 0.7, "vendor default"
     text = f"{vendor_name or ''} {description or ''}".lower()
-    for rx, hint, _cat in KEYWORD_HINTS:
-        if re.search(rx, text):
-            m = conn.execute("SELECT code FROM cost_codes WHERE UPPER(category)=? OR UPPER(description) LIKE ? LIMIT 1",
-                             (hint, f"%{hint.replace('_', ' ')}%")).fetchone()
-            if m:
-                return m["code"], 0.4, f"keyword hint {hint}"
+    for rx, code, label in KEYWORD_HINTS:
+        if re.search(rx, text) and is_valid(conn, code):
+            return code, 0.4, f"keyword hint {label}"
     if hw:
         return hw, 0.3, "written on document but not in the standard list"
     return None, 0.0, "no suggestion"

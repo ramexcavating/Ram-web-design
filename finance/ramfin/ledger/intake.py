@@ -193,7 +193,7 @@ def equipment_folder(conn: sqlite3.Connection, settings, unit_id: str) -> str:
     r = conn.execute("SELECT sharepoint_folder FROM equipment WHERE unit_id=?", (unit_id,)).fetchone()
     if r and r["sharepoint_folder"]:
         return r["sharepoint_folder"]
-    folder = f"{settings.sharepoint.get('equipment', '05_EQUIPMENT/01_FLEET')}/{unit_id}"
+    folder = f"{settings.sharepoint.get('equipment', '05_EQUIPMENT/01_FLEET')}/{unit_id}"   # library 'resources' (equipment_site) unless configured otherwise
     conn.execute("INSERT INTO equipment(unit_id, sharepoint_folder) VALUES(?,?) ON CONFLICT(unit_id) DO UPDATE SET sharepoint_folder=COALESCE(equipment.sharepoint_folder, excluded.sharepoint_folder)", (unit_id, folder))
     conn.commit()
     return folder

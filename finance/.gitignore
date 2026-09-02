@@ -1,6 +1,4 @@
 data/
-config/config.yaml
-config/vendors.csv
 config/cost_codes.csv
 .env
 __pycache__/
