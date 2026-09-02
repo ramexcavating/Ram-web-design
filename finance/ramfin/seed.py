@@ -139,11 +139,11 @@ def import_ap_register(conn: sqlite3.Connection, data: bytes) -> dict[str, int]:
         rows = ws.iter_rows(values_only=True)
         hdr = None
         for r in rows:
-            if r and any(str(c).strip().lower() in ("vendor", "merchant") for c in r if c):
+            if r and any(("vendor" in str(c).lower() or "merchant" in str(c).lower()) for c in r if c) and any("amount" in str(c).lower() or "total" in str(c).lower() for c in r if c):
                 hdr = [str(c).strip() if c else "" for c in r]
                 break
         if hdr:
-            vcol = next((h for h in hdr if h.lower() in ("vendor", "merchant")), None)
+            vcol = next((h for h in hdr if "vendor" in h.lower() or "merchant" in h.lower()), None)
             dcol = next((h for h in hdr if "date" in h.lower()), None)
             acol = next((h for h in hdr if h.lower().startswith("amount") or h.lower() == "total"), None)
             jcol = next((h for h in hdr if h.lower().startswith("job")), None)

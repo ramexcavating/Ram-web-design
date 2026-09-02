@@ -61,4 +61,4 @@ jobs:
         env:
           CMD: ${{ github.event.inputs.command }}
         run: |
-          if [[ "$CMD" == doctor* || "$CMD" == init* || "$CMD" == run-all* ]]; then ramfin $CMD; else ramfin db pull && ramfin $CMD && ramfin db push; fi
+          if [[ "$CMD" == doctor* || "$CMD" == init* || "$CMD" == run-all* || "$CMD" == backfill* ]]; then ramfin $CMD; else ramfin db pull && ramfin $CMD && ramfin db push; fi

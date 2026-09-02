@@ -34,6 +34,13 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
             ctx = " | ".join(x for x in [f"from {d['sender']}" if d["sender"] else "", f"subject: {d['subject']}" if d["subject"] else "", f"source {d['source']}"] if x)
             ex = extractor.extract(data, d["filename"], ctx)
             received = parse_date((d["received_at"] or "")[:10])
+            if ex.doc_type == "other" and ex.legible:
+                # a drawing, a photo, a contract, a CV: not ours to file. Remember it so it is never re-read.
+                conn.execute("UPDATE documents SET doc_type='other', status='ignored', extracted_json=?, confidence=? WHERE id=?",
+                             (__import__("json").dumps(ex.to_dict()), ex.confidence, d["id"]))
+                conn.commit()
+                stats["ignored"] = stats.get("ignored", 0) + 1
+                continue
             job_folder = None
             if ex.doc_type == "customer_payment":
                 j = intake._norm_job(conn, None, f"{ex.customer_name or ''} {ex.notes or ''}")
