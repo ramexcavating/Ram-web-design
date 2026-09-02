@@ -12,7 +12,10 @@ from .common import register, wanted
 
 log = logging.getLogger(__name__)
 BODY_RECEIPT_RX = re.compile(r"receipt|your order|payment (received|confirmation)|invoice|statement is ready|thank you for your (order|payment)", re.I)
-SKIP_SENDER_RX = re.compile(r"no-reply-claude@|noreply@github|@mail\.anthropic\.com$|linkedin|indeed", re.I)
+SKIP_SENDER_RX = re.compile(r"no-reply-claude@|noreply@github|linkedin|indeed", re.I)
+SKIP_SUBJECT_RX = re.compile(r"Weekly (Managers|Priorities|Business|Equipment|Lead)|RAM finance:|Deep-work pack|Daily Report|FLHA|Toolbox", re.I)
+MIN_IMAGE_BYTES = 25_000        # anything smaller is a signature logo or an icon
+MAX_ATTACHMENT_BYTES = 15_000_000
 
 
 def scan_mailboxes(conn: sqlite3.Connection, settings, graph, lookback_days: int = 3, mailboxes: list[str] | None = None,
@@ -33,11 +36,15 @@ def scan_mailboxes(conn: sqlite3.Connection, settings, graph, lookback_days: int
                 subject = msg.get("subject") or ""
                 received = msg.get("receivedDateTime") or since
                 newest = max(newest, received)
-                if SKIP_SENDER_RX.search(sender or "") or re.search(r"Weekly (Managers|Priorities|Business|Equipment)", subject):
+                if SKIP_SENDER_RX.search(sender or "") or SKIP_SUBJECT_RX.search(subject):
                     continue
                 if msg.get("hasAttachments"):
                     for att in graph.list_attachments(mbx, msg["id"]):
                         if att.get("isInline") or not wanted(att.get("name", ""), allowed):
+                            continue
+                        size = int(att.get("size") or 0)
+                        ext = att.get("name", "").rsplit(".", 1)[-1].lower()
+                        if size > MAX_ATTACHMENT_BYTES or (ext in ("jpg", "jpeg", "png", "gif") and size < MIN_IMAGE_BYTES):
                             continue
                         try:
                             data = graph.download_attachment(mbx, msg["id"], att["id"])

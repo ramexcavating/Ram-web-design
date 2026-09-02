@@ -82,11 +82,13 @@ def _vendor_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
     inv_no = (ex.invoice_no or f"DOC{doc_id}").strip()
     existing = conn.execute("SELECT id FROM ap_invoices WHERE vendor_id=? AND invoice_no=?", (vid, inv_no)).fetchone()
     if existing:
+        prior_doc = conn.execute("SELECT document_id FROM ap_invoices WHERE id=?", (existing["id"],)).fetchone()["document_id"]
         conn.execute("UPDATE ap_invoices SET amount=COALESCE(?, amount), gst=COALESCE(?, gst), amount_confirmed=CASE WHEN ? IS NOT NULL THEN 1 ELSE amount_confirmed END, "
                      "due_date=COALESCE(due_date, ?), document_id=COALESCE(document_id, ?) WHERE id=?",
                      (ex.total, ex.gst, ex.total, due.isoformat() if due else None, doc_id, existing["id"]))
-        raise_item(conn, "decision", f"Possible duplicate invoice {inv_no} from {ex.vendor_name}", "Same vendor and invoice number seen twice. Check before paying.",
-                   "ap_invoices", existing["id"], priority=2)
+        if prior_doc and prior_doc != doc_id:
+            raise_item(conn, "decision", f"Possible duplicate invoice {inv_no} from {ex.vendor_name}", "Same vendor and invoice number seen twice. Check before paying.",
+                       "ap_invoices", existing["id"], priority=2)
         return f"invoice {inv_no} already on register (updated)"
     unit = equipment_unit(conn, ex)
     aid = db.insert(conn, "ap_invoices", dict(

@@ -13,6 +13,8 @@
   ramfin review IMPORT.xlsx            read your edits back from the review workbook
   ramfin inbox                         print open action items
   ramfin run-all [--send]              ingest -> process -> reconcile -> weekly (the scheduled entry point)
+  ramfin backfill [--lookback-days N]  first run: index what is filed, then the full loop over N days of mail
+  ramfin index-existing                register files already on SharePoint so they are never filed twice
 """
 from __future__ import annotations
 
@@ -219,6 +221,31 @@ def cmd_inbox(a, settings):
             print("      " + it["detail"].replace("\n", "\n      "))
 
 
+def cmd_index_existing(a, settings):
+    """Hash what is already filed on SharePoint so the backfill does not file it twice."""
+    from .sources.folder import index_existing
+    conn = _conn(settings)
+    graph = _graph()
+    d = _drives(settings, graph)
+    sp = settings.sharepoint
+    folders = [sp["receipts"], sp["ap_invoices"], sp["timesheets"], sp["bank_statements"], sp["qb_reports"]]
+    print(json.dumps(index_existing(conn, settings, graph, d["finance"], folders), indent=2))
+
+
+def cmd_backfill(a, settings):
+    """First real run: pull state, index what is filed, ingest N days, process, reconcile, weekly (+send), push state."""
+    a.dbcmd = "pull"; cmd_db(a, settings)
+    cmd_index_existing(a, settings)
+    a.folder = None
+    cmd_ingest(a, settings)
+    a.dry_run, a.local = False, False
+    cmd_process(a, settings)
+    cmd_reconcile(a, settings)
+    a.no_deferrals = False
+    cmd_weekly(a, settings)
+    a.dbcmd = "push"; cmd_db(a, settings)
+
+
 def cmd_run_all(a, settings):
     if not a.local:
         a.dbcmd = "pull"; cmd_db(a, settings)
@@ -253,6 +280,8 @@ def main(argv=None):
     s = sub.add_parser("weekly"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--no-deferrals", action="store_true"); s.add_argument("--dry-run", action="store_true", help=argparse.SUPPRESS); s.set_defaults(fn=cmd_weekly)
     s = sub.add_parser("review"); s.add_argument("file"); s.set_defaults(fn=cmd_review)
     s = sub.add_parser("inbox"); s.add_argument("-v", "--verbose", action="store_true"); s.set_defaults(fn=cmd_inbox)
+    sub.add_parser("index-existing").set_defaults(fn=cmd_index_existing)
+    s = sub.add_parser("backfill"); s.add_argument("--send", action="store_true"); s.add_argument("--lookback-days", type=int, default=45); s.add_argument("--limit", type=int, default=300); s.set_defaults(fn=cmd_backfill)
     s = sub.add_parser("run-all"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--lookback-days", type=int, default=3); s.add_argument("--limit", type=int, default=200); s.set_defaults(fn=cmd_run_all)
     a = p.parse_args(argv)
     settings = load_settings(a.config)

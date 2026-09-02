@@ -54,3 +54,42 @@ def scan_sharepoint_folder(conn: sqlite3.Connection, settings, graph, drive_id: 
         log.error("sharepoint folder scan failed %s: %s", folder_path, e)
     db.log_scan(conn, "ingest", f"{source}:{folder_path}", stats["found"], stats["new"], stats["errors"])
     return stats
+
+
+def index_existing(conn: sqlite3.Connection, settings, graph, drive_id: str, folder_paths: list[str], max_files: int = 3000) -> dict[str, int]:
+    """Register files already filed on SharePoint (by the Cowork routine or by hand) so the same attachment arriving
+    from a mailbox is recognised and not filed a second time. Recursive; downloads each file once to hash it."""
+    from .common import sha256
+    stats = {"seen": 0, "indexed": 0, "errors": 0}
+    stack = list(folder_paths)
+    while stack and stats["seen"] < max_files:
+        folder = stack.pop()
+        try:
+            for item in graph.list_children(drive_id, folder):
+                if "folder" in item:
+                    stack.append(f"{folder}/{item['name']}")
+                    continue
+                if "file" not in item or not wanted(item["name"], settings.sources.get("attachment_types", ["pdf", "jpg", "jpeg", "png", "heic"])):
+                    continue
+                stats["seen"] += 1
+                if conn.execute("SELECT 1 FROM documents WHERE source='sharepoint' AND source_ref=?", (item["id"],)).fetchone():
+                    continue
+                try:
+                    data = graph.download_item(drive_id, item["id"])
+                except Exception as e:  # noqa: BLE001
+                    stats["errors"] += 1
+                    log.warning("index download failed %s: %s", item["name"], e)
+                    continue
+                h = sha256(data)
+                if conn.execute("SELECT 1 FROM documents WHERE sha256=?", (h,)).fetchone():
+                    continue
+                db.insert(conn, "documents", dict(sha256=h, source="sharepoint", source_ref=item["id"], filename=item["name"], mime=item["file"].get("mimeType"),
+                                                 received_at=item.get("createdDateTime"), doc_type="preexisting", status="filed", filed_path=item.get("webUrl"),
+                                                 created_at=db.now_iso()))
+                stats["indexed"] += 1
+        except Exception as e:  # noqa: BLE001
+            stats["errors"] += 1
+            log.warning("index folder failed %s: %s", folder, e)
+    conn.commit()
+    db.log_scan(conn, "index_existing", ",".join(folder_paths)[:200], stats["seen"], stats["indexed"], stats["errors"])
+    return stats
