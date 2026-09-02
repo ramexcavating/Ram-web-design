@@ -1,0 +1,76 @@
+# RAM Excavating financial system configuration.
+# Copy to config/config.yaml and fill in. Secrets go in environment variables, never here.
+company:
+  name: RAM Excavating Limited
+  fiscal_year_end_month: 5          # May 31
+  gst_rate: 0.05
+  labour_burden_factor: 1.35        # loaded labour = base rate x burden (CPP, EI, WorkSafeBC, vacation, small tools)
+
+paths:
+  data_dir: ./data                  # SQLite db, inbox, logs
+  cost_codes_csv: ./config/cost_codes.csv
+  vendors_csv: ./config/vendors.csv
+
+sharepoint:
+  site: BUSINESSEXECUTIVE
+  library: BUSINESS_EXEC
+  finance_root: 01_BUSINESS_FINANCE/09_REPORTING
+  receipts: 01_BUSINESS_FINANCE/09_REPORTING/06_RECEIPTS
+  ap_invoices: 01_BUSINESS_FINANCE/09_REPORTING/05_AP_INVOICES
+  timesheets: 01_BUSINESS_FINANCE/04_PAYROLL/01_TIMESHEETS
+  bank_statements: 01_BUSINESS_FINANCE/09_REPORTING/07_BANK_STATEMENTS
+  qb_reports: 01_BUSINESS_FINANCE/09_REPORTING/02_RAM_FINANCIAL_UPDATES
+  cashflow: 01_BUSINESS_FINANCE/09_REPORTING/03_CASHFLOW_TRACKING
+  state: 01_BUSINESS_FINANCE/09_REPORTING/03_CASHFLOW_TRACKING/_ramfin      # the database and sign-in cache live here between runs
+  equipment: 05_EQUIPMENT/01_FLEET                                          # <unit>/01_SERVICE_RECORDS receives a copy of every repair/fuel document
+  unfiled: 01_BUSINESS_FINANCE/09_REPORTING/06_RECEIPTS/00_UNFILED_NEEDS_REVIEW
+  projects_site: PROJECTS
+  projects_library: PROJECTS
+  projects_active: 01_ACTIVE_PROJECTS
+
+sources:
+  mailboxes:                        # Microsoft 365 mailboxes read through Graph (application permissions)
+    - rmickey@ramexcavating.ca
+    - accounts@ramexcavating.ca
+    - emickey@ramexcavating.ca
+  legacy_mailbox:                   # old ramcontracting@live.ca mailbox, read in place after a one-time sign-in (ramfin auth legacy)
+    enabled: true
+    address: ramcontracting@live.ca
+  legacy_imap:                      # fallback only; Outlook.com no longer accepts password IMAP logins
+    enabled: false
+    host: outlook.office365.com
+    user: ramcontracting@live.ca
+    folders: [INBOX]
+  camscanner_folder: 01_BUSINESS_FINANCE/09_REPORTING/06_RECEIPTS/01_CAMSCANNER_INBOX   # CamScanner auto-upload target
+  attachment_types: [pdf, jpg, jpeg, png, heic, xlsx, xls, csv]
+
+bank_accounts:
+  - {key: rbc_chq,  name: RBC Business Chequing, institution: RBC,        kind: chequing,   import_format: rbc_csv}
+  - {key: td_chq,   name: TD Chequing,           institution: TD,         kind: chequing,   import_format: td_csv}
+  - {key: td_loc,   name: TD Operating Line,     institution: TD,         kind: loc,        limit: 60000}
+  - {key: td_visa,  name: TD Visa,               institution: TD,         kind: card,       import_format: td_csv}
+  - {key: cap_one,  name: Capital One,           institution: Capital One, kind: card,      import_format: capitalone_csv}
+  - {key: td_di,    name: TD Direct Investing,   institution: TD,         kind: investment}
+
+forecast:
+  horizon_weeks: 13
+  basis: position                   # position = cash minus operating line drawn
+  floor_amount: -60000              # NO-BREACH floor: position may not fall below minus the line limit (RAM-10-PR-10)
+  tight_band: 10000                 # within this much of the floor = TIGHT
+  loc_limit: 60000
+  payroll:
+    cadence_days: 14
+    anchor_pay_date: 2026-08-14     # any known Friday pay date; the schedule is projected from it
+    estimated_net_per_run: 8000
+    cra_remit_day_of_month: 15
+    estimated_cra_remit: 2565.70
+  never_defer_categories: [payroll, cra, debt, critical_vendor, wsbc]
+
+notify:
+  digest_to: [rmickey@ramexcavating.ca]
+  digest_from: accounts@ramexcavating.ca
+  weekly_report_day: 0              # Monday
+
+claude:
+  model: claude-opus-5
+  max_tokens: 16000
