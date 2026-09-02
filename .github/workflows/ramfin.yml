@@ -39,8 +39,8 @@ jobs:
       QBO_REALM_ID: ${{ secrets.QBO_REALM_ID }}
       RAMFIN_CONFIG_B64: ${{ secrets.RAMFIN_CONFIG_B64 }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -49,11 +49,12 @@ jobs:
         run: |
           mkdir -p config
           if [ -n "$RAMFIN_CONFIG_B64" ]; then echo "$RAMFIN_CONFIG_B64" | base64 -d > config/config.yaml; fi
+      # Scheduled runs stay dormant until the Claude key is in place; the doctor and manual runs work without it.
       - name: Weekday run
-        if: github.event_name == 'schedule' && github.event.schedule == '30 13 * * 1-5'
+        if: github.event_name == 'schedule' && github.event.schedule == '30 13 * * 1-5' && env.ANTHROPIC_API_KEY != ''
         run: ramfin db pull && ramfin ingest && ramfin process && ramfin reconcile && ramfin weekly --send --no-deferrals && ramfin db push
       - name: Monday full run
-        if: github.event_name == 'schedule' && github.event.schedule == '30 12 * * 1'
+        if: github.event_name == 'schedule' && github.event.schedule == '30 12 * * 1' && env.ANTHROPIC_API_KEY != ''
         run: ramfin run-all --send
       - name: Manual run
         if: github.event_name == 'workflow_dispatch'
