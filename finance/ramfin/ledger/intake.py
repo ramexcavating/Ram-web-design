@@ -91,11 +91,15 @@ def _vendor_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
                        "ap_invoices", existing["id"], priority=2)
         return f"invoice {inv_no} already on register (updated)"
     unit = equipment_unit(conn, ex)
+    from datetime import date as _date
+    historical = bool(inv_date) and (_date.today() - inv_date).days > 180
     aid = db.insert(conn, "ap_invoices", dict(
         vendor_id=vid, invoice_no=inv_no, invoice_date=inv_date.isoformat() if inv_date else None, due_date=due.isoformat() if due else None,
-        amount=ex.total, gst=ex.gst, amount_confirmed=1 if ex.total is not None else 0, status="Unpaid",
-        planned_pay_date=due.isoformat() if due else None, job_no=job, cost_code=code if conf >= 0.5 else None, document_id=doc_id,
+        amount=ex.total, gst=ex.gst, amount_confirmed=1 if ex.total is not None else 0, status="Reference only" if historical else "Unpaid",
+        planned_pay_date=None if historical else (due.isoformat() if due else None), job_no=job, cost_code=code if conf >= 0.5 else None, document_id=doc_id,
         category=(v["category"] if v else "supplier"), notes=((f"[{unit}] " if unit else "") + (ex.notes or desc or ""))[:500], created_at=db.now_iso()))
+    if historical:
+        return f"historical invoice {ex.vendor_name} {inv_no} ({inv_date}) filed as reference"
     if ex.total is None:
         raise_item(conn, "unconfirmed_amount", f"Invoice with no amount: {ex.vendor_name} {inv_no}", "Open the PDF or the supplier portal and enter the amount.",
                    "ap_invoices", aid, priority=2)
@@ -138,7 +142,17 @@ def _customer_payment(conn, settings, doc_id, ex: Extraction, sender, subject) -
 
 
 def _customer_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> str:
+    from ..rules.hygiene import BACKING_NAME_RX, BACKING_RX
+    fname = conn.execute("SELECT filename FROM documents WHERE id=?", (doc_id,)).fetchone()["filename"]
+    inv_no_clean = (ex.invoice_no or "").strip()
+    if BACKING_RX.match(inv_no_clean) or BACKING_NAME_RX.search(f"{fname} {subject or ''} {ex.notes or ''}"):
+        return f"backing document for {ex.customer_name} ({inv_no_clean or fname}): filed, not added to AR"
     job = _norm_job(conn, ex.handwritten_job_no, f"{subject or ''} {ex.notes or ''} {ex.customer_name or ''}")
+    same = conn.execute("SELECT id FROM ar_invoices WHERE customer=? AND ABS(amount-?)<0.005 AND status IN ('Open','Estimate','Partially Paid')", (ex.customer_name or "Unknown", float(ex.total or 0))).fetchone()
+    if same and ex.total:
+        conn.execute("UPDATE ar_invoices SET document_id=COALESCE(document_id, ?), invoice_no=CASE WHEN invoice_no LIKE '%billing%' OR invoice_no LIKE '%/%' THEN ? ELSE invoice_no END, status=CASE WHEN status='Estimate' THEN 'Open' ELSE status END WHERE id=?",
+                     (doc_id, ex.invoice_no or "?", same["id"]))
+        return f"AR invoice {ex.customer_name} {ex.invoice_no} matched an existing tracker row (${ex.total:,.2f})"
     due = parse_date(ex.due_date) or ((parse_date(ex.doc_date) + timedelta(days=30)) if parse_date(ex.doc_date) else None)
     hb = round(float(ex.total) * 0.10, 2) if ex.total and re.search(r"holdback", ex.notes or "", re.I) else 0.0
     db.upsert_ignore(conn, "ar_invoices", dict(

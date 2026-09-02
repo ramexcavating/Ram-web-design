@@ -26,7 +26,8 @@ log = logging.getLogger(__name__)
 
 def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, limit: int = 200, refetch=None) -> dict[str, int]:
     stats = {"processed": 0, "filed": 0, "needs_review": 0, "errors": 0, "refetched": 0, "unavailable": 0}
-    docs = db.rows(conn, "SELECT * FROM documents WHERE status IN ('new','error') ORDER BY id LIMIT ?", (limit,))
+    docs = db.rows(conn, "SELECT * FROM documents WHERE status IN ('new','error') "
+                         "OR (status='ignored' AND extracted_json LIKE '%could not be converted%') ORDER BY id LIMIT ?", (limit,))
     for d in docs:
         stats["processed"] += 1
         try:
@@ -92,7 +93,8 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
 
 
 def reconcile(conn: sqlite3.Connection, settings, qbo=None) -> dict:
-    out = {"matching": matching.match_transactions(conn), "auto_resolved": inbox.auto_resolve(conn)}
+    from .rules import hygiene
+    out = {"hygiene": hygiene.apply(conn), "matching": matching.match_transactions(conn), "auto_resolved": inbox.auto_resolve(conn)}
     if qbo is not None:
         try:
             from .sources.qbo import check_variance

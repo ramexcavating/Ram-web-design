@@ -20,7 +20,7 @@ ORANGE = PatternFill("solid", fgColor="F8CBAD")
 RED = Font(color="C00000", bold=True)
 BOLD = Font(bold=True)
 AP_STATUSES = ["Unpaid", "Scheduled", "Partially Paid", "Paid", "Deferred (no-breach)", "Disputed", "On Hold", "Void-Credit", "Reference only"]
-AR_STATUSES = ["Open", "Paid", "Partially Paid", "Doubtful", "Estimate"]
+AR_STATUSES = ["Open", "Paid", "Partially Paid", "Doubtful", "Estimate", "Superseded", "Backing doc"]
 
 
 def _header(ws, cols: list[tuple[str, bool]], widths: dict[int, int] | None = None):
