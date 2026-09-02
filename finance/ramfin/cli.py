@@ -211,8 +211,8 @@ def cmd_weekly(a, settings):
             filer = _filer(settings, graph, False)
             from .rules.filing import FilingDecision
             sp = settings.sharepoint
-            filer.file(out["xlsx"], FilingDecision(sp["cashflow"], Path(out["xlsx"]).name))
-            filer.file(out["docx"], FilingDecision(f"{sp['cashflow']}/01_WEEKLY_MANAGERS_REPORT", Path(out["docx"]).name))
+            filer.file(out["xlsx"], FilingDecision(sp["cashflow"], Path(out["xlsx"]).name), replace=True)
+            filer.file(out["docx"], FilingDecision(f"{sp['cashflow']}/01_WEEKLY_MANAGERS_REPORT", Path(out["docx"]).name), replace=True)
 
 
 def cmd_review(a, settings):
