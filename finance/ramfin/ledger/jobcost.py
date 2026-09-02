@@ -50,9 +50,14 @@ def job_cost(conn: sqlite3.Connection, settings, start: str | None = None, end: 
 def equipment_cost(conn: sqlite3.Connection, settings, start: str | None = None, end: str | None = None) -> dict[str, dict]:
     """Owning-and-operating inputs per unit: repairs and fuel from receipts and invoices, operated hours from time entries."""
     out: dict[str, dict] = defaultdict(lambda: dict(repairs=0.0, fuel=0.0, other=0.0, hours=0.0, documents=0))
+    from ..rules.cost_codes import FUEL_CODES, REPAIR_CODES
     def bucket(code, desc):
+        if code in FUEL_CODES:
+            return "fuel"
+        if code in REPAIR_CODES:
+            return "repairs"
         t = f"{code or ''} {desc or ''}".lower()
-        return "fuel" if any(k in t for k in ("fuel", "diesel", "cardlock", "02-300")) else ("repairs" if any(k in t for k in ("repair", "parts", "maint", "hydraul", "tire", "02-310")) else "other")
+        return "fuel" if any(k in t for k in ("fuel", "diesel", "cardlock", "02-300")) else ("repairs" if any(k in t for k in ("repair", "parts", "maint", "hydraul", "tire", "pump", "02-310")) else "other")
     q = "SELECT equipment_id, cost_code, description, COALESCE(amount,0)-COALESCE(gst,0) net FROM receipts WHERE equipment_id IS NOT NULL"
     p: list = []
     if start: q += " AND receipt_date>=?"; p.append(start)

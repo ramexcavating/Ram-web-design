@@ -80,17 +80,8 @@ def _filer(settings, graph, local: bool):
     from .filer import LocalFiler, SharePointFiler
     if local or graph is None:
         return LocalFiler(settings.data_dir / "filed")
-    sp = settings.sharepoint
-    host = os.environ.get("SP_HOSTNAME", "netorg19644794.sharepoint.com")
-    fin_site = graph.site_id(host, sp["site"])
-    fin_drive = graph.drive_id(fin_site, sp["library"])
-    proj_drive = None
-    try:
-        proj_site = graph.site_id(host, sp.get("projects_site", "PROJECTS"))
-        proj_drive = graph.drive_id(proj_site, sp.get("projects_library", "PROJECTS"))
-    except Exception as e:  # noqa: BLE001
-        log.warning("projects drive unavailable: %s", e)
-    return SharePointFiler(graph, fin_drive, proj_drive)
+    d = _drives(settings, graph)
+    return SharePointFiler(graph, d["finance"], d["projects"], d["resources"])
 
 
 def cmd_doctor(a, settings):
@@ -98,33 +89,52 @@ def cmd_doctor(a, settings):
     sys.exit(doctor.run(settings))
 
 
+def _drives(settings, graph) -> dict[str, str | None]:
+    """finance, projects and resources drive ids (the latter two may be unavailable)."""
+    sp = settings.sharepoint
+    host = os.environ.get("SP_HOSTNAME", "netorg19644794.sharepoint.com")
+    out: dict[str, str | None] = {"finance": graph.drive_id(graph.site_id(host, sp["site"]), sp["library"]), "projects": None, "resources": None}
+    for key, site_k, lib_k, dflt in (("projects", "projects_site", "projects_library", "PROJECTS"), ("resources", "equipment_site", "equipment_library", "RESOURCES")):
+        try:
+            out[key] = graph.drive_id(graph.site_id(host, sp.get(site_k, dflt)), sp.get(lib_k, dflt))
+        except Exception as e:  # noqa: BLE001
+            log.warning("%s drive unavailable: %s", key, e)
+    return out
+
+
 def cmd_init(a, settings):
+    """Create or refresh the database from config and the workbooks on SharePoint. Safe to re-run."""
+    from . import seed, state_sync
+    graph = None if a.local else _graph()
+    drives = _drives(settings, graph) if graph else {}
+    if graph:
+        print("pull:", json.dumps(state_sync.pull(graph, drives["finance"], settings)))
     conn = _conn(settings)
-    print(json.dumps(pipeline.load_reference_data(conn, settings)))
-    jobs = settings.raw.get("jobs", [])
-    for j in jobs:
-        conn.execute("INSERT INTO jobs(job_no,name,client,status,contract_value,sharepoint_folder) VALUES(?,?,?,?,?,?) ON CONFLICT(job_no) DO UPDATE SET name=excluded.name, client=excluded.client, status=excluded.status, contract_value=excluded.contract_value, sharepoint_folder=excluded.sharepoint_folder",
-                     (str(j["job_no"]), j["name"], j.get("client"), j.get("status", "active"), j.get("contract_value"), j.get("sharepoint_folder")))
-    conn.commit()
-    print(f"database at {settings.db_path}; {len(jobs)} jobs loaded")
+    out = {"reference_csv": pipeline.load_reference_data(conn, settings), "config": seed.seed_from_config(conn, settings)}
+    if graph:
+        out["sharepoint"] = seed.seed_from_sharepoint(conn, settings, graph, drives["finance"], drives["projects"])
+        conn.commit(); conn.close()
+        out["push"] = state_sync.push(graph, drives["finance"], settings)
+    print(json.dumps(out, indent=2, default=str))
 
 
 def cmd_ingest(a, settings):
     conn = _conn(settings)
     stats = {}
+    lookback = int(getattr(a, "lookback_days", None) or 3)
     if a.folder:
         from .sources.folder import scan_local_folder
         stats["folder"] = scan_local_folder(conn, settings, a.folder, source="folder")
     else:
         graph = _graph()
         from .sources.mailbox import scan_mailboxes
-        stats["mail"] = scan_mailboxes(conn, settings, graph)
+        stats["mail"] = scan_mailboxes(conn, settings, graph, lookback_days=lookback)
         leg = settings.sources.get("legacy_mailbox", {})
         if leg.get("enabled"):
             try:
                 lg = _legacy_graph(settings)
                 if lg.signed_in():
-                    stats["legacy"] = scan_mailboxes(conn, settings, lg, mailboxes=["me"], label=leg.get("address", "legacy"))
+                    stats["legacy"] = scan_mailboxes(conn, settings, lg, lookback_days=lookback, mailboxes=["me"], label=leg.get("address", "legacy"))
                 else:
                     from .notify.inbox import raise_item
                     raise_item(conn, "decision", f"Old mailbox {leg.get('address')} is not signed in", "Run: ramfin auth legacy (one-time, prints a code to enter in a browser).", "sync_state", 3, priority=2)
@@ -138,7 +148,7 @@ def cmd_ingest(a, settings):
             from .sources.folder import scan_sharepoint_folder
             sp = settings.sharepoint
             host = os.environ.get("SP_HOSTNAME", "netorg19644794.sharepoint.com")
-            drive = graph.drive_id(graph.site_id(host, sp["site"]), sp["library"])
+            drive = _drives(settings, graph)["finance"]
             stats["camscanner"] = scan_sharepoint_folder(conn, settings, graph, drive, cam)
     print(json.dumps(stats, indent=2))
 
@@ -146,7 +156,7 @@ def cmd_ingest(a, settings):
 def cmd_process(a, settings):
     conn = _conn(settings)
     graph = None if (a.dry_run or a.local) else _graph()
-    stats = pipeline.process_new_documents(conn, settings, _extractor(settings, a.dry_run), _filer(settings, graph, a.local or a.dry_run))
+    stats = pipeline.process_new_documents(conn, settings, _extractor(settings, a.dry_run), _filer(settings, graph, a.local or a.dry_run), limit=int(getattr(a, "limit", None) or 200))
     print(json.dumps(stats, indent=2))
 
 
@@ -213,6 +223,8 @@ def cmd_run_all(a, settings):
     if not a.local:
         a.dbcmd = "pull"; cmd_db(a, settings)
     a.folder = None
+    a.lookback_days = getattr(a, "lookback_days", 3)
+    a.limit = getattr(a, "limit", 200)
     cmd_ingest(a, settings)
     a.dry_run, a.local = False, a.local
     cmd_process(a, settings)
@@ -229,11 +241,11 @@ def main(argv=None):
     p.add_argument("--config", help="path to config.yaml")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("doctor").set_defaults(fn=cmd_doctor)
-    sub.add_parser("init").set_defaults(fn=cmd_init)
+    s = sub.add_parser("init"); s.add_argument("--local", action="store_true"); s.set_defaults(fn=cmd_init)
     s = sub.add_parser("auth"); s.add_argument("what", choices=["legacy"]); s.set_defaults(fn=cmd_auth)
     s = sub.add_parser("db"); s.add_argument("dbcmd", choices=["pull", "push"]); s.set_defaults(fn=cmd_db)
-    s = sub.add_parser("ingest"); s.add_argument("--folder"); s.set_defaults(fn=cmd_ingest)
-    s = sub.add_parser("process"); s.add_argument("--dry-run", action="store_true"); s.add_argument("--local", action="store_true", help="file into data/filed instead of SharePoint"); s.set_defaults(fn=cmd_process)
+    s = sub.add_parser("ingest"); s.add_argument("--folder"); s.add_argument("--lookback-days", type=int, default=3); s.set_defaults(fn=cmd_ingest)
+    s = sub.add_parser("process"); s.add_argument("--dry-run", action="store_true"); s.add_argument("--limit", type=int, default=200); s.add_argument("--local", action="store_true", help="file into data/filed instead of SharePoint"); s.set_defaults(fn=cmd_process)
     s = sub.add_parser("bank"); s2 = s.add_subparsers(dest="bankcmd", required=True); si = s2.add_parser("import")
     si.add_argument("key"); si.add_argument("format", choices=["rbc_csv", "td_csv", "capitalone_csv", "generic_csv"]); si.add_argument("file"); si.set_defaults(fn=cmd_bank)
     s = sub.add_parser("balance"); s.add_argument("key"); s.add_argument("amount"); s.add_argument("--as-of"); s.set_defaults(fn=cmd_balance)
@@ -241,7 +253,7 @@ def main(argv=None):
     s = sub.add_parser("weekly"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--no-deferrals", action="store_true"); s.add_argument("--dry-run", action="store_true", help=argparse.SUPPRESS); s.set_defaults(fn=cmd_weekly)
     s = sub.add_parser("review"); s.add_argument("file"); s.set_defaults(fn=cmd_review)
     s = sub.add_parser("inbox"); s.add_argument("-v", "--verbose", action="store_true"); s.set_defaults(fn=cmd_inbox)
-    s = sub.add_parser("run-all"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.set_defaults(fn=cmd_run_all)
+    s = sub.add_parser("run-all"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--lookback-days", type=int, default=3); s.add_argument("--limit", type=int, default=200); s.set_defaults(fn=cmd_run_all)
     a = p.parse_args(argv)
     settings = load_settings(a.config)
     a.fn(a, settings)
