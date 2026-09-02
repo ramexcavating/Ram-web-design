@@ -71,7 +71,47 @@ def duplicate_ar(conn: sqlite3.Connection) -> int:
     return n
 
 
+def vendor_defaults(conn: sqlite3.Connection) -> int:
+    """Receipts and invoices without a job or code take the vendor's defaults; personal vendors drop out of job cost."""
+    n = conn.execute("UPDATE receipts SET job_no=(SELECT default_job FROM vendors v WHERE v.id=receipts.vendor_id) WHERE job_no IS NULL AND personal=0 "
+                     "AND (SELECT default_job FROM vendors v WHERE v.id=receipts.vendor_id) IS NOT NULL").rowcount
+    n += conn.execute("UPDATE receipts SET cost_code=(SELECT default_cost_code FROM vendors v WHERE v.id=receipts.vendor_id) WHERE cost_code IS NULL AND personal=0 "
+                      "AND (SELECT default_cost_code FROM vendors v WHERE v.id=receipts.vendor_id) IS NOT NULL").rowcount
+    n += conn.execute("UPDATE ap_invoices SET job_no=(SELECT default_job FROM vendors v WHERE v.id=ap_invoices.vendor_id) WHERE job_no IS NULL "
+                      "AND (SELECT default_job FROM vendors v WHERE v.id=ap_invoices.vendor_id) IS NOT NULL").rowcount
+    n += conn.execute("UPDATE receipts SET personal=1, job_no=NULL, cost_code=NULL, description='[personal] not a RAM expense' WHERE personal=0 "
+                      "AND vendor_id IN (SELECT id FROM vendors WHERE category='personal')").rowcount
+    conn.execute("UPDATE action_items SET status='resolved', resolved_at=? WHERE status='open' AND kind IN ('uncoded_receipt','illegible') AND ref_table='receipts' "
+                 "AND (CASE WHEN ref_id >= 1000000 THEN ref_id - 1000000 ELSE ref_id END) IN (SELECT id FROM receipts WHERE personal=1)", (db.now_iso(),))
+    return n
+
+
+def replay_statements(conn: sqlite3.Connection) -> int:
+    """Apply the newer-document-wins rule to statements that were read before the rule existed (newest per vendor)."""
+    import json
+    from ..models import Extraction
+    from ..rules import vendors as vend
+    from .statements import reconcile_statement
+    n = 0
+    seen: set[int] = set()
+    for d in db.rows(conn, "SELECT id, extracted_json, sender FROM documents WHERE doc_type='vendor_statement' AND extracted_json IS NOT NULL ORDER BY json_extract(extracted_json,'$.doc_date') DESC, id DESC"):
+        ex = Extraction.from_dict(json.loads(d["extracted_json"]))
+        vid = vend.find_or_create(conn, ex.vendor_name, d["sender"])
+        if not vid or vid in seen or ex.total is None:
+            continue
+        seen.add(vid)
+        if conn.execute("SELECT 1 FROM action_items WHERE kind='decision' AND ref_table='vendors' AND ref_id=? AND title LIKE '%register updated from statement%'", (vid,)).fetchone():
+            continue
+        out = reconcile_statement(conn, vid, ex, d["id"])
+        if "applied" in out:
+            n += 1
+            conn.execute("UPDATE action_items SET status='resolved', resolved_at=? WHERE status='open' AND kind='decision' AND ref_table='vendors' AND ref_id=? AND title LIKE '%statement says%'",
+                         (db.now_iso(), vid))
+    return n
+
+
 def apply(conn: sqlite3.Connection) -> dict[str, int]:
-    out = {"historical_ap": historical_ap(conn), "backing_docs": backing_docs(conn), "superseded_combined_ar": superseded_combined_ar(conn), "duplicate_ar": duplicate_ar(conn)}
+    out = {"historical_ap": historical_ap(conn), "backing_docs": backing_docs(conn), "superseded_combined_ar": superseded_combined_ar(conn), "duplicate_ar": duplicate_ar(conn),
+           "vendor_defaults": vendor_defaults(conn), "statements_replayed": replay_statements(conn)}
     conn.commit()
     return out

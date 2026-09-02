@@ -72,6 +72,7 @@ def import_workbook(conn: sqlite3.Connection, path: str | Path) -> dict[str, int
             if upd.get("status") == "Paid" and "paid_date" not in upd and not cur["paid_date"]:
                 upd["paid_date"] = date.today().isoformat()
             if upd:
+                upd["updated_at"] = db.now_iso()
                 sets = ", ".join(f"{k}=?" for k in upd)
                 conn.execute(f"UPDATE ap_invoices SET {sets} WHERE id=?", (*upd.values(), cur["id"]))
                 stats["ap"] += 1
@@ -114,7 +115,7 @@ def import_workbook(conn: sqlite3.Connection, path: str | Path) -> dict[str, int
                 v = str(v).strip() if v not in (None, "") else None
                 if v is not None and v != cur[key]:
                     upd[key] = v
-            for col, key in (("Reimbursable", "reimbursable"), ("Reimbursed", "reimbursed")):
+            for col, key in (("Reimbursable", "reimbursable"), ("Reimbursed", "reimbursed"), ("Personal", "personal")):
                 v = _yn(r.get(col))
                 if v is not None and v != cur[key]:
                     upd[key] = v

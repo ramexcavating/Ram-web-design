@@ -1,50 +1,56 @@
-name,aliases,email_domain,default_cost_code,default_terms_days,category,critical
-Four Rivers Co-operative,Four Rivers Co-op Cardlock|Four Rivers Co-op|Four Rivers,,1-294,30,fuel,1
-United Concrete & Gravel Ltd.,United Concrete and Gravel Ltd. (Quesnel)|United Concrete,unitedconcrete.ca,2-108,30,supplier,0
-Active Rent-All Ltd.,Active Rent-All|Active Rentals,,1-298,30,supplier,0
-Lordco Auto Parts,Lordco,,1-293,30,supplier,0
-Bumper to Bumper (#1060),Uni-Select Inc. (Bumper to Bumper #1060)|Uni-Select Pacific Inc. (BTB #1060)|Bumper to Bumper|Uni-Select,,1-296,30,supplier,0
-Royalite Industrial Maintenance Ltd.,Royalite,,1-296,30,supplier,0
-CR Waterhouse,C.R. Waterhouse|CR Waterhouse Trucking,,2-186,30,sub,0
-Lease Direct,,,1-080,30,lease,1
-KADA Contracting,KADA,,1-042,30,sub,0
-Civil North Consulting Ltd.,Civil North,,1-010,30,professional,0
-TBJ LLP (CPA),TBJ LLP|TBJ,,50-063,0,professional,1
-Online Curbing,,,2-186,30,sub,0
-ACG Accounting Ltd.,ACG|ACG Accounting,acgaccounting.com,50-063,15,payroll,1
-"Anthropic, PBC",Anthropic PBC|Anthropic,mail.anthropic.com,50-271,0,software,0
-Acera Insurance,Acera,,1-180,30,insurance,1
-De Lage Landen Financial (TSC510),De Lage Landen|DLL Financial,,1-080,30,lease,1
-Intuit QuickBooks Online,Intuit|QuickBooks,intuit.com,50-271,0,software,0
-Telus Mobility,Telus,telus.com,50-212,0,utility,1
-Shaw Cablesystems,Shaw,shaw.ca,50-212,0,utility,0
-Xplore Inc (Xplornet),Xplore|Xplornet,xplore.ca,50-212,0,utility,0
-WordPress,Automattic,,1-312,0,software,0
-Apple,Apple.com,apple.com,50-212,0,software,0
-Google Ads,Google,google.com,1-312,0,marketing,0
-Adobe,,adobe.com,50-271,0,software,0
-Equifax Canada,Equifax,,50-271,0,software,0
-Receiver General (CRA source deductions),Receiver General|CRA|Canada Revenue Agency,cra-arc.gc.ca,1-170,0,cra,1
-City of Quesnel - Property Taxes,City of Quesnel,quesnel.ca,1-100,0,tax,1
-Brandt Tractor Ltd.,Brandt,brandt.ca,1-296,30,supplier,0
-Wajax,,wajax.com,1-296,30,supplier,0
-Inland Truck & Equipment Ltd,Inland,,1-296,30,supplier,0
-Fountain Tire,,,1-296,30,supplier,0
-Tenaquip Limited,Tenaquip,,1-293,30,supplier,0
-Home Hardware,Home Hardware Quesnel,,1-293,0,supplier,0
-Princess Auto,,,1-293,0,supplier,0
-Cansel Survey Equipment,Cansel,,1-080,30,supplier,0
-White Cap Supply Canada Inc.,White Cap,,1-293,0,supplier,0
-BC Hydro,,bchydro.com,50-212,0,utility,1
-FortisBC (natural gas),FortisBC,fortisbc.com,50-212,0,utility,1
-GoDaddy,,godaddy.com,1-312,0,software,0
-Sign Stop (Quesnel),Sign Stop,,1-312,30,supplier,0
-Hutchs RV Service Ltd.,Hutchs RV,,1-296,30,supplier,0
-Purmal Contracting,Purmal,,2-000,30,sub,0
-Petro-Canada,Petro Canada|Petrocan,,1-292,0,fuel,0
-WorkSafeBC,WCB|Work Safe BC,worksafebc.com,1-170,0,wsbc,1
-Lending Loop,,lendingloop.ca,1-184,0,debt,1
-Capital One,,capitalone.com,1-184,0,debt,1
-TD Canada Trust,TD|TD Bank,td.com,1-184,0,debt,1
-RBC,Royal Bank|RBC Royal Bank,rbc.com,1-184,0,debt,1
-DMS Canada (dmscanada.net),DMS Canada,dmscanada.net,1-312,0,disputed,0
+name,aliases,email_domain,default_cost_code,default_terms_days,category,critical,default_job
+Four Rivers Co-operative,Four Rivers Co-op Cardlock|Four Rivers Co-op|Four Rivers,,1-294,30,fuel,1,
+United Concrete & Gravel Ltd.,United Concrete and Gravel Ltd. (Quesnel)|United Concrete,unitedconcrete.ca,2-108,30,supplier,0,
+Active Rent-All Ltd.,Active Rent-All|Active Rentals,,1-298,30,supplier,0,
+Lordco Auto Parts,Lordco,,1-293,30,supplier,0,250601-02
+Bumper to Bumper (#1060),Uni-Select Inc. (Bumper to Bumper #1060)|Uni-Select Pacific Inc. (BTB #1060)|Bumper to Bumper|Uni-Select,,1-296,30,supplier,0,250601-02
+Royalite Industrial Maintenance Ltd.,Royalite,,1-296,30,supplier,0,250601-02
+CR Waterhouse,C.R. Waterhouse|CR Waterhouse Trucking,,2-186,30,sub,0,
+Lease Direct,,,1-080,30,lease,1,250601-02
+KADA Contracting,KADA,,1-042,30,sub,0,
+Civil North Consulting Ltd.,Civil North,,1-010,30,professional,0,
+TBJ LLP (CPA),TBJ LLP|TBJ,,50-063,0,professional,1,250601-01
+Online Curbing,,,2-186,30,sub,0,
+ACG Accounting Ltd.,ACG|ACG Accounting,acgaccounting.com,50-063,15,payroll,1,250601-01
+"Anthropic, PBC",Anthropic PBC|Anthropic,mail.anthropic.com,50-271,0,software,0,250601-01
+Acera Insurance,Acera,,1-180,30,insurance,1,250601-01
+De Lage Landen Financial (TSC510),De Lage Landen|DLL Financial,,1-080,30,lease,1,250601-02
+Intuit QuickBooks Online,Intuit|QuickBooks,intuit.com,50-271,0,software,0,250601-01
+Telus Mobility,Telus,telus.com,50-212,0,utility,1,250601-01
+Shaw Cablesystems,Shaw,shaw.ca,50-212,0,utility,0,250601-01
+Xplore Inc (Xplornet),Xplore|Xplornet,xplore.ca,50-212,0,utility,0,250601-01
+WordPress,Automattic,,1-312,0,software,0,250601-01
+Apple,Apple.com,apple.com,50-212,0,software,0,250601-01
+Google Ads,Google,google.com,1-312,0,marketing,0,250601-01
+Adobe,,adobe.com,50-271,0,software,0,250601-01
+Equifax Canada,Equifax,,50-271,0,software,0,250601-01
+Receiver General (CRA source deductions),Receiver General|CRA|Canada Revenue Agency,cra-arc.gc.ca,1-170,0,cra,1,250601-01
+City of Quesnel - Property Taxes,City of Quesnel,quesnel.ca,1-100,0,tax,1,250601-01
+Brandt Tractor Ltd.,Brandt,brandt.ca,1-296,30,supplier,0,250601-02
+Wajax,,wajax.com,1-296,30,supplier,0,250601-02
+Inland Truck & Equipment Ltd,Inland,,1-296,30,supplier,0,250601-02
+Fountain Tire,,,1-296,30,supplier,0,250601-02
+Tenaquip Limited,Tenaquip,,1-293,30,supplier,0,
+Home Hardware,Home Hardware Quesnel,,1-293,0,supplier,0,
+Princess Auto,,,1-293,0,supplier,0,
+Cansel Survey Equipment,Cansel,,1-080,30,supplier,0,250601-02
+White Cap Supply Canada Inc.,White Cap,,1-293,0,supplier,0,
+BC Hydro,,bchydro.com,50-212,0,utility,1,250601-01
+FortisBC (natural gas),FortisBC,fortisbc.com,50-212,0,utility,1,250601-01
+GoDaddy,,godaddy.com,1-312,0,software,0,250601-01
+Sign Stop (Quesnel),Sign Stop,,1-312,30,supplier,0,
+Hutchs RV Service Ltd.,Hutchs RV,,1-296,30,supplier,0,250601-02
+Purmal Contracting,Purmal,,2-000,30,sub,0,
+Petro-Canada,Petro Canada|Petrocan,,1-292,0,fuel,0,
+WorkSafeBC,WCB|Work Safe BC,worksafebc.com,1-170,0,wsbc,1,250601-01
+Lending Loop,,lendingloop.ca,1-184,0,debt,1,
+Capital One,,capitalone.com,1-184,0,debt,1,
+TD Canada Trust,TD|TD Bank,td.com,1-184,0,debt,1,
+RBC,Royal Bank|RBC Royal Bank,rbc.com,1-184,0,debt,1,
+DMS Canada (dmscanada.net),DMS Canada,dmscanada.net,1-312,0,disputed,0,
+Apple Canada Inc.,Apple Canada|Apple.com Canada,,50-212,0,software,0,250601-01
+The Den by Moonshine Coffee,Moonshine Coffee|The Den,,50-020,0,meals,0,250601-01
+BLONDIES Cafe,Blondies,,50-020,0,meals,0,250601-01
+Calgary Parking (ParkPlus),CGY PARKING-PARKPLUS ONLI|ParkPlus,,1-120,0,travel,0,250601-02
+Automattic Ltd. (WordPress.com),WordPress.com,,1-312,0,software,0,250601-01
+Mark Conlin RMT,,,,0,personal,0,

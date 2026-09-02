@@ -223,6 +223,14 @@ def cmd_review(a, settings):
     print(f"auto-resolved {auto_resolve(conn)} action item(s)")
 
 
+def cmd_resolve(a, settings):
+    conn = _conn(settings)
+    from .notify.inbox import resolve
+    conn.execute("UPDATE action_items SET detail=COALESCE(detail,'') || ? WHERE id=?", (f"\nAnswer: {a.answer}" if a.answer else "", a.id))
+    resolve(conn, a.id)
+    print(f"resolved #{a.id}")
+
+
 def cmd_inbox(a, settings):
     conn = _conn(settings)
     from .notify.inbox import open_items
@@ -290,6 +298,7 @@ def main(argv=None):
     sub.add_parser("reconcile").set_defaults(fn=cmd_reconcile)
     s = sub.add_parser("weekly"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--no-deferrals", action="store_true"); s.add_argument("--dry-run", action="store_true", help=argparse.SUPPRESS); s.set_defaults(fn=cmd_weekly)
     s = sub.add_parser("review"); s.add_argument("file"); s.set_defaults(fn=cmd_review)
+    s = sub.add_parser("resolve"); s.add_argument("id", type=int); s.add_argument("answer", nargs="?", default=""); s.set_defaults(fn=cmd_resolve)
     s = sub.add_parser("inbox"); s.add_argument("-v", "--verbose", action="store_true"); s.set_defaults(fn=cmd_inbox)
     sub.add_parser("index-existing").set_defaults(fn=cmd_index_existing)
     s = sub.add_parser("backfill"); s.add_argument("--send", action="store_true"); s.add_argument("--lookback-days", type=int, default=45); s.add_argument("--limit", type=int, default=300); s.set_defaults(fn=cmd_backfill)

@@ -48,14 +48,15 @@ def record_timesheet(conn: sqlite3.Connection, settings, doc_id: int, ex: Extrac
     total = ot = 0.0
     issues = []
     from .intake import _norm_job  # local import to avoid a cycle at module load
+    header_job = _norm_job(conn, ex.handwritten_job_no, ex.notes or "")   # the sheet's own job box, when filled in
     for t in ex.time_entries:
         d = parse_date(t.work_date)
         if not d:
             issues.append(f"unreadable date {t.work_date!r}")
             continue
-        job = _norm_job(conn, t.job_no, t.description or "")
+        job = _norm_job(conn, t.job_no, t.description or "") or header_job
         if not job and (t.hours or t.ot_hours):
-            issues.append(f"{d}: no job for {t.hours}h ({t.job_no or t.description or 'blank'})")
+            issues.append(f"{d}: {t.hours}h with no job ({t.job_no or t.description or 'blank'}). LOA, travel and shop time are coded to the job worked, not to overhead.")
         if (t.hours or 0) + (t.ot_hours or 0) > MAX_HOURS_DAY:
             issues.append(f"{d}: {t.hours + t.ot_hours}h in one day")
         db.insert(conn, "time_entries", dict(timesheet_id=tsid, work_date=d.isoformat(), job_no=job, cost_code=t.cost_code, hours=float(t.hours or 0),
