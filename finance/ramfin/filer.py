@@ -16,12 +16,12 @@ class LocalFiler:
     def __init__(self, root: str | Path):
         self.root = Path(root)
 
-    def file(self, local_path: str | Path, decision: FilingDecision) -> str:
+    def file(self, local_path: str | Path, decision: FilingDecision, replace: bool = False) -> str:
         dest_dir = self.root / decision.library / decision.folder
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest = dest_dir / decision.filename
         i = 1
-        while dest.exists():
+        while dest.exists() and not replace:
             stem, suf = dest.stem, dest.suffix
             dest = dest_dir / f"{stem}_{i}{suf}"
             i += 1
@@ -34,6 +34,9 @@ class SharePointFiler:
         self.graph = graph
         self.drives = {"finance": finance_drive_id, "projects": projects_drive_id or finance_drive_id, "resources": resources_drive_id or finance_drive_id}
 
-    def file(self, local_path: str | Path, decision: FilingDecision) -> str:
+    def file(self, local_path: str | Path, decision: FilingDecision, replace: bool = False) -> str:
         data = Path(local_path).read_bytes()
-        return self.graph.upload(self.drives[decision.library], decision.folder, decision.filename, data)
+        drive = self.drives[decision.library]
+        if replace:
+            return self.graph.upload_replace(drive, decision.folder, decision.filename, data)
+        return self.graph.upload(drive, decision.folder, decision.filename, data)
