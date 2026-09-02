@@ -24,13 +24,24 @@ from .rules.filing import parse_date
 log = logging.getLogger(__name__)
 
 
-def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, limit: int = 200) -> dict[str, int]:
-    stats = {"processed": 0, "filed": 0, "needs_review": 0, "errors": 0}
+def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, limit: int = 200, refetch=None) -> dict[str, int]:
+    stats = {"processed": 0, "filed": 0, "needs_review": 0, "errors": 0, "refetched": 0, "unavailable": 0}
     docs = db.rows(conn, "SELECT * FROM documents WHERE status IN ('new','error') ORDER BY id LIMIT ?", (limit,))
     for d in docs:
         stats["processed"] += 1
         try:
-            data = Path(d["local_path"]).read_bytes()
+            local = Path(d["local_path"]) if d["local_path"] else None
+            if local is None or not local.exists():
+                if refetch is not None and refetch(d):
+                    stats["refetched"] += 1
+                    d = conn.execute("SELECT * FROM documents WHERE id=?", (d["id"],)).fetchone()
+                    local = Path(d["local_path"])
+                else:
+                    stats["unavailable"] += 1
+                    conn.execute("UPDATE documents SET status='error', error='source bytes unavailable (inbox copy lost, refetch failed)' WHERE id=?", (d["id"],))
+                    conn.commit()
+                    continue
+            data = local.read_bytes()
             ctx = " | ".join(x for x in [f"from {d['sender']}" if d["sender"] else "", f"subject: {d['subject']}" if d["subject"] else "", f"source {d['source']}"] if x)
             ex = extractor.extract(data, d["filename"], ctx)
             received = parse_date((d["received_at"] or "")[:10])
@@ -39,6 +50,7 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
                 conn.execute("UPDATE documents SET doc_type='other', status='ignored', extracted_json=?, confidence=? WHERE id=?",
                              (__import__("json").dumps(ex.to_dict()), ex.confidence, d["id"]))
                 conn.commit()
+                Path(d["local_path"]).unlink(missing_ok=True)
                 stats["ignored"] = stats.get("ignored", 0) + 1
                 continue
             job_folder = None
@@ -63,6 +75,7 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
                                "documents", d["id"], priority=3)
             stats["filed"] += 1
             conn.commit()
+            Path(d["local_path"]).unlink(missing_ok=True)      # filed: the inbox copy has done its job
             log.info("doc %s %s -> %s (%s)", d["id"], d["filename"], ex.doc_type, summary)
         except ExtractionError as e:
             stats["errors"] += 1

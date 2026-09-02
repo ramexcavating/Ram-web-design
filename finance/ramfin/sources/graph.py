@@ -116,6 +116,15 @@ class GraphClient:
                       data=data, headers={"Content-Type": "application/octet-stream"})
         return r.json().get("webUrl", f"{folder_path}/{filename}")
 
+    def find_message(self, mailbox: str, internet_message_id: str) -> dict[str, Any] | None:
+        imid = internet_message_id.replace("'", "''")
+        data = self.get(f"{self._mbx(mailbox)}/messages?$filter=internetMessageId eq '{imid}'&$select=id,subject,receivedDateTime&$top=2")
+        vals = data.get("value", [])
+        return vals[0] if vals else None
+
+    def delete_item(self, drive_id: str, item_id: str) -> None:
+        self._req("DELETE", f"/drives/{drive_id}/items/{item_id}")
+
     def send_mail(self, sender: str, to: list[str], subject: str, html: str, attachments: list[tuple[str, bytes]] | None = None) -> None:
         msg: dict[str, Any] = {
             "subject": subject,

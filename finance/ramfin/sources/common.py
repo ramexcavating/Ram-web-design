@@ -37,3 +37,45 @@ def register(conn: sqlite3.Connection, inbox_dir: Path, data: bytes, filename: s
 def wanted(filename: str, allowed: list[str]) -> bool:
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
     return ext in [a.lower() for a in allowed]
+
+
+def refetch_bytes(conn: sqlite3.Connection, settings, doc, graphs: dict) -> bool:
+    """The inbox copy of a document is gone (a fresh runner). Get the bytes again from where they came from.
+    graphs: {"app": GraphClient, "me": DelegatedGraphClient | None, "finance_drive": str}. Returns True when restored."""
+    src, ref = doc["source"] or "", doc["source_ref"] or ""
+    data = None
+    try:
+        if src.startswith("mail:") and ref:
+            addr = src.split(":", 1)[1]
+            legacy = settings.sources.get("legacy_mailbox", {}).get("address", "")
+            if addr.lower() == legacy.lower():
+                g, mbx = graphs.get("me"), "me"
+            else:
+                g, mbx = graphs.get("app"), addr
+            if g is None:
+                return False
+            msg = g.find_message(mbx, ref)
+            if not msg:
+                return False
+            for att in g.list_attachments(mbx, msg["id"]):
+                if att.get("name") == doc["filename"]:
+                    cand = g.download_attachment(mbx, msg["id"], att["id"])
+                    if sha256(cand) == doc["sha256"]:
+                        data = cand
+                        break
+            if data is None and doc["mime"] == "text/html":
+                return False
+        elif src in ("camscanner", "sharepoint") and ref and graphs.get("app"):
+            cand = graphs["app"].download_item(graphs["finance_drive"], ref)
+            if sha256(cand) == doc["sha256"]:
+                data = cand
+    except Exception:  # noqa: BLE001
+        return False
+    if data is None:
+        return False
+    local = Path(doc["local_path"]) if doc["local_path"] else settings.inbox_dir / f"{doc['sha256'][:12]}_{safe_name(doc['filename'])}"
+    local.parent.mkdir(parents=True, exist_ok=True)
+    local.write_bytes(data)
+    conn.execute("UPDATE documents SET local_path=? WHERE id=?", (str(local), doc["id"]))
+    conn.commit()
+    return True

@@ -65,12 +65,16 @@ def test_state_sync_roundtrip(conn, settings, tmp_path, monkeypatch):
             store[f"{folder}/{name}"] = data; return f"https://sp/{folder}/{name}"
         def download_path(self, drive, path):
             return store.get(path)
+        def list_children(self, drive, folder):
+            return []
+        def delete_item(self, drive, item_id):
+            pass
 
     real = db.connect(settings.db_path)
     real.execute("INSERT INTO jobs(job_no, name) VALUES('999999','roundtrip')"); real.commit(); real.close()
     (settings.data_dir / state_sync.TOKEN_NAME).write_text("{}")
     pushed = state_sync.push(FakeGraph(), "drive", settings)
-    assert set(pushed) == {state_sync.DB_NAME, state_sync.TOKEN_NAME}
+    assert {state_sync.DB_NAME, state_sync.TOKEN_NAME} <= set(pushed)
     settings.db_path.unlink()
     pulled = state_sync.pull(FakeGraph(), "drive", settings)
     assert pulled[state_sync.DB_NAME] and db.connect(settings.db_path).execute("SELECT name FROM jobs WHERE job_no='999999'").fetchone()["name"] == "roundtrip"

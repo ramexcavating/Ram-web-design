@@ -158,7 +158,18 @@ def cmd_ingest(a, settings):
 def cmd_process(a, settings):
     conn = _conn(settings)
     graph = None if (a.dry_run or a.local) else _graph()
-    stats = pipeline.process_new_documents(conn, settings, _extractor(settings, a.dry_run), _filer(settings, graph, a.local or a.dry_run), limit=int(getattr(a, "limit", None) or 200))
+    refetch = None
+    if graph is not None:
+        from .sources.common import refetch_bytes
+        graphs = {"app": graph, "me": None, "finance_drive": _drives(settings, graph)["finance"]}
+        try:
+            lg = _legacy_graph(settings)
+            graphs["me"] = lg if lg.signed_in() else None
+        except Exception:  # noqa: BLE001
+            pass
+        refetch = lambda d: refetch_bytes(conn, settings, d, graphs)  # noqa: E731
+    stats = pipeline.process_new_documents(conn, settings, _extractor(settings, a.dry_run), _filer(settings, graph, a.local or a.dry_run),
+                                           limit=int(getattr(a, "limit", None) or 200), refetch=refetch)
     print(json.dumps(stats, indent=2))
 
 
