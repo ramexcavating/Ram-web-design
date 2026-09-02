@@ -50,9 +50,15 @@ def run(settings) -> int:
                 row("FAIL", f"SharePoint {label} library", str(e)[:300]); ok = False
         try:
             from .sources.graph import DelegatedGraphClient
-            from .state_sync import TOKEN_NAME
-            lg = DelegatedGraphClient(str(settings.data_dir / TOKEN_NAME))
-            row("ok" if lg.signed_in() else "todo", "old mailbox (ramcontracting@live.ca)", "signed in" if lg.signed_in() else "not signed in yet: ramfin auth legacy")
+            from . import state_sync
+            drive = graph.drive_id(graph.site_id(host, sp["site"]), sp["library"])
+            state_sync.pull(graph, drive, settings)          # the sign-in cache lives on SharePoint between runs
+            lg = DelegatedGraphClient(str(settings.data_dir / state_sync.TOKEN_NAME))
+            if lg.signed_in():
+                inbox = lg.get("/me/mailFolders/inbox?$select=totalItemCount")
+                row("ok", "old mailbox (ramcontracting@live.ca)", f"signed in, {inbox.get('totalItemCount', '?')} in inbox")
+            else:
+                row("todo", "old mailbox (ramcontracting@live.ca)", "not signed in yet: ramfin auth legacy")
         except Exception as e:  # noqa: BLE001
             row("todo", "old mailbox", str(e)[:200])
 
@@ -63,14 +69,16 @@ def run(settings) -> int:
             r = c.messages.create(model=settings.claude_model, max_tokens=20, messages=[{"role": "user", "content": "Reply with the single word OK."}])
             row("ok", "Claude", f"{settings.claude_model} answered")
         except Exception as e:  # noqa: BLE001
-            row("FAIL", "Claude", str(e)[:300])
+            msg = str(e)
+            hint = " -> add prepaid credits at console.anthropic.com, Plans & Billing" if "credit balance" in msg else ""
+            row("FAIL", "Claude", msg[:300] + hint); ok = False
     if os.environ.get("QBO_REFRESH_TOKEN"):
         try:
             from .sources.qbo import QBOClient
             QBOClient().token()
             row("ok", "QuickBooks", "token refreshed")
         except Exception as e:  # noqa: BLE001
-            row("FAIL", "QuickBooks", str(e)[:300])
+            row("FAIL", "QuickBooks", str(e)[:300]); ok = False
 
     print("\n".join(lines))
     print("\nRESULT:", "all connections good" if ok else "something needs fixing (see FAIL rows)")
