@@ -51,7 +51,12 @@ def record(conn: sqlite3.Connection, settings, doc_id: int, ex: Extraction, send
 
 def _receipt(conn, settings, doc_id, ex: Extraction, sender, subject) -> str:
     vid = vendors.find_or_create(conn, ex.vendor_name, sender)
-    job = _norm_job(conn, ex.handwritten_job_no, subject or "")
+    if vendors.is_personal(conn, vid):
+        rid = db.insert(conn, "receipts", dict(vendor_id=vid, receipt_date=parse_date(ex.doc_date).isoformat() if parse_date(ex.doc_date) else None, amount=ex.total,
+                                               gst=ex.gst, payment_method=ex.payment_method, document_id=doc_id, personal=1, legible=1 if ex.legible else 0,
+                                               description="[personal] not a RAM expense", created_at=db.now_iso()))
+        return f"personal receipt {ex.vendor_name} ${ex.total}: filed, kept out of job cost"
+    job = _norm_job(conn, ex.handwritten_job_no, subject or "") or vendors.default_job(conn, vid)
     desc = "; ".join(li.description for li in ex.line_items[:5]) or (ex.notes or "")
     code, conf, why = cost_codes.suggest(conn, vid, ex.vendor_name, desc, ex.handwritten_cost_code)
     rid = db.insert(conn, "receipts", dict(
@@ -76,7 +81,7 @@ def _vendor_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
     v = conn.execute("SELECT * FROM vendors WHERE id=?", (vid,)).fetchone() if vid else None
     inv_date = parse_date(ex.doc_date)
     due = parse_date(ex.due_date) or (inv_date + timedelta(days=int(v["default_terms_days"] if v else 30)) if inv_date else None)
-    job = _norm_job(conn, ex.handwritten_job_no, f"{subject or ''} {ex.notes or ''} " + " ".join(li.description for li in ex.line_items))
+    job = _norm_job(conn, ex.handwritten_job_no, f"{subject or ''} {ex.notes or ''} " + " ".join(li.description for li in ex.line_items)) or vendors.default_job(conn, vid)
     desc = "; ".join(li.description for li in ex.line_items[:5]) or (ex.notes or "")
     code, conf, _ = cost_codes.suggest(conn, vid, ex.vendor_name, desc, ex.handwritten_cost_code)
     inv_no = (ex.invoice_no or f"DOC{doc_id}").strip()
@@ -110,16 +115,13 @@ def _vendor_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
 
 
 def _vendor_statement(conn, settings, doc_id, ex: Extraction, sender, subject) -> str:
+    """Rodney's rule: the newer document wins. A statement dated after the register's last word on that vendor
+    updates the register; an older statement is left alone because the register was corrected by hand since."""
+    from ..rules.statements import reconcile_statement
     vid = vendors.find_or_create(conn, ex.vendor_name, sender)
     if not vid or ex.total is None:
         return "statement: no vendor or balance"
-    open_ap = conn.execute("SELECT COALESCE(SUM(amount),0) s FROM ap_invoices WHERE vendor_id=? AND status NOT IN ('Paid','Void-Credit','Reference only')", (vid,)).fetchone()["s"]
-    diff = round(float(ex.total) - float(open_ap), 2)
-    if abs(diff) >= 1.0:
-        raise_item(conn, "decision", f"{ex.vendor_name} statement says ${ex.total:,.2f}; register says ${open_ap:,.2f}",
-                   f"Difference ${diff:,.2f}. Either an invoice never arrived (ask them for it) or a payment has not been recorded.",
-                   "vendors", vid, priority=2)
-    return f"statement {ex.vendor_name} balance ${ex.total} vs register ${open_ap}"
+    return reconcile_statement(conn, vid, ex, doc_id)
 
 
 def _customer_payment(conn, settings, doc_id, ex: Extraction, sender, subject) -> str:

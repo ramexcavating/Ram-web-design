@@ -45,8 +45,9 @@ CREATE TABLE IF NOT EXISTS vendors (
     email_domain TEXT,
     default_cost_code TEXT,
     default_terms_days INTEGER DEFAULT 30,
-    category TEXT DEFAULT 'supplier',   -- supplier | sub | fuel | lease | payroll | cra | debt | utility | professional
+    category TEXT DEFAULT 'supplier',   -- supplier | sub | fuel | lease | payroll | cra | debt | utility | professional | personal
     critical INTEGER DEFAULT 0,         -- 1 = never defer under the no-breach rule
+    default_job TEXT,                   -- job a receipt from this vendor goes to when none is written on it
     qbo_id TEXT
 );
 
@@ -277,7 +278,19 @@ def connect(path: str | Path = ":memory:") -> sqlite3.Connection:
     conn = sqlite3.connect(str(path))
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    _migrate(conn)
     return conn
+
+
+MIGRATIONS = [("vendors", "default_job", "TEXT"), ("ap_invoices", "updated_at", "TEXT"), ("receipts", "personal", "INTEGER DEFAULT 0")]
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    for table, col, typ in MIGRATIONS:
+        cols = {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}
+        if col not in cols:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
+    conn.commit()
 
 
 def get_state(conn: sqlite3.Connection, key: str, default: str | None = None) -> str | None:

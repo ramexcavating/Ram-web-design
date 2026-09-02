@@ -15,7 +15,7 @@ def job_cost(conn: sqlite3.Connection, settings, start: str | None = None, end: 
         out[j]["labour"] += r["cost"]
         out[j]["labour_hours"] += r["hours"] + r["ot_hours"]
         out[j]["by_code"][r["cost_code"] or "UNCODED"] += r["cost"]
-    q = "SELECT job_no, cost_code, COALESCE(amount,0) - COALESCE(gst,0) AS net FROM receipts WHERE 1=1"
+    q = "SELECT job_no, cost_code, COALESCE(amount,0) - COALESCE(gst,0) AS net FROM receipts WHERE COALESCE(personal,0)=0"
     p: list = []
     if start:
         q += " AND receipt_date>=?"; p.append(start)
@@ -58,7 +58,7 @@ def equipment_cost(conn: sqlite3.Connection, settings, start: str | None = None,
             return "repairs"
         t = f"{code or ''} {desc or ''}".lower()
         return "fuel" if any(k in t for k in ("fuel", "diesel", "cardlock", "02-300")) else ("repairs" if any(k in t for k in ("repair", "parts", "maint", "hydraul", "tire", "pump", "02-310")) else "other")
-    q = "SELECT equipment_id, cost_code, description, COALESCE(amount,0)-COALESCE(gst,0) net FROM receipts WHERE equipment_id IS NOT NULL"
+    q = "SELECT equipment_id, cost_code, description, COALESCE(amount,0)-COALESCE(gst,0) net FROM receipts WHERE equipment_id IS NOT NULL AND COALESCE(personal,0)=0"
     p: list = []
     if start: q += " AND receipt_date>=?"; p.append(start)
     if end: q += " AND receipt_date<=?"; p.append(end)

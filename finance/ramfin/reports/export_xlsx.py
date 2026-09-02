@@ -126,14 +126,19 @@ def export_workbook(conn: sqlite3.Connection, settings, fc, report: dict, path: 
     # RECEIPTS
     ws = wb.create_sheet("RECEIPTS")
     _header(ws, [("ID", False), ("Date", False), ("Vendor", False), ("Amount", True), ("GST", False), ("Method", False), ("Job", True), ("Cost Code", True),
-                 ("Equipment", True), ("Reimbursable", True), ("Reimbursed", True), ("Matched to bank", False), ("Description", False), ("File", False)], {3: 26, 13: 40, 14: 60})
+                 ("Equipment", True), ("Reimbursable", True), ("Reimbursed", True), ("Matched to bank", False), ("Description", False), ("File", False), ("Personal", True)], {3: 26, 13: 40, 14: 60})
     ws.add_data_validation(dv_yn2 := DataValidation(type="list", formula1='"Yes,No"', allow_blank=True))
     for rc in db.rows(conn, "SELECT r.*, v.name vname, d.filed_path FROM receipts r LEFT JOIN vendors v ON v.id=r.vendor_id LEFT JOIN documents d ON d.id=r.document_id "
                             "ORDER BY r.receipt_date DESC LIMIT 2000"):
         ws.append([rc["id"], rc["receipt_date"], rc["vname"], rc["amount"], rc["gst"], rc["payment_method"], rc["job_no"], rc["cost_code"], rc["equipment_id"],
-                   "Yes" if rc["reimbursable"] else "No", "Yes" if rc["reimbursed"] else "No", "Yes" if rc["matched_txn_id"] else "", rc["description"], rc["filed_path"]])
+                   "Yes" if rc["reimbursable"] else "No", "Yes" if rc["reimbursed"] else "No", "Yes" if rc["matched_txn_id"] else "", rc["description"], rc["filed_path"],
+                   "Yes" if rc["personal"] else "No"])
         r = ws.max_row
-        dv_yn2.add(ws.cell(row=r, column=10)); dv_yn2.add(ws.cell(row=r, column=11))
+        dv_yn2.add(ws.cell(row=r, column=10)); dv_yn2.add(ws.cell(row=r, column=11)); dv_yn2.add(ws.cell(row=r, column=15))
+        if rc["personal"]:
+            for c in range(1, 16):
+                ws.cell(row=r, column=c).fill = GREY
+            continue
         if not rc["job_no"]:
             ws.cell(row=r, column=7).fill = YELLOW
         if not rc["cost_code"]:
