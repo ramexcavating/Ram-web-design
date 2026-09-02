@@ -38,6 +38,7 @@ def scan_sharepoint_folder(conn: sqlite3.Connection, settings, graph, drive_id: 
     stats = {"found": 0, "new": 0, "errors": 0}
     allowed = settings.sources.get("attachment_types", ["pdf", "jpg", "jpeg", "png", "heic"])
     try:
+        graph.ensure_folder(drive_id, folder_path)          # CamScanner's target folder; create it so it can be pointed at
         for item in graph.list_children(drive_id, folder_path):
             if "file" not in item or not wanted(item["name"], allowed):
                 continue
