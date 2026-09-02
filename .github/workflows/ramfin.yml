@@ -57,4 +57,7 @@ jobs:
         run: ramfin run-all --send
       - name: Manual run
         if: github.event_name == 'workflow_dispatch'
-        run: ramfin db pull && ramfin ${{ github.event.inputs.command }} && ramfin db push
+        env:
+          CMD: ${{ github.event.inputs.command }}
+        run: |
+          if [[ "$CMD" == doctor* ]]; then ramfin $CMD; else ramfin db pull && ramfin $CMD && ramfin db push; fi

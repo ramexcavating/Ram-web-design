@@ -1,5 +1,6 @@
 """ramfin command line.
 
+  ramfin doctor                        connection test: keys, mailboxes, SharePoint, Claude, QuickBooks
   ramfin init                          create the database, load cost codes / vendors / jobs
   ramfin auth legacy                   one-time sign-in to the old ramcontracting@live.ca mailbox (prints a code)
   ramfin db pull | push                fetch / store the database on SharePoint (runs do this automatically)
@@ -90,6 +91,11 @@ def _filer(settings, graph, local: bool):
     except Exception as e:  # noqa: BLE001
         log.warning("projects drive unavailable: %s", e)
     return SharePointFiler(graph, fin_drive, proj_drive)
+
+
+def cmd_doctor(a, settings):
+    from . import doctor
+    sys.exit(doctor.run(settings))
 
 
 def cmd_init(a, settings):
@@ -222,6 +228,7 @@ def main(argv=None):
     p = argparse.ArgumentParser(prog="ramfin", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--config", help="path to config.yaml")
     sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("doctor").set_defaults(fn=cmd_doctor)
     sub.add_parser("init").set_defaults(fn=cmd_init)
     s = sub.add_parser("auth"); s.add_argument("what", choices=["legacy"]); s.set_defaults(fn=cmd_auth)
     s = sub.add_parser("db"); s.add_argument("dbcmd", choices=["pull", "push"]); s.set_defaults(fn=cmd_db)
