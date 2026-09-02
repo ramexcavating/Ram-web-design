@@ -122,6 +122,7 @@ def cmd_init(a, settings):
 
 def cmd_ingest(a, settings):
     conn = _conn(settings)
+    pipeline.load_reference_data(conn, settings)      # so new vendor rules apply at intake, not only after init
     stats = {}
     lookback = int(getattr(a, "lookback_days", None) or 3)
     if a.folder:
@@ -190,6 +191,7 @@ def cmd_balance(a, settings):
 
 def cmd_reconcile(a, settings):
     conn = _conn(settings)
+    pipeline.load_reference_data(conn, settings)      # vendor defaults and cost codes are cheap to refresh every run
     qbo = None
     if os.environ.get("QBO_REFRESH_TOKEN"):
         from .sources.qbo import QBOClient
