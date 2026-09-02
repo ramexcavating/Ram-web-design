@@ -1,5 +1,7 @@
 # RAM Excavating — Website Build Brief
 
+> **Also in this repository:** [`finance/`](finance/README.md) — `ramfin`, the financial operations system (receipts, AP/AR, bank reconciliation, timesheets, job cost, 13-week cash flow). Start with [`finance/docs/ARCHITECTURE.md`](finance/docs/ARCHITECTURE.md).
+
 Everything needed to take **ramexcavating.ca** from a single page to a full 19-page site, inside the website builder it already runs on. No developer, no new hosting, no code.
 
 ## Start here

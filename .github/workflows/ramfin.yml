@@ -1,0 +1,72 @@
+# Scheduled finance runs. Two schedules:
+#   - every weekday 06:30 Pacific (13:30 UTC): ingest, process, reconcile, refresh actions, send the digest
+#   - Monday 05:30 Pacific (12:30 UTC): the full weekly cash flow report and review workbook
+# The SQLite database is kept in a GitHub Actions cache keyed on the branch and restored each run; a copy is also
+# uploaded to SharePoint (03_CASHFLOW_TRACKING/_ramfin) so nothing is lost if the cache expires.
+# Alternative: run the same commands from the office PC with Task Scheduler. See finance/docs/SETUP.md.
+name: ramfin
+
+on:
+  schedule:
+    - cron: "30 13 * * 1-5"
+    - cron: "30 12 * * 1"
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "ramfin command to run"
+        default: "run-all --send"
+
+concurrency:
+  group: ramfin
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: finance
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      MS_TENANT_ID: ${{ secrets.MS_TENANT_ID }}
+      MS_CLIENT_ID: ${{ secrets.MS_CLIENT_ID }}
+      MS_CLIENT_SECRET: ${{ secrets.MS_CLIENT_SECRET }}
+      LEGACY_IMAP_PASSWORD: ${{ secrets.LEGACY_IMAP_PASSWORD }}
+      QBO_CLIENT_ID: ${{ secrets.QBO_CLIENT_ID }}
+      QBO_CLIENT_SECRET: ${{ secrets.QBO_CLIENT_SECRET }}
+      QBO_REFRESH_TOKEN: ${{ secrets.QBO_REFRESH_TOKEN }}
+      QBO_REALM_ID: ${{ secrets.QBO_REALM_ID }}
+      RAMFIN_CONFIG_B64: ${{ secrets.RAMFIN_CONFIG_B64 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - name: Restore database
+        uses: actions/cache/restore@v4
+        with:
+          path: finance/data
+          key: ramfin-db-${{ github.ref_name }}-${{ github.run_id }}
+          restore-keys: ramfin-db-${{ github.ref_name }}-
+      - name: Write config
+        run: |
+          mkdir -p config
+          if [ -n "$RAMFIN_CONFIG_B64" ]; then echo "$RAMFIN_CONFIG_B64" | base64 -d > config/config.yaml; fi
+      - name: Weekday run
+        if: github.event_name == 'schedule' && github.event.schedule == '30 13 * * 1-5'
+        run: ramfin ingest && ramfin process && ramfin reconcile && ramfin weekly --send --no-deferrals
+      - name: Monday full run
+        if: github.event_name == 'schedule' && github.event.schedule == '30 12 * * 1'
+        run: ramfin run-all --send
+      - name: Manual run
+        if: github.event_name == 'workflow_dispatch'
+        run: ramfin ${{ github.event.inputs.command }}
+      - name: Save database
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: finance/data
+          key: ramfin-db-${{ github.ref_name }}-${{ github.run_id }}
