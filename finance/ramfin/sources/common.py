@@ -57,14 +57,17 @@ def refetch_bytes(conn: sqlite3.Connection, settings, doc, graphs: dict) -> bool
             msg = g.find_message(mbx, ref)
             if not msg:
                 return False
-            for att in g.list_attachments(mbx, msg["id"]):
-                if att.get("name") == doc["filename"]:
-                    cand = g.download_attachment(mbx, msg["id"], att["id"])
-                    if sha256(cand) == doc["sha256"]:
-                        data = cand
-                        break
-            if data is None and doc["mime"] == "text/html":
-                return False
+            if doc["mime"] == "text/html":
+                full = g.get(f"{g._mbx(mbx)}/messages/{msg['id']}?$select=body,subject,from,receivedDateTime")
+                body = (full.get("body") or {}).get("content") or ""
+                data = f"<!-- from: {(full.get('from') or {}).get('emailAddress', {}).get('address', '')} subject: {full.get('subject', '')} received: {full.get('receivedDateTime', '')} -->\n{body}".encode("utf-8")
+            else:
+                for att in g.list_attachments(mbx, msg["id"]):
+                    if att.get("name") == doc["filename"]:
+                        cand = g.download_attachment(mbx, msg["id"], att["id"])
+                        if sha256(cand) == doc["sha256"]:
+                            data = cand
+                            break
         elif src in ("camscanner", "sharepoint") and ref and graphs.get("app"):
             cand = graphs["app"].download_item(graphs["finance_drive"], ref)
             if sha256(cand) == doc["sha256"]:
