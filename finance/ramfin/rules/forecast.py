@@ -1,10 +1,9 @@
 """13-week cash flow forecast and the NO-BREACH rule.
 
 Position basis: cash in bank accounts minus operating line drawn (the way the existing tool defines it).
-Floor: configurable. The company procedure RAM-10-PR-10 describes a $60K minimum; the existing workbook grades a
-week OK when the position closes above zero (i.e. the $60K line is what is being protected). `forecast.floor_amount`
-in config decides which reading applies. Breaches are resolved by moving DISCRETIONARY payables only - never payroll,
-CRA, debt minimums, WorkSafeBC or vendors flagged critical.
+Floor: minus the operating line limit (-60,000). A week breaches when the projected position would need more than
+the line can give. `forecast.floor_amount` carries it. Breaches are resolved by moving DISCRETIONARY payables only -
+never payroll, CRA, debt minimums, WorkSafeBC or vendors flagged critical.
 """
 from __future__ import annotations
 

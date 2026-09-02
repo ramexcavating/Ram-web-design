@@ -42,6 +42,10 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
             decision = filing.decide(ex, d["filename"], settings.sharepoint, received, job_folder)
             summary = intake.record(conn, settings, d["id"], ex, d["sender"], d["subject"])
             filed = filer.file(d["local_path"], decision)
+            unit = intake.equipment_unit(conn, ex)
+            if unit and ex.doc_type in ("receipt", "vendor_invoice") and not decision.needs_review:
+                eq_folder = intake.equipment_folder(conn, settings, unit)
+                filer.file(d["local_path"], filing.FilingDecision(f"{eq_folder}/01_SERVICE_RECORDS", f"{decision.filename.rsplit('.',1)[0]}_{unit}.{decision.filename.rsplit('.',1)[-1]}"))
             status = "needs_review" if decision.needs_review else "filed"
             conn.execute("UPDATE documents SET doc_type=?, status=?, filed_path=?, extracted_json=?, confidence=?, legible=?, error=NULL WHERE id=?",
                          (ex.doc_type, status, filed, __import__("json").dumps(ex.to_dict()), ex.confidence, 1 if ex.legible else 0, d["id"]))
@@ -100,9 +104,11 @@ def weekly(conn: sqlite3.Connection, settings, out_dir: str | Path, as_of: date 
     xlsx = export_xlsx.export_workbook(conn, settings, fc, report, out / f"{stamp}_RAM_WEEKLY_REVIEW.xlsx")
     md = out / f"{stamp}_RAM_Weekly_Cashflow_Report.md"
     md.write_text(weekly_report.to_markdown(report), encoding="utf-8")
+    from .reports.export_docx import markdown_to_docx
+    docx = markdown_to_docx(md.read_text(encoding="utf-8"), out / f"{stamp}_RAM_Weekly_Managers_Report.docx")
     subject, html = inbox.digest_html(conn, fc, report)
     db.log_scan(conn, "report", None, len(fc.weeks), fc.breach_weeks, 0, report["headline"])
-    return dict(forecast=fc, report=report, xlsx=str(xlsx), markdown=str(md), digest_subject=subject, digest_html=html)
+    return dict(forecast=fc, report=report, xlsx=str(xlsx), markdown=str(md), docx=str(docx), digest_subject=subject, digest_html=html)
 
 
 def load_reference_data(conn: sqlite3.Connection, settings) -> dict[str, int]:

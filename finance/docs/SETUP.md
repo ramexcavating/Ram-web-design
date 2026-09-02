@@ -16,6 +16,8 @@ Optional for HEIC photos from iPhones: `pip install pillow pillow-heif`.
 ## 2. Microsoft Graph (mail + SharePoint)
 
 Entra admin centre → App registrations → New registration ("RAM Finance Automation", single tenant).
+- Supported account types: any organizational directory AND personal Microsoft accounts (for the old mailbox).
+- Authentication → Allow public client flows: Yes (device-code sign-in for the old mailbox).
 - Certificates & secrets → new client secret (24 months). Record it once; it is not shown again.
 - API permissions → Microsoft Graph → **Application** permissions: `Mail.Read`, `Mail.Send`, `Sites.Selected`
   (preferred) or `Sites.ReadWrite.All`. Grant admin consent.
@@ -28,8 +30,10 @@ Set `MS_TENANT_ID`, `MS_CLIENT_ID`, `MS_CLIENT_SECRET`.
 
 ## 3. Old mailbox (ramcontracting@live.ca)
 
-Simplest: in Outlook.com settings, forward everything to accounts@ramexcavating.ca and stop there. If you would
-rather leave it alone, enable IMAP, create an app password, set `legacy_imap.enabled: true` and `LEGACY_IMAP_PASSWORD`.
+Read in place, nothing forwarded. The app registration must allow personal Microsoft accounts and public client
+flows (GETTING_STARTED.md step 1). Then once: `ramfin auth legacy`, enter the printed code at the printed URL, sign
+in as the old address. The token cache is stored with the database (`ramfin db push`). IMAP with a password is no
+longer accepted by Outlook.com; the `legacy_imap` block stays only for a mailbox on a provider that still allows it.
 
 ## 4. CamScanner
 
@@ -75,7 +79,7 @@ ramfin inbox -v
 
 **GitHub Actions** (already in `.github/workflows/ramfin.yml`): add the secrets above plus `RAMFIN_CONFIG_B64`
 (`base64 -w0 config/config.yaml`). Weekday 06:30 Pacific digest run, Monday 05:30 full report. The database is
-carried between runs in the Actions cache and copied to SharePoint each run.
+pulled from and pushed to SharePoint (`03_CASHFLOW_TRACKING/_ramfin`) around every run.
 
 **Office PC** (alternative): Task Scheduler → weekday 06:30 → `ramfin run-all --send`. The database then lives on
 that PC's `finance/data`, synced by OneDrive if the repo is inside a synced folder.

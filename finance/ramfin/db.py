@@ -225,6 +225,15 @@ CREATE TABLE IF NOT EXISTS recurring (
     end_date TEXT
 );
 
+CREATE TABLE IF NOT EXISTS equipment (
+    unit_id TEXT PRIMARY KEY,           -- EX-03, DT-02, SE-01
+    description TEXT,
+    make_model TEXT,
+    sharepoint_folder TEXT,             -- 05_EQUIPMENT/01_FLEET/EX-03 ; receipts copy into <folder>/01_SERVICE_RECORDS
+    meter_hours REAL,
+    active INTEGER DEFAULT 1
+);
+
 CREATE TABLE IF NOT EXISTS action_items (
     id INTEGER PRIMARY KEY,
     kind TEXT NOT NULL,                 -- missing_receipt | uncoded_receipt | unconfirmed_amount | no_pay_date | deferral_to_confirm | illegible | unmatched_deposit | timesheet_issue | qbo_variance | statement_stale | decision

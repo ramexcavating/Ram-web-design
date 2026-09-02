@@ -30,7 +30,7 @@ Excel files:
 | Source | How | Notes |
 |---|---|---|
 | rmickey@, accounts@, emickey@ | Microsoft Graph, application permissions, receivedDateTime watermark per mailbox | Attachments (pdf/jpg/png/heic/xlsx/csv) plus body-only receipts (GoDaddy, Anthropic, Stripe-style). Own automated reports are skipped. |
-| ramcontracting@live.ca | IMAP with an app password, or set a forward to accounts@ | Forwarding is simpler and permanent; IMAP is there if forwarding is not wanted. |
+| ramcontracting@live.ca | Microsoft Graph as the user, after a one-time device-code sign-in (`ramfin auth legacy`) | Nothing is forwarded or changed in that mailbox. Personal accounts cannot be reached with application permissions and Outlook.com no longer accepts password IMAP, so the delegated sign-in is the only in-place route. The token cache travels with the database. |
 | CamScanner | Point CamScanner's auto-upload at a OneDrive/SharePoint folder; the system polls it | Also accepts any local folder (scanner drop folder, USB). Image-only PDFs are fine: Claude reads them visually. |
 | Bank statements | CSV export from online banking (preferred) or PDF statement forwarded to accounts@ | Same de-duplication key either way. Balances feed the forecast opening position. |
 | QuickBooks Online | Intuit REST API, OAuth2 refresh token | Phase 1 reads open bills and invoices to compute the register-vs-QBO variance. Phase 2 pushes confirmed bills. |
@@ -110,21 +110,35 @@ Inflows: open receivables at their expected date, recurring inflows (the ~$24K/m
 remittances on the 15th, debt payments, recurring outflows. Items with no planned pay date are reported as
 invisible rather than silently omitted.
 
-**The floor needs a decision.** Procedure RAM-10-PR-10 speaks of a $60K minimum. The current workbook grades a week
-OK when the position closes above zero, which is the same thing as saying the $60K line must not be exceeded.
-`forecast.floor_amount` defaults to 0 on the position basis to match the workbook's behaviour. Setting it to 60000
-means "never touch the line", which today would put every week in breach. Pick one and write it into config.
+**The floor.** Decided 2026-09-02: the floor is minus the operating line limit, `floor_amount: -60000` on the
+position basis. In plain terms, no week may need more than the $60K line can give. TIGHT means within $10K of it.
+Procedure RAM-10-PR-10 should say the same thing in the same words; a one-line revision is on the action list.
 
 **No-breach rule.** For each breaching week, the largest discretionary payable moves to the first later week that
 stays above the floor. Payroll, CRA, debt minimums, WorkSafeBC and vendors flagged critical are never moved. Every
 move is recorded (original date kept), flagged orange, and raised as a priority-1 action item to confirm with the
 supplier in writing.
 
+## Equipment
+
+A unit ID (EX-03, DT-02, SE-01) written on a receipt, printed on an invoice line, or named in the notes attaches the
+document to that unit. A copy of the original is filed to `05_EQUIPMENT/01_FLEET/<unit>/01_SERVICE_RECORDS`, the
+same place the maintenance-log routine has been filing, and the cost lands in repairs / fuel / other per unit. Hours
+come from time entries that name the unit. The EQUIPMENT tab and the report's equipment table are the start of a real
+owning-and-operating rate per machine; the narrative maintenance log stays in Cowork until Phase 5 folds it in.
+
+## State between runs
+
+The database and the legacy-mailbox sign-in cache are pushed to `03_CASHFLOW_TRACKING/_ramfin` on SharePoint at
+the end of every run and pulled at the start. Any runner (GitHub, office PC, a Claude session) therefore works on
+the same data, and the backup is the same library the cash flow tool lives in.
+
 ## Outputs
 
 - `yymmdd_RAM_WEEKLY_REVIEW.xlsx`: DASHBOARD, FORECAST_13WK, AP_TRACKER, AR_TRACKER, RECEIPTS, MISSING_RECEIPTS,
-  JOB_COST, TIMESHEETS, ACTIONS. Green headers are editable and read back.
-- `yymmdd_RAM_Weekly_Cashflow_Report.md`: the narrative report, filed to `01_WEEKLY_MANAGERS_REPORT`.
+  JOB_COST, EQUIPMENT, TIMESHEETS, ACTIONS. Green headers are editable and read back.
+- `yymmdd_RAM_Weekly_Managers_Report.docx`: the narrative report as Word, filed to `01_WEEKLY_MANAGERS_REPORT` with
+  the same name pattern as today (a markdown copy is kept alongside for the digest).
 - Digest email: what changed, what moved, what needs an answer, one line each, priority-ordered.
 
 ## Security

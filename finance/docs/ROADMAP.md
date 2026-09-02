@@ -19,7 +19,7 @@ Each phase is usable on its own. Nothing later depends on skipping something ear
    (consulting engagement in, insurance out), employee base rates, current bank balances.
 4. Backfill: run `ramfin ingest` with a 90-day lookback and `ramfin process`. Review the first workbook carefully;
    correct codes and vendors; the system learns from it.
-5. Decide the floor (ARCHITECTURE.md, "The floor"). Turn on the schedule.
+5. Floor decided (-60,000 on the position basis). Revise RAM-10-PR-10 to say it in the same words. Turn on the schedule.
 6. Retire the Monday Cowork cash flow update once two consecutive weekly reports reconcile to it.
 
 ## Phase 2: close the QuickBooks gap (weeks 3 to 6)
@@ -44,8 +44,11 @@ Each phase is usable on its own. Nothing later depends on skipping something ear
 
 ## Phase 5: equipment economics
 
-- Fold the Equipment Maintenance Log routine into the same database: repairs and fuel coded to a unit ID roll up
-  to owning-and-operating cost per hour per machine, fed back to the cost library and bid rates.
+- Started in Phase 0: unit IDs on receipts and invoices file a copy to the unit's service records and roll up to
+  repairs / fuel / other per unit with hours from time entries (EQUIPMENT tab).
+- Remaining: meter readings, scheduled-service intervals and the narrative maintenance log itself move out of the
+  Thursday Cowork routine into the database; owning costs (finance, insurance, depreciation) join operating costs
+  to give a true O&O rate per machine, fed back to the cost library and bid rates.
 
 ## Things this system deliberately does not do
 

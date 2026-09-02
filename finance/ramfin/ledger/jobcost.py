@@ -45,3 +45,37 @@ def job_cost(conn: sqlite3.Connection, settings, start: str | None = None, end: 
         v["billed"] = round(float(billed), 2)
         v["margin_to_date"] = round(v["billed"] - v["total"], 2)
     return dict(out)
+
+
+def equipment_cost(conn: sqlite3.Connection, settings, start: str | None = None, end: str | None = None) -> dict[str, dict]:
+    """Owning-and-operating inputs per unit: repairs and fuel from receipts and invoices, operated hours from time entries."""
+    out: dict[str, dict] = defaultdict(lambda: dict(repairs=0.0, fuel=0.0, other=0.0, hours=0.0, documents=0))
+    def bucket(code, desc):
+        t = f"{code or ''} {desc or ''}".lower()
+        return "fuel" if any(k in t for k in ("fuel", "diesel", "cardlock", "02-300")) else ("repairs" if any(k in t for k in ("repair", "parts", "maint", "hydraul", "tire", "02-310")) else "other")
+    q = "SELECT equipment_id, cost_code, description, COALESCE(amount,0)-COALESCE(gst,0) net FROM receipts WHERE equipment_id IS NOT NULL"
+    p: list = []
+    if start: q += " AND receipt_date>=?"; p.append(start)
+    if end: q += " AND receipt_date<=?"; p.append(end)
+    for r in db.rows(conn, q, p):
+        out[r["equipment_id"]][bucket(r["cost_code"], r["description"])] += r["net"]; out[r["equipment_id"]]["documents"] += 1
+    q = "SELECT notes, cost_code, COALESCE(amount,0)-COALESCE(gst,0) net FROM ap_invoices WHERE notes LIKE '[%' AND status NOT IN ('Void-Credit','Reference only')"
+    p = []
+    if start: q += " AND invoice_date>=?"; p.append(start)
+    if end: q += " AND invoice_date<=?"; p.append(end)
+    for r in db.rows(conn, q, p):
+        unit = r["notes"][1:r["notes"].index("]")] if "]" in r["notes"] else None
+        if unit:
+            out[unit][bucket(r["cost_code"], r["notes"])] += r["net"]; out[unit]["documents"] += 1
+    q = "SELECT equipment_id, SUM(hours+ot_hours) h FROM time_entries WHERE equipment_id IS NOT NULL"
+    p = []
+    if start: q += " AND work_date>=?"; p.append(start)
+    if end: q += " AND work_date<=?"; p.append(end)
+    for r in db.rows(conn, q + " GROUP BY equipment_id", p):
+        out[r["equipment_id"]]["hours"] += r["h"] or 0
+    for u, v in out.items():
+        v["total"] = round(v["repairs"] + v["fuel"] + v["other"], 2)
+        v["cost_per_hour"] = round(v["total"] / v["hours"], 2) if v["hours"] else None
+        e = conn.execute("SELECT description FROM equipment WHERE unit_id=?", (u,)).fetchone()
+        v["description"] = e["description"] if e else None
+    return dict(out)

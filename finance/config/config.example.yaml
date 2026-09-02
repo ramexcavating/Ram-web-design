@@ -21,6 +21,8 @@ sharepoint:
   bank_statements: 01_BUSINESS_FINANCE/09_REPORTING/07_BANK_STATEMENTS
   qb_reports: 01_BUSINESS_FINANCE/09_REPORTING/02_RAM_FINANCIAL_UPDATES
   cashflow: 01_BUSINESS_FINANCE/09_REPORTING/03_CASHFLOW_TRACKING
+  state: 01_BUSINESS_FINANCE/09_REPORTING/03_CASHFLOW_TRACKING/_ramfin      # the database and sign-in cache live here between runs
+  equipment: 05_EQUIPMENT/01_FLEET                                          # <unit>/01_SERVICE_RECORDS receives a copy of every repair/fuel document
   unfiled: 01_BUSINESS_FINANCE/09_REPORTING/06_RECEIPTS/00_UNFILED_NEEDS_REVIEW
   projects_site: PROJECTS
   projects_library: PROJECTS
@@ -31,7 +33,10 @@ sources:
     - rmickey@ramexcavating.ca
     - accounts@ramexcavating.ca
     - emickey@ramexcavating.ca
-  legacy_imap:                      # old ramcontracting@live.ca mailbox (Outlook.com) read over IMAP
+  legacy_mailbox:                   # old ramcontracting@live.ca mailbox, read in place after a one-time sign-in (ramfin auth legacy)
+    enabled: true
+    address: ramcontracting@live.ca
+  legacy_imap:                      # fallback only; Outlook.com no longer accepts password IMAP logins
     enabled: false
     host: outlook.office365.com
     user: ramcontracting@live.ca
@@ -49,8 +54,8 @@ bank_accounts:
 
 forecast:
   horizon_weeks: 13
-  basis: position                   # position = cash minus operating line drawn; cash = bank cash only
-  floor_amount: 0                   # NO-BREACH floor on the chosen basis. See docs/ARCHITECTURE.md, "The floor".
+  basis: position                   # position = cash minus operating line drawn
+  floor_amount: -60000              # NO-BREACH floor: position may not fall below minus the line limit (RAM-10-PR-10)
   tight_band: 10000                 # within this much of the floor = TIGHT
   loc_limit: 60000
   payroll:

@@ -4,6 +4,7 @@ Receipts, vendor invoices, customer invoices and payments, bank reconciliation, 
 cost by cost code, and a 13-week cash flow forecast with the no-breach rule, from one database, on a schedule,
 with a short daily list of what needs a human.
 
+- `docs/GETTING_STARTED.md`: the plain-English sequence, who does what
 - `docs/ARCHITECTURE.md`: how it works and why it is shaped this way
 - `docs/SETUP.md`: credentials, reference data, scheduling, first-run checklist
 - `docs/ROADMAP.md`: phases from "turn it on" through QuickBooks sync, WIP, payroll at the source, equipment

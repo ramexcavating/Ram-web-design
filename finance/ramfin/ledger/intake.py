@@ -57,7 +57,7 @@ def _receipt(conn, settings, doc_id, ex: Extraction, sender, subject) -> str:
     rid = db.insert(conn, "receipts", dict(
         vendor_id=vid, receipt_date=(parse_date(ex.doc_date) or parse_date(None)).isoformat() if parse_date(ex.doc_date) else None,
         amount=ex.total, gst=ex.gst, payment_method=ex.payment_method, card_last4=ex.card_last4, job_no=job,
-        cost_code=code if conf >= 0.5 else None, equipment_id=ex.handwritten_equipment_id, document_id=doc_id,
+        cost_code=code if conf >= 0.5 else None, equipment_id=equipment_unit(conn, ex), document_id=doc_id,
         legible=1 if ex.legible else 0, description=desc[:500], created_at=db.now_iso()))
     if not job:
         raise_item(conn, "uncoded_receipt", f"Receipt needs a job: {ex.vendor_name or 'unknown vendor'} ${ex.total or 0:,.2f} on {ex.doc_date or '?'}",
@@ -88,11 +88,12 @@ def _vendor_invoice(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
         raise_item(conn, "decision", f"Possible duplicate invoice {inv_no} from {ex.vendor_name}", "Same vendor and invoice number seen twice. Check before paying.",
                    "ap_invoices", existing["id"], priority=2)
         return f"invoice {inv_no} already on register (updated)"
+    unit = equipment_unit(conn, ex)
     aid = db.insert(conn, "ap_invoices", dict(
         vendor_id=vid, invoice_no=inv_no, invoice_date=inv_date.isoformat() if inv_date else None, due_date=due.isoformat() if due else None,
         amount=ex.total, gst=ex.gst, amount_confirmed=1 if ex.total is not None else 0, status="Unpaid",
         planned_pay_date=due.isoformat() if due else None, job_no=job, cost_code=code if conf >= 0.5 else None, document_id=doc_id,
-        category=(v["category"] if v else "supplier"), notes=(ex.notes or "")[:500], created_at=db.now_iso()))
+        category=(v["category"] if v else "supplier"), notes=((f"[{unit}] " if unit else "") + (ex.notes or desc or ""))[:500], created_at=db.now_iso()))
     if ex.total is None:
         raise_item(conn, "unconfirmed_amount", f"Invoice with no amount: {ex.vendor_name} {inv_no}", "Open the PDF or the supplier portal and enter the amount.",
                    "ap_invoices", aid, priority=2)
@@ -171,3 +172,28 @@ def _bank_statement(conn, settings, doc_id, ex: Extraction, sender, subject) -> 
         return "bank statement: unknown account"
     found, new = bank_import.import_extraction(conn, key, ex, statement_ref=f"doc:{doc_id}")
     return f"bank statement {key}: {new} new of {found} lines"
+
+
+UNIT_RX = re.compile(r"\b([A-Z]{2,3}-\d{2,3})\b")
+
+
+def equipment_unit(conn: sqlite3.Connection, ex: Extraction) -> str | None:
+    """EX-03 written on the receipt, or on an invoice line, or a known unit named in the notes."""
+    cands = [ex.handwritten_equipment_id] + [li.equipment_id for li in ex.line_items] + [ex.notes or ""] + [li.description for li in ex.line_items]
+    for c in cands:
+        if not c:
+            continue
+        m = UNIT_RX.search(str(c).upper().replace(" ", "-") if len(str(c)) <= 8 else str(c).upper())
+        if m:
+            return m.group(1)
+    return None
+
+
+def equipment_folder(conn: sqlite3.Connection, settings, unit_id: str) -> str:
+    r = conn.execute("SELECT sharepoint_folder FROM equipment WHERE unit_id=?", (unit_id,)).fetchone()
+    if r and r["sharepoint_folder"]:
+        return r["sharepoint_folder"]
+    folder = f"{settings.sharepoint.get('equipment', '05_EQUIPMENT/01_FLEET')}/{unit_id}"
+    conn.execute("INSERT INTO equipment(unit_id, sharepoint_folder) VALUES(?,?) ON CONFLICT(unit_id) DO UPDATE SET sharepoint_folder=COALESCE(equipment.sharepoint_folder, excluded.sharepoint_folder)", (unit_id, folder))
+    conn.commit()
+    return folder

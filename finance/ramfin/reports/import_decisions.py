@@ -127,6 +127,11 @@ def import_workbook(conn: sqlite3.Connection, path: str | Path) -> dict[str, int
             if _yn(r.get("Personal / no receipt needed")):
                 conn.execute("UPDATE bank_transactions SET receipt_required=0, match_type='rule', category=COALESCE(category,'personal') WHERE id=?", (int(r["Txn ID"]),))
                 stats["missing"] += 1
+    if "EQUIPMENT" in wb.sheetnames:
+        for r in _rows(wb["EQUIPMENT"]):
+            d = r.get("Description")
+            if d not in (None, ""):
+                conn.execute("INSERT INTO equipment(unit_id, description) VALUES(?,?) ON CONFLICT(unit_id) DO UPDATE SET description=excluded.description", (str(r["Unit"]).strip(), str(d).strip()))
     if "TIMESHEETS" in wb.sheetnames:
         for r in _rows(wb["TIMESHEETS"]):
             v = r.get("Status")

@@ -15,11 +15,14 @@ BODY_RECEIPT_RX = re.compile(r"receipt|your order|payment (received|confirmation
 SKIP_SENDER_RX = re.compile(r"no-reply-claude@|noreply@github|@mail\.anthropic\.com$|linkedin|indeed", re.I)
 
 
-def scan_mailboxes(conn: sqlite3.Connection, settings, graph, lookback_days: int = 3) -> dict[str, int]:
+def scan_mailboxes(conn: sqlite3.Connection, settings, graph, lookback_days: int = 3, mailboxes: list[str] | None = None,
+                   label: str | None = None) -> dict[str, int]:
+    """mailboxes defaults to the configured M365 addresses. Pass ["me"] with a DelegatedGraphClient (and a label such as
+    the old address) to read a personal mailbox the user signed into."""
     stats = {"found": 0, "new": 0, "errors": 0}
     allowed = settings.sources.get("attachment_types", ["pdf", "jpg", "jpeg", "png", "heic", "xlsx", "xls", "csv"])
-    for mbx in settings.sources.get("mailboxes", []):
-        key = f"mail:{mbx}"
+    for mbx in (mailboxes if mailboxes is not None else settings.sources.get("mailboxes", [])):
+        key = f"mail:{label or mbx}"
         since = db.get_state(conn, key) or (datetime.now(timezone.utc) - timedelta(days=lookback_days)).strftime("%Y-%m-%dT%H:%M:%SZ")
         newest = since
         found = new = errors = 0

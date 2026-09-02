@@ -29,6 +29,7 @@ def build_report(conn: sqlite3.Connection, settings, fc: Forecast) -> dict:
     open_actions = db.rows(conn, "SELECT priority, COUNT(*) n FROM action_items WHERE status='open' GROUP BY priority")
     actions = {r["priority"]: r["n"] for r in open_actions}
     jc = jobcost.job_cost(conn, settings, (today - timedelta(days=120)).isoformat(), today.isoformat())
+    ec = jobcost.equipment_cost(conn, settings, (today - timedelta(days=120)).isoformat(), today.isoformat())
     fy_start = date(today.year if today.month > 5 else today.year - 1, 6, 1)
     hb = conn.execute("SELECT COALESCE(SUM(holdback),0) s FROM ar_invoices WHERE holdback>0 AND status<>'Paid'").fetchone()["s"]
 
@@ -50,7 +51,7 @@ def build_report(conn: sqlite3.Connection, settings, fc: Forecast) -> dict:
         new_docs=new_docs, new_receipts_n=new_receipts["n"], new_receipts=new_receipts["s"], new_ap_n=new_ap["n"], new_ap=new_ap["s"],
         capture_rate=(matched / required) if required else None, capture_matched=matched, capture_required=required,
         actions_today=actions.get(1, 0), actions_week=actions.get(2, 0), actions_later=actions.get(3, 0),
-        deferrals=fc.deferrals, warnings=fc.warnings, weeks=fc.weeks, job_cost=jc, fiscal_year_start=fy_start.isoformat(),
+        deferrals=fc.deferrals, warnings=fc.warnings, weeks=fc.weeks, job_cost=jc, equipment_cost=ec, fiscal_year_start=fy_start.isoformat(),
     )
 
 
@@ -78,5 +79,9 @@ def to_markdown(r: dict) -> str:
     L += ["", "## Job cost, last 120 days (net of GST)", "", "| Job | Labour | Receipts | Invoices | Total | Billed | Margin to date |", "|---|---:|---:|---:|---:|---:|---:|"]
     for j, v in sorted(r["job_cost"].items(), key=lambda kv: -kv[1]["total"]):
         L.append(f"| {j} {v['name']} | {v['labour']:,.0f} | {v['receipts']:,.0f} | {v['invoices']:,.0f} | {v['total']:,.0f} | {v['billed']:,.0f} | {v['margin_to_date']:,.0f} |")
+    if r.get("equipment_cost"):
+        L += ["", "## Equipment, last 120 days (net of GST)", "", "| Unit | Repairs | Fuel | Other | Total | Hours | $/hr |", "|---|---:|---:|---:|---:|---:|---:|"]
+        for u, v in sorted(r["equipment_cost"].items(), key=lambda kv: -kv[1]["total"]):
+            L.append(f"| {u} {v['description'] or ''} | {v['repairs']:,.0f} | {v['fuel']:,.0f} | {v['other']:,.0f} | {v['total']:,.0f} | {v['hours']:,.0f} | {v['cost_per_hour'] if v['cost_per_hour'] is not None else '-'} |")
     L += ["", "## Needs your input", f"- Today: {r['actions_today']}   This week: {r['actions_week']}   When convenient: {r['actions_later']}", ""]
     return "\n".join(L)

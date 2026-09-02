@@ -12,7 +12,7 @@ def seed(conn, cash=20000.0, loc=0.0):
 
 
 def test_no_breach_moves_discretionary_only(conn, settings):
-    seed(conn, cash=20000.0)
+    seed(conn, cash=20000.0, loc=55000.0)      # position -35,000 against a floor of -60,000
     v_sub = conn.execute("SELECT id FROM vendors WHERE norm_name='ONLINECURBING'").fetchone()["id"]
     v_fuel = conn.execute("SELECT id FROM vendors WHERE norm_name='FOURRIVERS'").fetchone()["id"]
     db.insert(conn, "ap_invoices", dict(vendor_id=v_sub, invoice_no="OC-1", amount=38000.0, amount_confirmed=1, status="Unpaid", planned_pay_date="2026-09-02", created_at=db.now_iso()))
@@ -33,7 +33,7 @@ def test_no_breach_moves_discretionary_only(conn, settings):
 
 
 def test_payroll_and_cra_lines_projected(conn, settings):
-    seed(conn, cash=100000.0)
+    seed(conn, cash=60000.0)
     fc = forecast.build_forecast(conn, settings, as_of=date(2026, 8, 31))
     labels = [ln.label for w in fc.weeks for ln in w.lines]
     assert labels.count("Payroll (net, estimated)") in (6, 7)
@@ -51,3 +51,11 @@ def test_invisible_ap_warning(conn, settings):
 def test_missing_balance_warning(conn, settings):
     fc = forecast.build_forecast(conn, settings, as_of=date(2026, 8, 31))
     assert any("No balance on file" in w for w in fc.warnings)
+
+
+def test_floor_is_the_line_limit(conn, settings):
+    assert settings.forecast["floor_amount"] == -60000
+    seed(conn, cash=5000.0, loc=58000.0)       # position -53,000: OK but TIGHT
+    fc = forecast.build_forecast(conn, settings, as_of=date(2026, 8, 31))
+    assert fc.weeks[0].opening == -53000.0
+    assert fc.weeks[0].status in ("TIGHT", "BREACH")

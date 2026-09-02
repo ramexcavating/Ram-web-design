@@ -159,6 +159,12 @@ def export_workbook(conn: sqlite3.Connection, settings, fc, report: dict, path: 
         ws.append([j, v["name"], v["labour"], v["labour_hours"], v["receipts"], v["invoices"], v["total"], v["billed"], v["margin_to_date"],
                    "; ".join(f"{k}: {x:,.0f}" for k, x in sorted(v["by_code"].items(), key=lambda kv: -kv[1]))])
 
+    # EQUIPMENT
+    ws = wb.create_sheet("EQUIPMENT")
+    _header(ws, [("Unit", False), ("Description", True), ("Repairs", False), ("Fuel", False), ("Other", False), ("Total", False), ("Hours", False), ("$/hr", False), ("Documents", False)], {2: 30})
+    for u, v in sorted(report.get("equipment_cost", {}).items(), key=lambda kv: -kv[1]["total"]):
+        ws.append([u, v["description"], v["repairs"], v["fuel"], v["other"], v["total"], v["hours"], v["cost_per_hour"], v["documents"]])
+
     # TIMESHEETS
     ws = wb.create_sheet("TIMESHEETS")
     _header(ws, [("ID", False), ("Employee", False), ("Period end", False), ("Hours", False), ("OT", False), ("Status", True), ("File", False)], {7: 60})
