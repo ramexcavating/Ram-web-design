@@ -83,10 +83,12 @@ Safety contact: [[ NAME ]], [[ TITLE ]] — [[ PHONE ]] · [[ EMAIL ]]
 Timesheets due:     [[ DAY AND TIME, e.g. "Monday by 10:00 a.m. for the previous week" ]]
 Pay periods:        [[ WEEKLY / BI-WEEKLY / SEMI-MONTHLY ]]
 Pay dates:          [[ WHEN ]]
-Submit timesheets:  [[ HOW — email, app, foreman, drop at office ]]
+Submit timesheets:  RAM Timecard app on your phone — [[ LINK, e.g. https://time.ramexcavating.ca ]]
+                    (open it once, tap Add to Home Screen, put your name in under Me)
 Payroll contact:    [[ NAME ]] — [[ PHONE ]] · [[ EMAIL ]]
 
-- Timesheet form
+- RAM Timecard app: [[ LINK ]] (daily card: job, cost code, hours, equipment, description)
+- Paper timesheet form (if you cannot use the app)
 - Expense claim form
 - Mileage and subsistence / LOA claim form
 - Direct deposit and banking change form

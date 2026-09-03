@@ -37,8 +37,11 @@ Each phase is usable on its own. Nothing later depends on skipping something ear
 
 ## Phase 4: payroll and timecards at the source
 
-- A phone-friendly timecard form (job, cost code, hours, equipment) so field entries skip the paper step. The PDF
-  route stays for anyone who prefers it.
+- Built: the phone timecard app (`timecards/`, job + cost code + labour reg/OT/DT + equipment unit and hours per
+  line, LOA / P-U / travel km, description). Cards email into the accounts mailbox and `ramfin process` lands them in
+  `time_entries` / `timecard_days` without a Claude call. The PDF route stays for anyone who prefers paper.
+- Remaining: supervisor approval in the review workbook (timesheet `received` -> `validated` -> `sent_to_payroll`), and
+  a pay-period summary per employee for ACG.
 - Payroll export in the format ACG wants; the CRA remittance figure in the forecast becomes actual, not estimated.
 - WorkSafeBC assessable payroll tracking against CU 721031.
 
