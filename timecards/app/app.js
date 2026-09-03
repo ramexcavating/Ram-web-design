@@ -359,12 +359,18 @@
   $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; ui.tab = b.dataset.tab; render(); window.scrollTo(0, 0); });
 
   async function loadRef(force) {
+    if (window.__RAMTC_REF && !force) {           // single-file build (timecards/dist): the lists are baked in
+      REF = window.__RAMTC_REF; try { localStorage.setItem(REF_CACHE, JSON.stringify(REF)); } catch (e) { /* fine */ }
+      if (!state.profile.name && ui.tab === 'day' && !Object.keys(state.days).length) ui.tab = 'settings';
+      render(); return;
+    }
     try {
       const r = await fetch('data/reference.json' + (force ? '?t=' + Date.now() : ''), { cache: force ? 'reload' : 'default' });
       if (!r.ok) throw new Error(r.status);
       REF = await r.json(); localStorage.setItem(REF_CACHE, JSON.stringify(REF));
       if (force) toast(`Lists updated (${REF.version})`);
     } catch (e) {
+      if (window.__RAMTC_REF) { REF = window.__RAMTC_REF; toast('This copy has its lists built in. Get the newest copy from the office to update them.'); render(); return; }
       const cached = localStorage.getItem(REF_CACHE);
       if (cached) { REF = JSON.parse(cached); if (force) toast('No signal. Using the last lists you had.'); }
       else { $('#view').replaceChildren(h('div', { class: 'empty-state' }, 'Could not load the job and cost code lists. Connect to the internet once and reopen.')); return; }
@@ -372,6 +378,6 @@
     if (!state.profile.name && ui.tab === 'day' && !Object.keys(state.days).length) ui.tab = 'settings';
     render();
   }
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+  if ('serviceWorker' in navigator && !window.__RAMTC_REF && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
   loadRef(false);
 })();

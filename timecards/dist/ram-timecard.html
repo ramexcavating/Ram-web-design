@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAM Timecard</title>
+<meta name="description" content="RAM Excavating daily timecard: job, cost code, labour and equipment hours.">
+<meta name="theme-color" content="#1f2937">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAM Timecard">
+<meta name="robots" content="noindex">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEZUlEQVR42u3dQY4TSxRE0VwHE8asgIWxaXYBYopES25cVfnyHktvAY6I07j/d9trbfT4+u37L9e4VXwo3qWAKNIlQSjMJSEoyCUhKMRlISjBJREI3mUhCNtlEQjZZREI12URCNVlEQjTZREI0WURCM+lEQjOZQEIzWURCMulEQjKZQEIyaURCMhlAQjHpREIxmUBCMWlEQjkmfv544scADhv1FedfAHIjB2KmwAIY9bggXgzAkHMHz0MABg9DAAYPggAGD4IABg+CAAYPggAGD4I/wRg+K4MYRm/KyNYhu/KEJbx7z8cCAAYMRjPEYDU8D13AHIDkMVZCJbxn1u2XAIAFCyjLAClyisLQJGyywJQnhyzAAxfplkAk4v6zEO2ABxT0O4AqghWbfxPPYcJAE7K+xgAp5QxCUAJQQbA089jGoCTsh8L4KQCJgIoIFjGD0AZwTJ+AMoIjgWw23OaDuDUXpaQASj3s4QLQLmnowDs/F+0TgJwUldLoACUOwMAAAAECUC1u/EApryb9VQA0/tbwgOg3CMAAAAgNACqfQIAAADCAqDaKwAAACAkAKr9AgAAAFMCmvzhUyUAkzpefjoAUO55+ckAQLlrAAAAQCAAVDsHAAAAhAEAAJuGccIIygB27335SQBAuXsAAAAAAAAA8PofgGD/AAAAgJc/AFQ3AAAAAAAAAABe/98G4KPnfSqAXXcAwI0AXnn+AACgfBkAUH79KwcA8gC8KQ6A7Pj//sUYAADSAIp/KA8AAOlPjRsPoP7L31UASh+h7l8AALJfp+QlEADpL9UDAID0F2wD4P8DfPoBAABpALshAMD7YG4d/24QAAgDeDWHqx4AALA1hLseAPiLsNF/LTYNgb8IAyANAQAAtkZwNYQ0AL8HgOCDsQBIvywCwMugLAKfDQrASAgAAJCGAIDfA9IQCr37jjAILgXgO8IAGAsBAADSEACAIA2h0DUAEADgczJBeDeAKT2vJwoBYAaEQsejAEBw/t9AAwAAAKcDgMD4d+kVAAeAsFy1TwAcAEJz1R4BcAAIz1X7Gw8AAt2NBwCB8QMAAABlABAYPwBv+Doh49TTWAAQGH8eAATGD8AbgoZAJ2MBQKCLPAAIdJAHAIHsAXhTCRDIfSQACOSdB/DuUkCQ8TgAEMg2DwACmeYBXFFYFYIchwK4qrwKBNkdAODKIk+FIK/DAFxd6ikQZHQwgDsKnlqyXCIA7ip7SuGyCAK4s/gdB1B+7gA8PIYnRlF4jgAMHMgVgznpuQAQRHDCnbqRowGAYPgAQGD8HwH48/D+F1d9X1QOAAiGDwAI3hIOAAh6ByAJQc8AJCHoFYAcBv0BkMOgpxcBQDAbhB7+c/wA+NNDAATyGBY5AODcswAgcOnxA+DyACBw6fED4PIAIHDp8QPg8gAgcOnxQ+Dy4wfA5QFA4NLjh8Dlxw+By48fApcfPwQuP34IXH78ELj8+EFw+eFD4IwfBGf4IDjDB8EZPhBu2uB/Ay4RlO/TdjBBAAAAAElFTkSuQmCC">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAEZUlEQVR42u3dQY4TSxRE0VwHE8asgIWxaXYBYopES25cVfnyHktvAY6I07j/d9trbfT4+u37L9e4VXwo3qWAKNIlQSjMJSEoyCUhKMRlISjBJREI3mUhCNtlEQjZZREI12URCNVlEQjTZREI0WURCM+lEQjOZQEIzWURCMulEQjKZQEIyaURCMhlAQjHpREIxmUBCMWlEQjkmfv544scADhv1FedfAHIjB2KmwAIY9bggXgzAkHMHz0MABg9DAAYPggAGD4IABg+CAAYPggAGD4I/wRg+K4MYRm/KyNYhu/KEJbx7z8cCAAYMRjPEYDU8D13AHIDkMVZCJbxn1u2XAIAFCyjLAClyisLQJGyywJQnhyzAAxfplkAk4v6zEO2ABxT0O4AqghWbfxPPYcJAE7K+xgAp5QxCUAJQQbA089jGoCTsh8L4KQCJgIoIFjGD0AZwTJ+AMoIjgWw23OaDuDUXpaQASj3s4QLQLmnowDs/F+0TgJwUldLoACUOwMAAAAECUC1u/EApryb9VQA0/tbwgOg3CMAAAAgNACqfQIAAADCAqDaKwAAACAkAKr9AgAAAFMCmvzhUyUAkzpefjoAUO55+ckAQLlrAAAAQCAAVDsHAAAAhAEAAJuGccIIygB27335SQBAuXsAAAAAAAAA8PofgGD/AAAAgJc/AFQ3AAAAAAAAAABe/98G4KPnfSqAXXcAwI0AXnn+AACgfBkAUH79KwcA8gC8KQ6A7Pj//sUYAADSAIp/KA8AAOlPjRsPoP7L31UASh+h7l8AALJfp+QlEADpL9UDAID0F2wD4P8DfPoBAABpALshAMD7YG4d/24QAAgDeDWHqx4AALA1hLseAPiLsNF/LTYNgb8IAyANAQAAtkZwNYQ0AL8HgOCDsQBIvywCwMugLAKfDQrASAgAAJCGAIDfA9IQCr37jjAILgXgO8IAGAsBAADSEACAIA2h0DUAEADgczJBeDeAKT2vJwoBYAaEQsejAEBw/t9AAwAAAKcDgMD4d+kVAAeAsFy1TwAcAEJz1R4BcAAIz1X7Gw8AAt2NBwCB8QMAAABlABAYPwBv+Doh49TTWAAQGH8eAATGD8AbgoZAJ2MBQKCLPAAIdJAHAIHsAXhTCRDIfSQACOSdB/DuUkCQ8TgAEMg2DwACmeYBXFFYFYIchwK4qrwKBNkdAODKIk+FIK/DAFxd6ikQZHQwgDsKnlqyXCIA7ip7SuGyCAK4s/gdB1B+7gA8PIYnRlF4jgAMHMgVgznpuQAQRHDCnbqRowGAYPgAQGD8HwH48/D+F1d9X1QOAAiGDwAI3hIOAAh6ByAJQc8AJCHoFYAcBv0BkMOgpxcBQDAbhB7+c/wA+NNDAATyGBY5AODcswAgcOnxA+DyACBw6fED4PIAIHDp8QPg8gAgcOnxQ+Dy4wfA5QFA4NLjh8Dlxw+By48fApcfPwQuP34IXH78ELj8+EFw+eFD4IwfBGf4IDjDB8EZPhBu2uB/Ay4RlO/TdjBBAAAAAElFTkSuQmCC">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #f4f5f7; --card: #ffffff; --field: #ffffff; --field-2: #f3f4f6; --group: #f9fafb; --ink: #111827; --muted: #6b7280; --line: #e5e7eb;
+  --brand: #1f2937; --brand-ink: #ffffff; --accent: #e8731a; --accent-ink: #fff; --ok: #15803d; --warn: #b45309; --bad: #b91c1c;
+  --tag-bg: #eef2ff; --tag-ink: #3730a3; --tag-eq-bg: #fff3e8; --tag-eq-ink: #9a3412; --tag-ok-bg: #ecfdf5; --tag-warn-bg: #fffbeb; --sel: #fff7ed; --sent: #ecfdf5;
+  --radius: 14px; --tap: 48px;
+}
+/* dark: tokens only. System dark applies unless the host stamped an explicit light choice; an explicit dark stamp always wins. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f141b; --card: #171e28; --field: #1f2937; --field-2: #111827; --group: #111827; --ink: #e5e7eb; --muted: #9ca3af; --line: #2a3340;
+    --tag-bg: #1e1b4b; --tag-ink: #c7d2fe; --tag-eq-bg: #3b2a1a; --tag-eq-ink: #fdba74; --tag-ok-bg: #0f2e22; --tag-warn-bg: #3a2a0a; --sel: #3b2a1a; --sent: #0f2e22;
+    --ok: #86efac; --warn: #fcd34d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f141b; --card: #171e28; --field: #1f2937; --field-2: #111827; --group: #111827; --ink: #e5e7eb; --muted: #9ca3af; --line: #2a3340;
+  --tag-bg: #1e1b4b; --tag-ink: #c7d2fe; --tag-eq-bg: #3b2a1a; --tag-eq-ink: #fdba74; --tag-ok-bg: #0f2e22; --tag-warn-bg: #3a2a0a; --sel: #3b2a1a; --sent: #0f2e22;
+  --ok: #86efac; --warn: #fcd34d;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font: 16px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+button { cursor: pointer; }
+h1 { font-size: 1.25rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.05rem; margin: 1rem 0 .5rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: .8rem; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+
+.top { position: sticky; top: 0; z-index: 5; background: var(--brand); color: var(--brand-ink); padding: calc(10px + env(safe-area-inset-top)) 16px 10px; display: flex; justify-content: space-between; align-items: center; }
+.brand { font-weight: 700; letter-spacing: .02em; display: flex; gap: 8px; align-items: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); display: inline-block; }
+.who { font-size: .9rem; opacity: .9; }
+
+.view { padding: 12px 12px 8px; max-width: 720px; margin: 0 auto; }
+
+.tabs { position: fixed; bottom: 0; left: 0; right: 0; display: flex; background: var(--card); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); z-index: 5; }
+.tabs button { flex: 1; border: 0; background: none; padding: 8px 0 6px; font-size: .8rem; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 56px; }
+.tabs button .ico { font-size: 1.3rem; line-height: 1; }
+.tabs button.active { color: var(--accent); font-weight: 600; }
+
+.card { background: var(--card); border-radius: var(--radius); padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+.row { display: flex; align-items: center; gap: 10px; }
+.row.between { justify-content: space-between; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.btn { min-height: var(--tap); padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--field); font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.dark { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--bad); }
+.btn.block { width: 100%; }
+.btn.sm { min-height: 38px; padding: 0 12px; font-size: .9rem; }
+.btn:disabled { opacity: .5; }
+
+label.field { display: block; margin-bottom: 10px; }
+label.field > span, .field-label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+.input, input[type=text], input[type=number], input[type=date], input[type=email], input[type=time], select, textarea { width: 100%; min-height: var(--tap); padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--field); }
+textarea { min-height: 84px; resize: vertical; }
+input[type=number] { text-align: center; font-size: 1.1rem; font-weight: 600; }
+
+.picker { width: 100%; min-height: var(--tap); padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--field); text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.picker .val { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.picker .val.empty { color: var(--muted); font-weight: 400; }
+.picker .chev { color: var(--muted); }
+
+.stepper { display: flex; align-items: center; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--field); }
+.stepper button { width: 44px; min-height: var(--tap); border: 0; background: var(--field-2); font-size: 1.3rem; }
+.stepper input { border: 0; border-radius: 0; flex: 1; min-width: 0; padding-left: 2px; padding-right: 2px; }
+.grid3 .stepper button { width: 34px; font-size: 1.1rem; }
+.grid3 label.field > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.line { border-top: 1px solid var(--line); padding: 10px 0; display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; }
+.line:first-of-type { border-top: 0; }
+.line .job { font-weight: 700; }
+.line .cc { color: var(--ink); }
+.line .desc { color: var(--muted); font-size: .9rem; grid-column: 1 / -1; white-space: pre-wrap; }
+.line .hrs { text-align: right; font-weight: 700; white-space: nowrap; }
+.line .eq { text-align: right; color: var(--accent); font-size: .9rem; white-space: nowrap; }
+.tag { display: inline-block; font-size: .75rem; padding: 2px 8px; border-radius: 999px; background: var(--tag-bg); color: var(--tag-ink); margin-right: 4px; }
+.tag.eq { background: var(--tag-eq-bg); color: var(--tag-eq-ink); }
+.tag.ok { background: var(--tag-ok-bg); color: var(--ok); }
+.tag.warn { background: var(--tag-warn-bg); color: var(--warn); }
+
+.total { font-size: 1.6rem; font-weight: 800; }
+.total small { font-size: .9rem; color: var(--muted); font-weight: 500; }
+.warn-text { color: var(--warn); font-size: .9rem; }
+.bad-text { color: var(--bad); font-size: .9rem; }
+
+.daynav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.daynav .btn { min-width: 48px; }
+.daynav input[type=date] { text-align: center; font-weight: 700; }
+
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--field); border-radius: 999px; padding: 8px 14px; min-height: 40px; }
+.chip.on { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+
+.list { max-height: 55vh; overflow: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 12px; }
+.list .item { width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: var(--field); padding: 12px; display: flex; gap: 10px; align-items: baseline; min-height: var(--tap); }
+.list .item:last-child { border-bottom: 0; }
+.list .item .code { font-weight: 700; min-width: 64px; font-variant-numeric: tabular-nums; }
+.list .item .name { flex: 1; }
+.list .item .cat { color: var(--muted); font-size: .75rem; }
+.list .group { padding: 6px 12px; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); background: var(--group); position: sticky; top: 0; }
+.list .item.sel { background: var(--sel); }
+
+.period-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.pday { border: 1px solid var(--line); border-radius: 10px; background: var(--field); padding: 6px 2px; text-align: center; min-height: 58px; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.pday .d { font-size: .7rem; color: var(--muted); }
+.pday .n { font-weight: 700; }
+.pday .h { font-size: .8rem; color: var(--accent); font-weight: 600; }
+.pday.today { outline: 2px solid var(--accent); }
+.pday.empty .n { color: var(--muted); font-weight: 400; }
+.pday.sent { background: var(--sent); }
+
+table.sum { width: 100%; border-collapse: collapse; font-size: .9rem; }
+table.sum th, table.sum td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+table.sum td.num, table.sum th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+.sheet[hidden] { display: none; }
+.sheet { position: fixed; inset: 0; z-index: 20; }
+.sheet-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.45); }
+.sheet-panel { position: absolute; left: 0; right: 0; bottom: 0; max-height: 92vh; overflow: auto; background: var(--bg); border-radius: 18px 18px 0 0; padding: 8px 14px calc(16px + env(safe-area-inset-bottom)); max-width: 720px; margin: 0 auto; }
+.sheet-grip { width: 42px; height: 5px; border-radius: 3px; background: var(--line); margin: 4px auto 10px; }
+.sheet h1 { margin-bottom: 10px; }
+
+.toast { position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--brand); color: var(--brand-ink); padding: 10px 16px; border-radius: 999px; z-index: 30; font-size: .9rem; box-shadow: 0 4px 14px rgba(0,0,0,.25); max-width: 92vw; }
+.toast[hidden] { display: none; }
+
+pre.preview { background: #111827; color: #e5e7eb; padding: 12px; border-radius: 12px; font-size: .75rem; overflow: auto; white-space: pre-wrap; word-break: break-word; max-height: 40vh; }
+.empty-state { text-align: center; padding: 28px 12px; color: var(--muted); }
+.empty-state .big { font-size: 2.2rem; }
+kbd { background: var(--tag-bg); border-radius: 6px; padding: 1px 6px; font-size: .85em; }
+@media (min-width: 600px) { .view { padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span> RAM Timecard</div>
+  <div class="who" id="who"></div>
+</header>
+
+<main id="view" class="view"></main>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="day" class="active"><span class="ico">&#9711;</span>Today</button>
+  <button data-tab="period"><span class="ico">&#9638;</span>Pay period</button>
+  <button data-tab="settings"><span class="ico">&#9881;</span>Me</button>
+</nav>
+
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true">
+    <div class="sheet-grip"></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>window.__RAMTC_REF = {"version":"2026-09-03","company":"RAM Excavating Limited","submitTo":"accounts@ramexcavating.ca","payPeriod":{"anchorEnd":"2026-08-29","days":14},"allowances":{"loa":220.0,"pickup":150.0,"travelKm":0.73},"maxHoursDay":14,"jobs":[{"no":"240617","name":"MDM Kinchant Street Housing","client":"MDM Construction"},{"no":"241115","name":"IDL Consulting","client":"IDL Projects"},{"no":"250101","name":"Co-op Property Maintenance & Development","client":"RAM Excavating"},{"no":"250601-01","name":"General Business Operations","client":"RAM (overhead)"},{"no":"250601-02","name":"Equipment Costs","client":"RAM (equipment)"},{"no":"260102","name":"Dunkley Lumber 2026","client":"Dunkley Lumber"},{"no":"260710","name":"FFP Survey","client":"Foothills Forest Products"},{"no":"260805","name":"Knappett Vaughn Street","client":"Knappett Industries"},{"no":"260814","name":"CR Waterhouse AT-01 Rental","client":"CR Waterhouse"},{"no":"260825","name":"Ambrus Gravel Haul","client":"Ambrus"},{"no":"260826","name":"4Refuel Walmart Refuelling","client":"4Refuel"}],"equipment":[{"unit":"EX-01","type":"Excavator"},{"unit":"EX-02","type":"Excavator"},{"unit":"EX-03","type":"Excavator"},{"unit":"EX-04","type":"Excavator"},{"unit":"EX-05","type":"Excavator"},{"unit":"EX-06","type":"Excavator"},{"unit":"AT-01","type":"Rock truck"},{"unit":"AT-02","type":"Rock truck"},{"unit":"AT-03","type":"Rock truck"},{"unit":"PS-01","type":"Pull scraper"},{"unit":"PS-02","type":"Pull scraper"},{"unit":"DZR-01","type":"Dozer"},{"unit":"DZR-02","type":"Dozer"},{"unit":"LDR-01","type":"Loader"},{"unit":"GRDR-01","type":"Grader"},{"unit":"PCKR-01","type":"Smooth packer"},{"unit":"AB-01","type":"Auger bore"},{"unit":"DD-01","type":"Directional drill"},{"unit":"GT-01","type":"Gravel truck"},{"unit":"GT-02","type":"Gravel truck"},{"unit":"TT-01","type":"Tractor truck"},{"unit":"SNW-01","type":"Plow truck"},{"unit":"PP-01","type":"Pipe pusher"},{"unit":"RP-01","type":"Remote packer"},{"unit":"RP-02","type":"Remote packer"},{"unit":"RP-03","type":"Remote packer"},{"unit":"JJ-01","type":"Jumping jack"},{"unit":"JJ-02","type":"Jumping jack"},{"unit":"JJ-03","type":"Jumping jack"},{"unit":"JJ-04","type":"Jumping jack"},{"unit":"JJ-05","type":"Jumping jack"},{"unit":"PT-01","type":"Plate tamper"},{"unit":"PT-02","type":"Plate tamper"},{"unit":"PT-03","type":"Plate tamper"},{"unit":"PT-04","type":"Plate tamper"},{"unit":"PUP-01","type":"Pup trailer"},{"unit":"PUP-02","type":"Pup trailer"},{"unit":"QUD-01","type":"Quad trailer"},{"unit":"ED-01","type":"End dump trailer"},{"unit":"FDT-01","type":"Flat deck trailer"},{"unit":"FSR-01","type":"Fusing machine"},{"unit":"BK-01","type":"Breaker"},{"unit":"LB-01","type":"Low bed trailer"}],"costCodes":[{"code":"1-000","desc":"GENERAL REQUIREMENTS","cat":"General Requirements"},{"code":"1-001","desc":"Architectural Consultant Fees","cat":"General Requirements"},{"code":"1-002","desc":"Structural Consultant Fees","cat":"General Requirements"},{"code":"1-003","desc":"Mechanical Consultant Fees","cat":"General Requirements"},{"code":"1-004","desc":"Electrical Consultant Fees","cat":"General Requirements"},{"code":"1-005","desc":"Landscape Consultant Fees","cat":"General Requirements"},{"code":"1-006","desc":"Geotechnical Consultant Fees","cat":"General Requirements"},{"code":"1-007","desc":"Traffic Consultant Fees","cat":"General Requirements"},{"code":"1-008","desc":"Code Consultant Fees","cat":"General Requirements"},{"code":"1-009","desc":"Interior Design Consultant Fee","cat":"General Requirements"},{"code":"1-010","desc":"Civil Consultant Fees","cat":"General Requirements"},{"code":"1-011","desc":"Environmental Consultant Fees","cat":"General Requirements"},{"code":"1-012","desc":"Envelope Consultant Fees","cat":"General Requirements"},{"code":"1-013","desc":"Misc Consultant Fees","cat":"General Requirements"},{"code":"1-014","desc":"Consultants Disbursements","cat":"General Requirements"},{"code":"1-015","desc":"Quality Mgnt Plant Consul Fees","cat":"General Requirements"},{"code":"1-016","desc":"Joint Venture Partner Fee","cat":"General Requirements"},{"code":"1-020","desc":"Sanitary,Storm & Water Con Fee","cat":"General Requirements"},{"code":"1-021","desc":"Gas Utility Connection Fees","cat":"General Requirements"},{"code":"1-022","desc":"Hydro Connection Fees","cat":"General Requirements"},{"code":"1-023","desc":"Telephone Connection Fees","cat":"General Requirements"},{"code":"1-024","desc":"Cablevision Connection Fees","cat":"General Requirements"},{"code":"1-041","desc":"Mobe/Demobe Site Setup","cat":"General Requirements"},{"code":"1-042","desc":"Equipment Mobe/Demobe","cat":"General Requirements"},{"code":"1-060","desc":"Construction Manager","cat":"General Requirements"},{"code":"1-061","desc":"Project Manager","cat":"General Requirements"},{"code":"1-062","desc":"Superintendent","cat":"General Requirements"},{"code":"1-063","desc":"Field Cler/Contract Administra","cat":"General Requirements"},{"code":"1-064","desc":"Field Engineer","cat":"General Requirements"},{"code":"1-065","desc":"Certified Safety Officer","cat":"General Requirements"},{"code":"1-066","desc":"Assistant Superintendent","cat":"General Requirements"},{"code":"1-067","desc":"Site Labourer/Level 3 FA","cat":"General Requirements"},{"code":"1-070","desc":"Project Management Reimburs Ex","cat":"General Requirements"},{"code":"1-075","desc":"Procore Const Mgmt Software","cat":"General Requirements"},{"code":"1-080","desc":"Survey","cat":"General Requirements"},{"code":"1-081","desc":"Foundation Survey Cert/Legal S","cat":"General Requirements"},{"code":"1-100","desc":"Development Cost Charges","cat":"General Requirements"},{"code":"1-101","desc":"Building Permit","cat":"General Requirements"},{"code":"1-102","desc":"Parking & Street Use Permit","cat":"General Requirements"},{"code":"1-103","desc":"Hoarding Permit","cat":"General Requirements"},{"code":"1-104","desc":"Shoring Permit","cat":"General Requirements"},{"code":"1-105","desc":"Demolition Permit","cat":"General Requirements"},{"code":"1-106","desc":"Inspection Fee","cat":"General Requirements"},{"code":"1-107","desc":"Licences","cat":"General Requirements"},{"code":"1-120","desc":"Travel Costs","cat":"General Requirements"},{"code":"1-121","desc":"Living Out of Town Costs","cat":"General Requirements"},{"code":"1-122","desc":"Unproductive Time","cat":"General Requirements"},{"code":"1-140","desc":"Soild & Compaction Testing","cat":"General Requirements"},{"code":"1-141","desc":"Concrete Testing","cat":"General Requirements"},{"code":"1-142","desc":"Inspections","cat":"General Requirements"},{"code":"1-143","desc":"Environmental & Erosion Mgnt","cat":"General Requirements"},{"code":"1-144","desc":"Hydrostatic Testing of Tanks","cat":"General Requirements"},{"code":"1-160","desc":"Safety Training","cat":"General Requirements"},{"code":"1-161","desc":"Pre Access Testing","cat":"General Requirements"},{"code":"1-162","desc":"Client Indoctrinations","cat":"General Requirements"},{"code":"1-163","desc":"PPE","cat":"General Requirements"},{"code":"1-164","desc":"First Aid Supplies","cat":"General Requirements"},{"code":"1-165","desc":"Safety Railing & Guardrails","cat":"General Requirements"},{"code":"1-166","desc":"Site Security","cat":"General Requirements"},{"code":"1-167","desc":"Safety Awards","cat":"General Requirements"},{"code":"1-168","desc":"Safety Watch","cat":"General Requirements"},{"code":"1-169","desc":"Incident Management","cat":"General Requirements"},{"code":"1-170","desc":"WSBC Claims Management","cat":"General Requirements"},{"code":"1-180","desc":"General Liability Insurance","cat":"General Requirements"},{"code":"1-181","desc":"COC Insurance","cat":"General Requirements"},{"code":"1-182","desc":"All Risk Insurance","cat":"General Requirements"},{"code":"1-183","desc":"Bonding","cat":"General Requirements"},{"code":"1-184","desc":"Legal Costs","cat":"General Requirements"},{"code":"1-200","desc":"Temp Sewer Connection","cat":"General Requirements"},{"code":"1-201","desc":"Temp Power Connection Costs","cat":"General Requirements"},{"code":"1-202","desc":"Temp Power & Equip","cat":"General Requirements"},{"code":"1-203","desc":"Temp Power Consumption Costs","cat":"General Requirements"},{"code":"1-204","desc":"Temp Gas Consumption Costs","cat":"General Requirements"},{"code":"1-205","desc":"Temp Lighting","cat":"General Requirements"},{"code":"1-206","desc":"Temp Heating & Hoarding","cat":"General Requirements"},{"code":"1-207","desc":"Temp Telephone","cat":"General Requirements"},{"code":"1-208","desc":"Temp Water Connection","cat":"General Requirements"},{"code":"1-209","desc":"Temp Sanitary Facilities","cat":"General Requirements"},{"code":"1-210","desc":"Temp Fire Protection","cat":"General Requirements"},{"code":"1-211","desc":"Field Offices & Tool Cribs","cat":"General Requirements"},{"code":"1-212","desc":"Site Office,Lunch Tr & Tool Cr","cat":"General Requirements"},{"code":"1-213","desc":"Setup & Site Fab of Field Offi","cat":"General Requirements"},{"code":"1-214","desc":"Barriers & Barricades","cat":"General Requirements"},{"code":"1-215","desc":"Construction Hoarding","cat":"General Requirements"},{"code":"1-216","desc":"Access Roads","cat":"General Requirements"},{"code":"1-217","desc":"Traffic Control & Flagging","cat":"General Requirements"},{"code":"1-218","desc":"Project Sign","cat":"General Requirements"},{"code":"1-219","desc":"Water Usage","cat":"General Requirements"},{"code":"1-220","desc":"Temp Fencing","cat":"General Requirements"},{"code":"1-230","desc":"Telehandler","cat":"General Requirements"},{"code":"1-231","desc":"Hoisting","cat":"General Requirements"},{"code":"1-232","desc":"Temp Enclosures","cat":"General Requirements"},{"code":"1-233","desc":"Scaffolding & Platforms","cat":"General Requirements"},{"code":"1-234","desc":"Temp Stairs & Ladders","cat":"General Requirements"},{"code":"1-235","desc":"Cranes","cat":"General Requirements"},{"code":"1-250","desc":"Const Ongoing Cleaning","cat":"General Requirements"},{"code":"1-251","desc":"Garbage Bins & Disposal","cat":"General Requirements"},{"code":"1-252","desc":"Street Cleaning","cat":"General Requirements"},{"code":"1-253","desc":"Snow Removal","cat":"General Requirements"},{"code":"1-254","desc":"Final Cleaning","cat":"General Requirements"},{"code":"1-270","desc":"Office Equp/Furniture","cat":"General Requirements"},{"code":"1-271","desc":"Office Supplies","cat":"General Requirements"},{"code":"1-272","desc":"Office Courier Charges","cat":"General Requirements"},{"code":"1-273","desc":"Plan Reproductions","cat":"General Requirements"},{"code":"1-274","desc":"Drinking Water","cat":"General Requirements"},{"code":"1-275","desc":"Photocopier Lease/Rental","cat":"General Requirements"},{"code":"1-276","desc":"Cellphones & Radios","cat":"General Requirements"},{"code":"1-277","desc":"Submittals","cat":"General Requirements"},{"code":"1-290","desc":"1/2 Ton Pickup","cat":"General Requirements"},{"code":"1-291","desc":"Crew Truck/Van","cat":"General Requirements"},{"code":"1-292","desc":"Fuel for Vehicles","cat":"General Requirements"},{"code":"1-293","desc":"Small Tools","cat":"General Requirements"},{"code":"1-294","desc":"Fuel for Equipment","cat":"General Requirements"},{"code":"1-295","desc":"Service for Equipment","cat":"General Requirements"},{"code":"1-296","desc":"Equipment Repairs","cat":"General Requirements"},{"code":"1-297","desc":"Fuel,Oil,Grease & Gr Engagemen","cat":"General Requirements"},{"code":"1-298","desc":"Rental Equipment","cat":"General Requirements"},{"code":"1-310","desc":"Operation & Maint Manuals","cat":"General Requirements"},{"code":"1-311","desc":"Deficiencies","cat":"General Requirements"},{"code":"1-312","desc":"Publications & Advertising","cat":"General Requirements"},{"code":"1-313","desc":"Maintenance","cat":"General Requirements"},{"code":"1-314","desc":"Warranty Work","cat":"General Requirements"},{"code":"1-315","desc":"Union Retro-Pay","cat":"General Requirements"},{"code":"1-998","desc":"Wrong Coding","cat":"General Requirements"},{"code":"1-999","desc":"Misc","cat":"General Requirements"},{"code":"2-000","desc":"SITEWORKS","cat":"Siteworks"},{"code":"2-010","desc":"General Demolition","cat":"Siteworks"},{"code":"2-011","desc":"Building Demolition","cat":"Siteworks"},{"code":"2-012","desc":"Select Demolition","cat":"Siteworks"},{"code":"2-013","desc":"Masonry Demolition","cat":"Siteworks"},{"code":"2-014","desc":"Stud/Drywall Demolition","cat":"Siteworks"},{"code":"2-015","desc":"Ceiling Demolition","cat":"Siteworks"},{"code":"2-016","desc":"Floor Finish Demolition","cat":"Siteworks"},{"code":"2-017","desc":"Wall Finish Demolition","cat":"Siteworks"},{"code":"2-018","desc":"Window/Storefront Demolition","cat":"Siteworks"},{"code":"2-019","desc":"Exterior Finish Demolition","cat":"Siteworks"},{"code":"2-020","desc":"Cabinet Removal","cat":"Siteworks"},{"code":"2-021","desc":"Removal of Doors & Frames","cat":"Siteworks"},{"code":"2-022","desc":"Conc Cutting & Coring Subtrade","cat":"Siteworks"},{"code":"2-023","desc":"Concrete Removal","cat":"Siteworks"},{"code":"2-024","desc":"Conc Sawcutting Slab & Walls","cat":"Siteworks"},{"code":"2-025","desc":"Concrete Coring","cat":"Siteworks"},{"code":"2-026","desc":"Asphalt Demolition","cat":"Siteworks"},{"code":"2-027","desc":"Haul Demolition Debris","cat":"Siteworks"},{"code":"2-028","desc":"Dump Fees","cat":"Siteworks"},{"code":"2-029","desc":"Hazardous Material Abatement","cat":"Siteworks"},{"code":"2-030","desc":"Asphalt Milling","cat":"Siteworks"},{"code":"2-031","desc":"Remove Culverts","cat":"Siteworks"},{"code":"2-032","desc":"Remove Exist Undgrd Utilities","cat":"Siteworks"},{"code":"2-040","desc":"Site Clearing","cat":"Siteworks"},{"code":"2-041","desc":"Tree & Shrub Removal","cat":"Siteworks"},{"code":"2-042","desc":"Removal Topsoil","cat":"Siteworks"},{"code":"2-043","desc":"Pre Loading or Dynamic Compact","cat":"Siteworks"},{"code":"2-044","desc":"Dewatering","cat":"Siteworks"},{"code":"2-045","desc":"Underpinning","cat":"Siteworks"},{"code":"2-046","desc":"Shoring","cat":"Siteworks"},{"code":"2-047","desc":"Utility Locates","cat":"Siteworks"},{"code":"2-048","desc":"Erosion & Sediment Control","cat":"Siteworks"},{"code":"2-049","desc":"Hydro Excavation","cat":"Siteworks"},{"code":"2-079","desc":"Process Blast Rock","cat":"Siteworks"},{"code":"2-080","desc":"Grading","cat":"Siteworks"},{"code":"2-081","desc":"Rock Removal","cat":"Siteworks"},{"code":"2-082","desc":"Drill and Blast","cat":"Siteworks"},{"code":"2-083","desc":"Bulk Excavation","cat":"Siteworks"},{"code":"2-085","desc":"Detail Excavation","cat":"Siteworks"},{"code":"2-088","desc":"Excavation To Waste","cat":"Siteworks"},{"code":"2-089","desc":"Excavation to Embankment","cat":"Siteworks"},{"code":"2-090","desc":"Hand Excavation","cat":"Siteworks"},{"code":"2-091","desc":"Detailed Backfill","cat":"Siteworks"},{"code":"2-092","desc":"Select Granular Subbase (SGSB)","cat":"Siteworks"},{"code":"2-093","desc":"Well Graded Base (WGB)","cat":"Siteworks"},{"code":"2-094","desc":"Intermediate Graded Base (IGB)","cat":"Siteworks"},{"code":"2-095","desc":"Underslab Pllumbing & Elec Exc","cat":"Siteworks"},{"code":"2-096","desc":"Trench Excavation","cat":"Siteworks"},{"code":"2-097","desc":"Hand Excavation to Trenches","cat":"Siteworks"},{"code":"2-098","desc":"Backfill for Trenches","cat":"Siteworks"},{"code":"2-099","desc":"Backfill Trenches (Import)","cat":"Siteworks"},{"code":"2-100","desc":"Backfill Trenches (Native)","cat":"Siteworks"},{"code":"2-101","desc":"Bedding Sand","cat":"Siteworks"},{"code":"2-102","desc":"Subgrade Preparation","cat":"Siteworks"},{"code":"2-103","desc":"Granular Sub-base under SOG","cat":"Siteworks"},{"code":"2-104","desc":"Base Course Under SOG(crush)","cat":"Siteworks"},{"code":"2-105","desc":"Soil Stabilization","cat":"Siteworks"},{"code":"2-106","desc":"Finish Grading","cat":"Siteworks"},{"code":"2-107","desc":"Bulk Backfill Native","cat":"Siteworks"},{"code":"2-108","desc":"Bulk Backfill Import","cat":"Siteworks"},{"code":"2-109","desc":"Rip Rap","cat":"Siteworks"},{"code":"2-110","desc":"Geo Fabrics","cat":"Siteworks"},{"code":"2-111","desc":"Rock Excavation","cat":"Siteworks"},{"code":"2-113","desc":"Rock Fill","cat":"Siteworks"},{"code":"2-114","desc":"Drain Rock","cat":"Siteworks"},{"code":"2-115","desc":"Shouldering","cat":"Siteworks"},{"code":"2-116","desc":"Liners","cat":"Siteworks"},{"code":"2-140","desc":"Shotcrete & Rock Anchors","cat":"Siteworks"},{"code":"2-141","desc":"WWM&Poly Exc Slpoe Protection","cat":"Siteworks"},{"code":"2-142","desc":"Remove Shotcrete","cat":"Siteworks"},{"code":"2-143","desc":"Detention/Remove Rock Anchors","cat":"Siteworks"},{"code":"2-160","desc":"Piling","cat":"Siteworks"},{"code":"2-161","desc":"Screw Piles","cat":"Siteworks"},{"code":"2-162","desc":"Sheet Pile","cat":"Siteworks"},{"code":"2-180","desc":"Asphalt Paving","cat":"Siteworks"},{"code":"2-181","desc":"Concrete Paving","cat":"Siteworks"},{"code":"2-182","desc":"Concrete Sidewalks","cat":"Siteworks"},{"code":"2-183","desc":"Concrete Pavers","cat":"Siteworks"},{"code":"2-184","desc":"Stone Pavers","cat":"Siteworks"},{"code":"2-185","desc":"Grasscrete Pavers","cat":"Siteworks"},{"code":"2-186","desc":"Concrete Curb and Gutter","cat":"Siteworks"},{"code":"2-187","desc":"Pavement Repair","cat":"Siteworks"},{"code":"2-188","desc":"Pavement Marking","cat":"Siteworks"},{"code":"2-189","desc":"Concrete No Post Barriers","cat":"Siteworks"},{"code":"2-200","desc":"Water Pipe","cat":"Siteworks"},{"code":"2-201","desc":"Sewer Pipe","cat":"Siteworks"},{"code":"2-202","desc":"Storm Pipe","cat":"Siteworks"},{"code":"2-203","desc":"Fire Hydrants","cat":"Siteworks"},{"code":"2-204","desc":"Valves","cat":"Siteworks"},{"code":"2-205","desc":"Catch Basins","cat":"Siteworks"},{"code":"2-206","desc":"Manholes","cat":"Siteworks"},{"code":"2-207","desc":"Storm Water Retention System","cat":"Siteworks"},{"code":"2-208","desc":"Foundation Drainage and Precas","cat":"Siteworks"},{"code":"2-209","desc":"Sub-Drainage System","cat":"Siteworks"},{"code":"2-210","desc":"Septic Systems","cat":"Siteworks"},{"code":"2-211","desc":"Restoration of Underground Pip","cat":"Siteworks"},{"code":"2-212","desc":"Ponds and Reservoirs","cat":"Siteworks"},{"code":"2-213","desc":"Chorination Testing","cat":"Siteworks"},{"code":"2-214","desc":"Pressure and Leak Testing","cat":"Siteworks"},{"code":"2-215","desc":"Culverts","cat":"Siteworks"},{"code":"2-216","desc":"Directional Drilling","cat":"Siteworks"},{"code":"2-217","desc":"HDPE","cat":"Siteworks"},{"code":"2-218","desc":"Force Mains","cat":"Siteworks"},{"code":"2-219","desc":"Service Piping off Mains","cat":"Siteworks"},{"code":"2-220","desc":"Specialty Precast","cat":"Siteworks"},{"code":"2-221","desc":"Steel Casing Pipe","cat":"Siteworks"},{"code":"2-222","desc":"Pipe Insulation","cat":"Siteworks"},{"code":"2-223","desc":"Pipe Restraints  inc Thrust Bk","cat":"Siteworks"},{"code":"2-224","desc":"Oil Inerceptors","cat":"Siteworks"},{"code":"2-225","desc":"Gas Service, Meter Pads","cat":"Siteworks"},{"code":"2-226","desc":"Connect to Existing Main","cat":"Siteworks"},{"code":"2-240","desc":"Electrical Power Trans/Ducting","cat":"Siteworks"},{"code":"2-241","desc":"Communication Trans/Ducting","cat":"Siteworks"},{"code":"2-242","desc":"Concrete Protection to Ducts","cat":"Siteworks"},{"code":"2-243","desc":"Lamp and Pole Bases","cat":"Siteworks"},{"code":"2-244","desc":"Pull Boxes and Vaults","cat":"Siteworks"},{"code":"2-245","desc":"Car Plugs","cat":"Siteworks"},{"code":"2-260","desc":"Wood Fence","cat":"Siteworks"},{"code":"2-261","desc":"Chainlink Fence","cat":"Siteworks"},{"code":"2-262","desc":"Parking Accessories","cat":"Siteworks"},{"code":"2-263","desc":"Playfield Equip and Structure","cat":"Siteworks"},{"code":"2-264","desc":"Site and Street Furnishings","cat":"Siteworks"},{"code":"2-265","desc":"Benches","cat":"Siteworks"},{"code":"2-266","desc":"Bollards","cat":"Siteworks"},{"code":"2-267","desc":"Bicycle Racks","cat":"Siteworks"},{"code":"2-268","desc":"Flag Poles","cat":"Siteworks"},{"code":"2-269","desc":"Fountains","cat":"Siteworks"},{"code":"2-270","desc":"Tree Grates","cat":"Siteworks"},{"code":"2-271","desc":"Trash Receptacles","cat":"Siteworks"},{"code":"2-272","desc":"Retaining Walls","cat":"Siteworks"},{"code":"2-273","desc":"Retaining Walls - Lock Block","cat":"Siteworks"},{"code":"2-274","desc":"Retaining Walls - Reinforced C","cat":"Siteworks"},{"code":"2-275","desc":"Street and Parking Signs","cat":"Siteworks"},{"code":"2-290","desc":"Landscaping","cat":"Siteworks"},{"code":"2-291","desc":"Irrigation Systems","cat":"Siteworks"},{"code":"2-292","desc":"Lawns & Grasses","cat":"Siteworks"},{"code":"2-293","desc":"Plants","cat":"Siteworks"},{"code":"2-294","desc":"Landscape Maintenance","cat":"Siteworks"},{"code":"2-295","desc":"Landscape Accessories","cat":"Siteworks"},{"code":"2-296","desc":"Retaining Walls - Allen Block","cat":"Siteworks"},{"code":"2-297","desc":"Retaining Walls - Rock","cat":"Siteworks"},{"code":"2-298","desc":"Landscape - subgrade preparati","cat":"Siteworks"},{"code":"2-299","desc":"hydroseeding","cat":"Siteworks"},{"code":"3-000","desc":"CONCRETE","cat":"Concrete"},{"code":"3-100","desc":"Concrete Formwork Subtrade","cat":"Concrete"},{"code":"3-101","desc":"Forms - Mudslab","cat":"Concrete"},{"code":"3-102","desc":"Forms-Strip/Cont Footings","cat":"Concrete"},{"code":"3-103","desc":"Forms - Pad Footings","cat":"Concrete"},{"code":"3-104","desc":"Forms - Pile Caps","cat":"Concrete"},{"code":"3-105","desc":"Forms - Grade Beam","cat":"Concrete"},{"code":"3-106","desc":"Forms - Pilasters","cat":"Concrete"},{"code":"3-107","desc":"Forms - Slab on Grade","cat":"Concrete"},{"code":"3-108","desc":"Forms - Sidewalks/Curbs","cat":"Concrete"},{"code":"3-109","desc":"Forms - Slab Bulkheads","cat":"Concrete"},{"code":"3-110","desc":"Forms - Aprons","cat":"Concrete"},{"code":"3-111","desc":"Forms - Trench Drains/Sumps","cat":"Concrete"},{"code":"3-112","desc":"Forms - Walls to 4'","cat":"Concrete"},{"code":"3-113","desc":"Form - Walls to 8'","cat":"Concrete"},{"code":"3-114","desc":"Form - Walls to 12'","cat":"Concrete"},{"code":"3-115","desc":"Forms - Gang Forms","cat":"Concrete"},{"code":"3-116","desc":"Bollards Complete","cat":"Concrete"},{"code":"3-120","desc":"Forms - Round Columns","cat":"Concrete"},{"code":"3-121","desc":"Forms - Rectangular Column","cat":"Concrete"},{"code":"3-122","desc":"Forms - Beam","cat":"Concrete"},{"code":"3-123","desc":"Forms - Suspended Flat Slab","cat":"Concrete"},{"code":"3-124","desc":"Forms - Concrete Stair","cat":"Concrete"},{"code":"3-125","desc":"Forms - Topping Slab","cat":"Concrete"},{"code":"3-126","desc":"Forms - Slab on Metal Deck","cat":"Concrete"},{"code":"3-127","desc":"Forms - Equipment Pads and Cur","cat":"Concrete"},{"code":"3-128","desc":"Forms- Upstands","cat":"Concrete"},{"code":"3-129","desc":"Forms - Miscellaneous","cat":"Concrete"},{"code":"3-160","desc":"S&I Reinforcing Steel Subtrade","cat":"Concrete"},{"code":"3-161","desc":"Supply Only Reinforcing Steel","cat":"Concrete"},{"code":"3-162","desc":"Install Only Reinforcing Steel","cat":"Concrete"},{"code":"3-163","desc":"Drill and Install Dowels","cat":"Concrete"},{"code":"3-180","desc":"Pour Mud","cat":"Concrete"},{"code":"3-181","desc":"Pour Pad & Strip Footings","cat":"Concrete"},{"code":"3-182","desc":"Pour Pile Caps","cat":"Concrete"},{"code":"3-183","desc":"Pour Grade Beams","cat":"Concrete"},{"code":"3-184","desc":"Pour Slab on Grade","cat":"Concrete"},{"code":"3-185","desc":"Pour Sidewalks","cat":"Concrete"},{"code":"3-186","desc":"Pour Walls to 12'","cat":"Concrete"},{"code":"3-187","desc":"Pour Gang Forms","cat":"Concrete"},{"code":"3-188","desc":"Pour Columns","cat":"Concrete"},{"code":"3-189","desc":"Pour Stairs","cat":"Concrete"},{"code":"3-190","desc":"Pour Suspended Slabs","cat":"Concrete"},{"code":"3-191","desc":"Pour Metal Deck Concrete","cat":"Concrete"},{"code":"3-192","desc":"Pour Aprons","cat":"Concrete"},{"code":"3-193","desc":"Pour Trench Drains/Sumps","cat":"Concrete"},{"code":"3-194","desc":"Pour Equip Pads & Curbs","cat":"Concrete"},{"code":"3-250","desc":"Concrete Accessories","cat":"Concrete"},{"code":"3-251","desc":"Water Stop","cat":"Concrete"},{"code":"3-252","desc":"Expansion Joints","cat":"Concrete"},{"code":"3-253","desc":"Key-Cold Joint","cat":"Concrete"},{"code":"3-254","desc":"Control Joints","cat":"Concrete"},{"code":"3-255","desc":"Concrete Sealers","cat":"Concrete"},{"code":"3-256","desc":"Concrete Hardner","cat":"Concrete"},{"code":"3-257","desc":"Embedded Metals","cat":"Concrete"},{"code":"3-258","desc":"Anchor Bolts","cat":"Concrete"},{"code":"3-259","desc":"Rigid Insulation to Foundation","cat":"Concrete"},{"code":"3-260","desc":"Voidform","cat":"Concrete"},{"code":"3-350","desc":"Slab Finishing","cat":"Concrete"},{"code":"3-351","desc":"Finished - Misc.","cat":"Concrete"},{"code":"3-352","desc":"Plug Patch & Sack","cat":"Concrete"},{"code":"3-353","desc":"Concrete Curing","cat":"Concrete"},{"code":"3-354","desc":"Concrete Bonding Agents","cat":"Concrete"},{"code":"3-355","desc":"Sawcut Slab","cat":"Concrete"},{"code":"3-356","desc":"Foundation Waterproofing","cat":"Concrete"},{"code":"3-357","desc":"Foundation Damp Proofing","cat":"Concrete"},{"code":"3-400","desc":"Precast Concrete","cat":"Concrete"},{"code":"3-401","desc":"Tilt-Up Concrete Subtrade","cat":"Concrete"},{"code":"3-402","desc":"Form Tilt-up Panels","cat":"Concrete"},{"code":"3-403","desc":"Conc Accessories & Hardware","cat":"Concrete"},{"code":"3-404","desc":"Place & Finish Conc Tilt-up","cat":"Concrete"},{"code":"3-405","desc":"Crane Rental for Tilt-up Panel","cat":"Concrete"},{"code":"3-406","desc":"Erection of Tilt-up Panels","cat":"Concrete"},{"code":"3-407","desc":"Grouting Tilt-up Panels","cat":"Concrete"},{"code":"3-408","desc":"Caulking Tilt-up Panels","cat":"Concrete"},{"code":"3-409","desc":"Patch/Sack Tilt-up Panels","cat":"Concrete"},{"code":"3-410","desc":"Engineering for Tilt-Up Panels","cat":"Concrete"},{"code":"3-411","desc":"Shipping Precast","cat":"Concrete"},{"code":"3-500","desc":"Cementitious Decks&Toppings","cat":"Concrete"},{"code":"3-501","desc":"Gypsum Concrete","cat":"Concrete"},{"code":"3-502","desc":"Insulating Concrete Decks","cat":"Concrete"},{"code":"3-503","desc":"Cementitious Wood Fiber System","cat":"Concrete"},{"code":"3-504","desc":"Composite Conc/Insulation Deck","cat":"Concrete"},{"code":"3-505","desc":"Concrete Toppings","cat":"Concrete"},{"code":"3-600","desc":"Grout","cat":"Concrete"},{"code":"3-601","desc":"Grout Columns & Baseplates","cat":"Concrete"},{"code":"3-999","desc":"Cellular Concrete","cat":"Concrete"},{"code":"4-000","desc":"MASONRY","cat":"Masonry"},{"code":"4-150","desc":"Masonry Accessories","cat":"Masonry"},{"code":"4-200","desc":"Unit Masonry","cat":"Masonry"},{"code":"4-210","desc":"Brick Unit Masonry","cat":"Masonry"},{"code":"4-220","desc":"Concrete Unit Masonry","cat":"Masonry"},{"code":"4-225","desc":"Precast Material","cat":"Masonry"},{"code":"4-230","desc":"Reinforcing for CMU","cat":"Masonry"},{"code":"4-270","desc":"Glass Unit Masonry","cat":"Masonry"},{"code":"4-400","desc":"Stone","cat":"Masonry"},{"code":"4-430","desc":"Simulated Stone","cat":"Masonry"},{"code":"4-455","desc":"Marble","cat":"Masonry"},{"code":"4-460","desc":"Limestone","cat":"Masonry"},{"code":"4-465","desc":"Granite","cat":"Masonry"},{"code":"4-470","desc":"Sandstone","cat":"Masonry"},{"code":"4-475","desc":"Slate","cat":"Masonry"},{"code":"5-000","desc":"METALS","cat":"Metals"},{"code":"5-100","desc":"S&I Structural Steel","cat":"Metals"},{"code":"5-101","desc":"Supply Structural Steel","cat":"Metals"},{"code":"5-102","desc":"Install Structural Steel","cat":"Metals"},{"code":"5-150","desc":"Light Gauge Steel Structure","cat":"Metals"},{"code":"5-300","desc":"Metal Decking","cat":"Metals"},{"code":"5-310","desc":"Steel Floor Deck","cat":"Metals"},{"code":"5-315","desc":"Steel Roof Deck","cat":"Metals"},{"code":"5-500","desc":"Metal Fabrications","cat":"Metals"},{"code":"5-505","desc":"Embedded Misc Iron","cat":"Metals"},{"code":"5-510","desc":"Metal Stairs","cat":"Metals"},{"code":"5-515","desc":"Ladders","cat":"Metals"},{"code":"5-520","desc":"Handralils & Railings","cat":"Metals"},{"code":"5-525","desc":"Alum Railings w/Temp Glass/Pic","cat":"Metals"},{"code":"5-530","desc":"Gratings","cat":"Metals"},{"code":"5-535","desc":"Floor Plates","cat":"Metals"},{"code":"5-540","desc":"Castings","cat":"Metals"},{"code":"5-600","desc":"Stainless Steel Fabrications","cat":"Metals"},{"code":"5-601","desc":"Stainless Steel -Kitchen Equip","cat":"Metals"},{"code":"5-700","desc":"Ornamental Metal","cat":"Metals"},{"code":"5-800","desc":"Expansion Control","cat":"Metals"},{"code":"5-810","desc":"Expansion Joint Covers","cat":"Metals"},{"code":"5-820","desc":"Slide Bearings","cat":"Metals"},{"code":"6-000","desc":"WOOD & PLASTIC","cat":"Wood & Plastic"},{"code":"6-050","desc":"Fasteners & Adhesives","cat":"Wood & Plastic"},{"code":"6-100","desc":"Rough Carpentry","cat":"Wood & Plastic"},{"code":"6-101","desc":"Window Liners","cat":"Wood & Plastic"},{"code":"6-102","desc":"Backing for Door Frames","cat":"Wood & Plastic"},{"code":"6-103","desc":"Roof Carpentry","cat":"Wood & Plastic"},{"code":"6-104","desc":"Telephone/Electrical Backboard","cat":"Wood & Plastic"},{"code":"6-105","desc":"Framing for Storage Lockers","cat":"Wood & Plastic"},{"code":"6-106","desc":"Backing for Washroom Accessori","cat":"Wood & Plastic"},{"code":"6-107","desc":"Backing for Milwork&MiscEquip","cat":"Wood & Plastic"},{"code":"6-108","desc":"Framing Lumber Material","cat":"Wood & Plastic"},{"code":"6-109","desc":"Framing Plywood Material","cat":"Wood & Plastic"},{"code":"6-110","desc":"Framing Labour","cat":"Wood & Plastic"},{"code":"6-111","desc":"Hold Down Anchors","cat":"Wood & Plastic"},{"code":"6-112","desc":"Roof Framing","cat":"Wood & Plastic"},{"code":"6-113","desc":"Roof Sheathing","cat":"Wood & Plastic"},{"code":"6-114","desc":"Parapet Framing","cat":"Wood & Plastic"},{"code":"6-115","desc":"Wall Framing","cat":"Wood & Plastic"},{"code":"6-116","desc":"Wall Sheathing","cat":"Wood & Plastic"},{"code":"6-117","desc":"Floor Sheathing","cat":"Wood & Plastic"},{"code":"6-118","desc":"Floor Framing","cat":"Wood & Plastic"},{"code":"6-119","desc":"Roof Curbs","cat":"Wood & Plastic"},{"code":"6-130","desc":"Heavy Timber Construction","cat":"Wood & Plastic"},{"code":"6-135","desc":"Log Work","cat":"Wood & Plastic"},{"code":"6-170","desc":"Prefabricated Structural Wood","cat":"Wood & Plastic"},{"code":"6-180","desc":"Glu Laminated Beams","cat":"Wood & Plastic"},{"code":"6-190","desc":"Wood Trusses","cat":"Wood & Plastic"},{"code":"6-200","desc":"Finish Carpentry","cat":"Wood & Plastic"},{"code":"6-201","desc":"Wood Baseboard","cat":"Wood & Plastic"},{"code":"6-202","desc":"Wood Window Sill","cat":"Wood & Plastic"},{"code":"6-203","desc":"Wood Mantle","cat":"Wood & Plastic"},{"code":"6-204","desc":"Wood Crown Moulding","cat":"Wood & Plastic"},{"code":"6-205","desc":"Misc Wood Trims","cat":"Wood & Plastic"},{"code":"6-206","desc":"Wood Panelling","cat":"Wood & Plastic"},{"code":"6-207","desc":"Shelving","cat":"Wood & Plastic"},{"code":"6-210","desc":"Install Metal Doors","cat":"Wood & Plastic"},{"code":"6-211","desc":"Install Wood Doors","cat":"Wood & Plastic"},{"code":"6-212","desc":"Install Roof Hatch","cat":"Wood & Plastic"},{"code":"6-220","desc":"Install Washroom Accessories","cat":"Wood & Plastic"},{"code":"6-221","desc":"Install Mail Boxes","cat":"Wood & Plastic"},{"code":"6-290","desc":"Nails,Fasteners,glue,sandpaper","cat":"Wood & Plastic"},{"code":"6-300","desc":"Wood Treatment","cat":"Wood & Plastic"},{"code":"6-400","desc":"Architectural Woodwork","cat":"Wood & Plastic"},{"code":"6-700","desc":"Misc Materials & Sundries","cat":"Wood & Plastic"},{"code":"7-000","desc":"THERMAL & MOISTURE PROT.","cat":"Thermal & Moisture Prot."},{"code":"7-100","desc":"Waterproofing","cat":"Thermal & Moisture Prot."},{"code":"7-150","desc":"Damproofing","cat":"Thermal & Moisture Prot."},{"code":"7-180","desc":"Water Repellents","cat":"Thermal & Moisture Prot."},{"code":"7-190","desc":"Vapor Retarders","cat":"Thermal & Moisture Prot."},{"code":"7-195","desc":"Air Barriers","cat":"Thermal & Moisture Prot."},{"code":"7-196","desc":"Underslab Vapour Barriers","cat":"Thermal & Moisture Prot."},{"code":"7-200","desc":"Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-210","desc":"Batt Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-212","desc":"Rigid Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-214","desc":"Foamed-in Place Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-216","desc":"Loose Fill Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-218","desc":"Sprayed Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-220","desc":"Roof & Deck Insulation","cat":"Thermal & Moisture Prot."},{"code":"7-222","desc":"Vapour Barriers","cat":"Thermal & Moisture Prot."},{"code":"7-223","desc":"Concrete Faced Insulation Boar","cat":"Thermal & Moisture Prot."},{"code":"7-224","desc":"Void Form","cat":"Thermal & Moisture Prot."},{"code":"7-225","desc":"Foundaton Drainage Matt","cat":"Thermal & Moisture Prot."},{"code":"7-240","desc":"Ext Insulation & Finish System","cat":"Thermal & Moisture Prot."},{"code":"7-250","desc":"Firproofing","cat":"Thermal & Moisture Prot."},{"code":"7-255","desc":"Cementitious Fireproofing","cat":"Thermal & Moisture Prot."},{"code":"7-260","desc":"Intumescent Mastic Fireproofin","cat":"Thermal & Moisture Prot."},{"code":"7-265","desc":"Mineral Fiber Fireproofing","cat":"Thermal & Moisture Prot."},{"code":"7-270","desc":"Firestopping","cat":"Thermal & Moisture Prot."},{"code":"7-300","desc":"Shingles & Roofing Tiles","cat":"Thermal & Moisture Prot."},{"code":"7-400","desc":"Metal Roofing & Cladding","cat":"Thermal & Moisture Prot."},{"code":"7-401","desc":"Metal Roofing","cat":"Thermal & Moisture Prot."},{"code":"7-402","desc":"Metal Cladding","cat":"Thermal & Moisture Prot."},{"code":"7-403","desc":"Cementitous Cladding","cat":"Thermal & Moisture Prot."},{"code":"7-404","desc":"Vinyl Cadding","cat":"Thermal & Moisture Prot."},{"code":"7-405","desc":"Downspourts","cat":"Thermal & Moisture Prot."},{"code":"7-460","desc":"Performed Panels","cat":"Thermal & Moisture Prot."},{"code":"7-461","desc":"Subgirts","cat":"Thermal & Moisture Prot."},{"code":"7-462","desc":"Panel Layout","cat":"Thermal & Moisture Prot."},{"code":"7-500","desc":"Membrane Roofing","cat":"Thermal & Moisture Prot."},{"code":"7-570","desc":"Traffic Coatings","cat":"Thermal & Moisture Prot."},{"code":"7-600","desc":"Flashing & Sheetmetal","cat":"Thermal & Moisture Prot."},{"code":"7-601","desc":"Parapet Cap Flashing","cat":"Thermal & Moisture Prot."},{"code":"7-700","desc":"Roof Specialties","cat":"Thermal & Moisture Prot."},{"code":"7-710","desc":"Manufactured Roof Specialties","cat":"Thermal & Moisture Prot."},{"code":"7-720","desc":"Roof Accessories","cat":"Thermal & Moisture Prot."},{"code":"7-800","desc":"Skylights","cat":"Thermal & Moisture Prot."},{"code":"7-900","desc":"Joint Sealers","cat":"Thermal & Moisture Prot."},{"code":"8-000","desc":"DOORS & WINDOWS","cat":"Doors & Windows"},{"code":"8-100","desc":"Hollow Metal Doors & Frames","cat":"Doors & Windows"},{"code":"8-200","desc":"Wood & Plastic Doors & Frames","cat":"Doors & Windows"},{"code":"8-300","desc":"Special Doors","cat":"Doors & Windows"},{"code":"8-305","desc":"Access Doors","cat":"Doors & Windows"},{"code":"8-310","desc":"Sliding Doors & Grilles","cat":"Doors & Windows"},{"code":"8-320","desc":"Security Doors","cat":"Doors & Windows"},{"code":"8-325","desc":"Cold Storage Doors","cat":"Doors & Windows"},{"code":"8-330","desc":"Coiling Doors & Grilles","cat":"Doors & Windows"},{"code":"8-350","desc":"Floding Doors & Grilles","cat":"Doors & Windows"},{"code":"8-360","desc":"Sectional Overhead Doors","cat":"Doors & Windows"},{"code":"8-370","desc":"Fire Shutters","cat":"Doors & Windows"},{"code":"8-410","desc":"Comm Windows, Entrances & S/Fr","cat":"Doors & Windows"},{"code":"8-460","desc":"Automatic Entrance Doors","cat":"Doors & Windows"},{"code":"8-470","desc":"Revolving Entrance Doors","cat":"Doors & Windows"},{"code":"8-500","desc":"Residential Aluminum Windows","cat":"Doors & Windows"},{"code":"8-610","desc":"Wood Windows","cat":"Doors & Windows"},{"code":"8-630","desc":"Vinyl Windows","cat":"Doors & Windows"},{"code":"8-655","desc":"Special Windows","cat":"Doors & Windows"},{"code":"8-700","desc":"Hardware","cat":"Doors & Windows"},{"code":"8-800","desc":"Glazing","cat":"Doors & Windows"},{"code":"8-900","desc":"Glazed Curtain Walls","cat":"Doors & Windows"},{"code":"8-970","desc":"Structural Glass Curtain Walls","cat":"Doors & Windows"},{"code":"9-000","desc":"FINISHES","cat":"Finishes"},{"code":"9-200","desc":"Stucco","cat":"Finishes"},{"code":"9-210","desc":"Lath & Plaster","cat":"Finishes"},{"code":"9-250","desc":"Steel Studs & Drywall","cat":"Finishes"},{"code":"9-310","desc":"Ceramic Tile","cat":"Finishes"},{"code":"9-320","desc":"Thin Brick Tile","cat":"Finishes"},{"code":"9-330","desc":"Quarry Tile","cat":"Finishes"},{"code":"9-340","desc":"Paver Tile","cat":"Finishes"},{"code":"9-350","desc":"Glass Mosaics","cat":"Finishes"},{"code":"9-360","desc":"Fibre Reinforced Wall Panels","cat":"Finishes"},{"code":"9-370","desc":"Metal Tile","cat":"Finishes"},{"code":"9-400","desc":"Terrazzo","cat":"Finishes"},{"code":"9-500","desc":"Acoustical Treatment","cat":"Finishes"},{"code":"9-510","desc":"Acoustical Ceilings","cat":"Finishes"},{"code":"9-520","desc":"Acoustical Wall Treatment","cat":"Finishes"},{"code":"9-550","desc":"Wood Flooring","cat":"Finishes"},{"code":"9-560","desc":"Wood Strip Flooring","cat":"Finishes"},{"code":"9-565","desc":"Wood Block Flooring","cat":"Finishes"},{"code":"9-570","desc":"Wood Parquet Flooring","cat":"Finishes"},{"code":"9-580","desc":"Wood Composition Flooring","cat":"Finishes"},{"code":"9-590","desc":"Resilient Wood Flooring system","cat":"Finishes"},{"code":"9-591","desc":"Sleepers for Wood Flooring","cat":"Finishes"},{"code":"9-600","desc":"Stone Flooring","cat":"Finishes"},{"code":"9-610","desc":"Flagstone Flooring","cat":"Finishes"},{"code":"9-615","desc":"Marble Flooring","cat":"Finishes"},{"code":"9-620","desc":"Granite Flooring","cat":"Finishes"},{"code":"9-625","desc":"Slate Flooring","cat":"Finishes"},{"code":"9-650","desc":"Resilient Flooring","cat":"Finishes"},{"code":"9-660","desc":"Resilient Tile Flooring","cat":"Finishes"},{"code":"9-665","desc":"Resilient Sheet Flooring","cat":"Finishes"},{"code":"9-670","desc":"Fluid-Applied Resilient Floori","cat":"Finishes"},{"code":"9-675","desc":"Static Control Resilient Floor","cat":"Finishes"},{"code":"9-678","desc":"Resileint Base & Accessories","cat":"Finishes"},{"code":"9-680","desc":"Carpet","cat":"Finishes"},{"code":"9-695","desc":"Wall Carpet","cat":"Finishes"},{"code":"9-698","desc":"Indoor/Outdoor Carpet","cat":"Finishes"},{"code":"9-700","desc":"Special Flooring","cat":"Finishes"},{"code":"9-705","desc":"Resinous Flooring","cat":"Finishes"},{"code":"9-710","desc":"Magnesium Oxychloride Flooring","cat":"Finishes"},{"code":"9-720","desc":"Epoxy-Marble Chip Flooring","cat":"Finishes"},{"code":"9-725","desc":"Seamless Quartz Flooring","cat":"Finishes"},{"code":"9-730","desc":"Elastomeric Liquid Flooring","cat":"Finishes"},{"code":"9-790","desc":"Slip Resistant Finishes","cat":"Finishes"},{"code":"9-900","desc":"Painting","cat":"Finishes"},{"code":"9-901","desc":"Epoxy Paint Floors","cat":"Finishes"},{"code":"9-902","desc":"Sandblasting","cat":"Finishes"},{"code":"9-905","desc":"Paint Preparation","cat":"Finishes"},{"code":"9-908","desc":"Primers & Sealers","cat":"Finishes"},{"code":"9-910","desc":"Exterior Painting","cat":"Finishes"},{"code":"9-920","desc":"Interior Painting","cat":"Finishes"},{"code":"9-930","desc":"Transparent Finishes","cat":"Finishes"},{"code":"9-935","desc":"Stains","cat":"Finishes"},{"code":"9-940","desc":"Decorative Finishes","cat":"Finishes"},{"code":"9-945","desc":"Specialty Painting","cat":"Finishes"},{"code":"9-950","desc":"Wall Coverings","cat":"Finishes"},{"code":"9-955","desc":"Vinyl-Coated Fabrics Wall Cove","cat":"Finishes"},{"code":"9-960","desc":"Vinyl Wall Coverings","cat":"Finishes"},{"code":"9-965","desc":"Cork Wall Coverings","cat":"Finishes"},{"code":"9-970","desc":"Wallpaper","cat":"Finishes"},{"code":"9-975","desc":"Wall Fabrics","cat":"Finishes"},{"code":"9-980","desc":"Flexible Wood Sheets & Veneers","cat":"Finishes"},{"code":"10-000","desc":"SPECIALTIES","cat":"Specialties"},{"code":"10-110","desc":"Chalkboards","cat":"Specialties"},{"code":"10-115","desc":"Markerboards","cat":"Specialties"},{"code":"10-120","desc":"Tackboards","cat":"Specialties"},{"code":"10-130","desc":"Ooperable Board Units","cat":"Specialties"},{"code":"10-140","desc":"Display Track System","cat":"Specialties"},{"code":"10-145","desc":"Visual Aid Board Units","cat":"Specialties"},{"code":"10-160","desc":"Metal Toilet Compartments","cat":"Specialties"},{"code":"10-185","desc":"Shower & Dressing Compartments","cat":"Specialties"},{"code":"10-190","desc":"Cubicle Track","cat":"Specialties"},{"code":"10-200","desc":"Louvers & Vents","cat":"Specialties"},{"code":"10-240","desc":"Grilles & Screens","cat":"Specialties"},{"code":"10-250","desc":"Service Wall Systems","cat":"Specialties"},{"code":"10-260","desc":"Wall & Corner Guards","cat":"Specialties"},{"code":"10-270","desc":"Access Flooring","cat":"Specialties"},{"code":"10-290","desc":"Pest Control","cat":"Specialties"},{"code":"10-305","desc":"Manufactured Fireplaces","cat":"Specialties"},{"code":"10-310","desc":"Fireplace Specialties & Access","cat":"Specialties"},{"code":"10-340","desc":"Manufactured Exterior Special","cat":"Specialties"},{"code":"10-350","desc":"Flagpoles","cat":"Specialties"},{"code":"10-400","desc":"Identifying Devices","cat":"Specialties"},{"code":"10-410","desc":"Directories","cat":"Specialties"},{"code":"10-415","desc":"Bulletin Boards","cat":"Specialties"},{"code":"10-420","desc":"Plaques","cat":"Specialties"},{"code":"10-430","desc":"Exterior Signs","cat":"Specialties"},{"code":"10-440","desc":"Interior Signs","cat":"Specialties"},{"code":"10-450","desc":"Pedestrain Control Devices","cat":"Specialties"},{"code":"10-460","desc":"Fire Safety Plan","cat":"Specialties"},{"code":"10-500","desc":"Lockers","cat":"Specialties"},{"code":"10-520","desc":"Fire Protection Specialties","cat":"Specialties"},{"code":"10-522","desc":"Fire Exting Cabinest & Access","cat":"Specialties"},{"code":"10-526","desc":"Fire Blankets & Cabinets","cat":"Specialties"},{"code":"10-530","desc":"Protective Coverings","cat":"Specialties"},{"code":"10-532","desc":"Walkway Covers","cat":"Specialties"},{"code":"10-534","desc":"Car Shelters","cat":"Specialties"},{"code":"10-536","desc":"Awnings","cat":"Specialties"},{"code":"10-538","desc":"Canopies","cat":"Specialties"},{"code":"10-550","desc":"Postal Specialties","cat":"Specialties"},{"code":"10-552","desc":"Mail Boxes","cat":"Specialties"},{"code":"10-600","desc":"Demountable Partitions","cat":"Specialties"},{"code":"10-650","desc":"Operable Partitions","cat":"Specialties"},{"code":"10-670","desc":"Storage Shelving","cat":"Specialties"},{"code":"10-675","desc":"Metal Storage Shelving","cat":"Specialties"},{"code":"10-683","desc":"Mobile Storage Systems","cat":"Specialties"},{"code":"10-685","desc":"Wire Shelving","cat":"Specialties"},{"code":"10-688","desc":"Prefab Wood Storage Shelving","cat":"Specialties"},{"code":"10-700","desc":"Exterior Prot Devices for Open","cat":"Specialties"},{"code":"10-705","desc":"Exterior Sun Control Devices","cat":"Specialties"},{"code":"10-710","desc":"Exterior Shutters","cat":"Specialties"},{"code":"10-715","desc":"Storm Panels","cat":"Specialties"},{"code":"10-750","desc":"Telephone Specialties","cat":"Specialties"},{"code":"10-755","desc":"Telephone Enclosures","cat":"Specialties"},{"code":"10-760","desc":"Telephone Directory Units","cat":"Specialties"},{"code":"10-765","desc":"Telephone Shelves","cat":"Specialties"},{"code":"10-800","desc":"Toilet & Bath Accessories","cat":"Specialties"},{"code":"10-801","desc":"Glass Shower Doors","cat":"Specialties"},{"code":"10-880","desc":"Scales","cat":"Specialties"},{"code":"10-900","desc":"Wardrobe & Closet Specialties","cat":"Specialties"},{"code":"11-000","desc":"EQUIPMENT","cat":"Equipment"},{"code":"11-010","desc":"Maintenance Equipment","cat":"Equipment"},{"code":"11-012","desc":"Vacuum Cleaning Systems","cat":"Equipment"},{"code":"11-014","desc":"Window Washing Systems","cat":"Equipment"},{"code":"11-016","desc":"Floor & Wall Cleaning Equip","cat":"Equipment"},{"code":"11-020","desc":"Security & Vault Equip","cat":"Equipment"},{"code":"11-024","desc":"Security & Emergency Systems","cat":"Equipment"},{"code":"11-026","desc":"Safes","cat":"Equipment"},{"code":"11-028","desc":"Safe Deposit Boxes","cat":"Equipment"},{"code":"11-030","desc":"Tellet & Service Equip","cat":"Equipment"},{"code":"11-040","desc":"Ecclesiastical Equip","cat":"Equipment"},{"code":"11-050","desc":"Library Equip","cat":"Equipment"},{"code":"11-060","desc":"Theater & Stage Equip","cat":"Equipment"},{"code":"11-070","desc":"Instrumental Equip","cat":"Equipment"},{"code":"11-080","desc":"Registration Equip","cat":"Equipment"},{"code":"11-090","desc":"Checkroom Equip","cat":"Equipment"},{"code":"11-100","desc":"Mercantile Equip","cat":"Equipment"},{"code":"11-120","desc":"Vending Equip","cat":"Equipment"},{"code":"11-130","desc":"Audio-Visual Equip","cat":"Equipment"},{"code":"11-140","desc":"Vehicle Service Equip","cat":"Equipment"},{"code":"11-150","desc":"Parking Control Equip","cat":"Equipment"},{"code":"11-160","desc":"Loading Dock Equip","cat":"Equipment"},{"code":"11-163","desc":"Portable Ramps Bridges & Platf","cat":"Equipment"},{"code":"11-170","desc":"Solid Waste Handling Equip","cat":"Equipment"},{"code":"11-200","desc":"Water Supply & Treatment Equip","cat":"Equipment"},{"code":"11-400","desc":"Food Service Equip","cat":"Equipment"},{"code":"11-410","desc":"Food Service Equip Venting","cat":"Equipment"},{"code":"11-450","desc":"Residential Equip","cat":"Equipment"},{"code":"11-452","desc":"Residential Appliances","cat":"Equipment"},{"code":"11-460","desc":"Unit Kitchens","cat":"Equipment"},{"code":"11-470","desc":"Darkroom Equip","cat":"Equipment"},{"code":"11-480","desc":"Gymnasium Equip","cat":"Equipment"},{"code":"11-481","desc":"Scoreboards","cat":"Equipment"},{"code":"11-484","desc":"Bowling Alleys","cat":"Equipment"},{"code":"11-485","desc":"Shooting Ranges","cat":"Equipment"},{"code":"11-487","desc":"Exercise Equip","cat":"Equipment"},{"code":"11-490","desc":"Therapy Equip","cat":"Equipment"},{"code":"11-495","desc":"Craft Equip","cat":"Equipment"},{"code":"11-680","desc":"Office Equip","cat":"Equipment"},{"code":"11-700","desc":"Medical Equip","cat":"Equipment"},{"code":"11-800","desc":"Owner Supplied Equip","cat":"Equipment"},{"code":"12-000","desc":"FURNISHINGS","cat":"Furnishings"},{"code":"12-050","desc":"Fabrics","cat":"Furnishings"},{"code":"12-100","desc":"Artwork","cat":"Furnishings"},{"code":"12-300","desc":"Manufactured Casework","cat":"Furnishings"},{"code":"12-345","desc":"Laboratory Casework","cat":"Furnishings"},{"code":"12-350","desc":"Medical Casework","cat":"Furnishings"},{"code":"12-360","desc":"Educational Casework","cat":"Furnishings"},{"code":"12-370","desc":"Residential Casework","cat":"Furnishings"},{"code":"12-375","desc":"Residential Shelving Systems","cat":"Furnishings"},{"code":"12-380","desc":"Speciality Casework","cat":"Furnishings"},{"code":"12-500","desc":"Window Treatment","cat":"Furnishings"},{"code":"12-525","desc":"Solar Control Film","cat":"Furnishings"},{"code":"12-600","desc":"Furniture & Accessories","cat":"Furnishings"},{"code":"12-670","desc":"Rugs & Mats","cat":"Furnishings"},{"code":"12-700","desc":"Multiple Seating","cat":"Furnishings"},{"code":"12-710","desc":"Fixed Audience Seating","cat":"Furnishings"},{"code":"12-800","desc":"Interior Plants & Planters","cat":"Furnishings"},{"code":"13-000","desc":"SPECIAL CONTRUCTION","cat":"Special Contruction"},{"code":"13-010","desc":"Air Supported Structures","cat":"Special Contruction"},{"code":"13-020","desc":"Integrated Assemblies","cat":"Special Contruction"},{"code":"13-030","desc":"Special Purpose Rooms","cat":"Special Contruction"},{"code":"13-052","desc":"Saunas","cat":"Special Contruction"},{"code":"13-053","desc":"Steam Rooms","cat":"Special Contruction"},{"code":"13-080","desc":"Sound Vibration&Seismic Contro","cat":"Special Contruction"},{"code":"13-090","desc":"Radiation Protection","cat":"Special Contruction"},{"code":"13-120","desc":"Pre-engineered Structures-Supp","cat":"Special Contruction"},{"code":"13-121","desc":"Pre-engineered Structure Insta","cat":"Special Contruction"},{"code":"13-122","desc":"Metal Building Systems","cat":"Special Contruction"},{"code":"13-123","desc":"Glazed Structures","cat":"Special Contruction"},{"code":"13-150","desc":"Aquatic Facilities","cat":"Special Contruction"},{"code":"13-152","desc":"Swimming Pools","cat":"Special Contruction"},{"code":"13-170","desc":"Ice Rink Facilities","cat":"Special Contruction"},{"code":"13-185","desc":"Kennels & Animal Shelters","cat":"Special Contruction"},{"code":"13-200","desc":"Liquid & Gas Storage Tanks","cat":"Special Contruction"},{"code":"13-400","desc":"Industrial & Process Control","cat":"Special Contruction"},{"code":"13-500","desc":"Recording Instrumentation","cat":"Special Contruction"},{"code":"13-550","desc":"Transportation Control Instrum","cat":"Special Contruction"},{"code":"13-600","desc":"Solar Energy Systems","cat":"Special Contruction"},{"code":"13-700","desc":"Wind Energy Systems","cat":"Special Contruction"},{"code":"13-800","desc":"Building Automation Systems","cat":"Special Contruction"},{"code":"13-900","desc":"Fire Suppression & Supervisory","cat":"Special Contruction"},{"code":"13-950","desc":"Special Security Construction","cat":"Special Contruction"},{"code":"14-000","desc":"CONVEYING SYSTEMS","cat":"Conveying Systems"},{"code":"14-100","desc":"Dumbwaiters","cat":"Conveying Systems"},{"code":"14-110","desc":"Manual Dumbwaiters","cat":"Conveying Systems"},{"code":"14-120","desc":"Electric Dumbwaiters","cat":"Conveying Systems"},{"code":"14-140","desc":"Hydraulic Dumbwaiters","cat":"Conveying Systems"},{"code":"14-200","desc":"Elevators","cat":"Conveying Systems"},{"code":"14-210","desc":"Electric Traction Elevators","cat":"Conveying Systems"},{"code":"14-240","desc":"Hydraulic Elevators","cat":"Conveying Systems"},{"code":"14-310","desc":"Escalators","cat":"Conveying Systems"},{"code":"14-320","desc":"Moving Walks","cat":"Conveying Systems"},{"code":"14-400","desc":"Lifts","cat":"Conveying Systems"},{"code":"14-410","desc":"People Lifts","cat":"Conveying Systems"},{"code":"14-420","desc":"Wheelchair Lifts","cat":"Conveying Systems"},{"code":"14-430","desc":"Platform Lifts","cat":"Conveying Systems"},{"code":"14-450","desc":"Vehicle Lifts","cat":"Conveying Systems"},{"code":"14-500","desc":"Material Handling Systems","cat":"Conveying Systems"},{"code":"14-560","desc":"Chutes","cat":"Conveying Systems"},{"code":"14-580","desc":"Pneumatic Tube Systems","cat":"Conveying Systems"},{"code":"14-600","desc":"Hoist & Cranes","cat":"Conveying Systems"},{"code":"14-700","desc":"Turntables","cat":"Conveying Systems"},{"code":"15-000","desc":"MECHANICAL","cat":"Mechanical"},{"code":"15-010","desc":"Mechanical","cat":"Mechanical"},{"code":"15-050","desc":"Basic Mechanical Materials","cat":"Mechanical"},{"code":"15-250","desc":"Mechanical Insulation","cat":"Mechanical"},{"code":"15-300","desc":"Fire Protection","cat":"Mechanical"},{"code":"15-400","desc":"Plumbing","cat":"Mechanical"},{"code":"15-410","desc":"Rough-in Plumbing","cat":"Mechanical"},{"code":"15-450","desc":"Plumbing Fixtures","cat":"Mechanical"},{"code":"15-480","desc":"Pool/Spa Connections","cat":"Mechanical"},{"code":"15-500","desc":"HVAC","cat":"Mechanical"},{"code":"15-530","desc":"Sheet Metal","cat":"Mechanical"},{"code":"16-000","desc":"ELECTRICAL","cat":"Electrical"},{"code":"16-050","desc":"Electrical","cat":"Electrical"},{"code":"16-100","desc":"Exterior Pad Transformer","cat":"Electrical"},{"code":"16-200","desc":"Heat Trace","cat":"Electrical"},{"code":"16-300","desc":"Pool/Spa Connections","cat":"Electrical"},{"code":"16-500","desc":"Lighting","cat":"Electrical"},{"code":"16-520","desc":"Lighting Fixtures-Exterior","cat":"Electrical"},{"code":"16-530","desc":"Lighting Fixtures-Pool Area","cat":"Electrical"},{"code":"16-550","desc":"Lighting Fixtures-Parking Lot","cat":"Electrical"},{"code":"16-560","desc":"Lighting Fixtures-Landscaping","cat":"Electrical"},{"code":"16-570","desc":"Light Fixtures-Street","cat":"Electrical"},{"code":"16-700","desc":"Communications","cat":"Electrical"},{"code":"16-710","desc":"Telephone Prewire","cat":"Electrical"},{"code":"16-720","desc":"Cablevision","cat":"Electrical"},{"code":"16-730","desc":"Data","cat":"Electrical"},{"code":"16-800","desc":"Security","cat":"Electrical"},{"code":"16-810","desc":"Security Rough-in","cat":"Electrical"},{"code":"16-820","desc":"Enterphone","cat":"Electrical"},{"code":"16-830","desc":"Intercom Systems","cat":"Electrical"},{"code":"16-840","desc":"Access Control","cat":"Electrical"},{"code":"17-000","desc":"CASH ALLOWANCES","cat":"Cash Allowances"},{"code":"18-000","desc":"Removal","cat":"Removal"},{"code":"19-000","desc":"Snow removal","cat":"Snow Removal"},{"code":"50-000","desc":"Safety Services","cat":"Safety Services"},{"code":"50-001","desc":"Safety Services General","cat":"Safety Services"},{"code":"50-010","desc":"Equipment","cat":"Safety Services"},{"code":"50-011","desc":"Estimating","cat":"Safety Services"},{"code":"50-020","desc":"Meals","cat":"Safety Services"},{"code":"50-022","desc":"Safety Services","cat":"Safety Services"},{"code":"50-030","desc":"Other","cat":"Safety Services"},{"code":"50-040","desc":"Mobe-Demobe","cat":"Safety Services"},{"code":"50-061","desc":"Project Manager","cat":"Safety Services"},{"code":"50-063","desc":"Administration","cat":"Safety Services"},{"code":"50-065","desc":"Certified Safety Officer","cat":"Safety Services"},{"code":"50-120","desc":"Travel","cat":"Safety Services"},{"code":"50-121","desc":"LOA","cat":"Safety Services"},{"code":"50-160","desc":"Training","cat":"Safety Services"},{"code":"50-163","desc":"PPE","cat":"Safety Services"},{"code":"50-212","desc":"Site Office Lunch Tr Tool Crib","cat":"Safety Services"},{"code":"50-271","desc":"Office Supplies","cat":"Safety Services"},{"code":"50-292","desc":"Fuel for Vehicles","cat":"Safety Services"},{"code":"50-902","desc":"Auxilary Boiler","cat":"Safety Services"},{"code":"50-903","desc":"Bleach","cat":"Safety Services"},{"code":"50-904","desc":"Capital","cat":"Safety Services"},{"code":"50-905","desc":"Chem Prep","cat":"Safety Services"},{"code":"50-906","desc":"Clarifier","cat":"Safety Services"},{"code":"50-907","desc":"Cooling Tower","cat":"Safety Services"},{"code":"50-908","desc":"Digester","cat":"Safety Services"},{"code":"50-909","desc":"Elevator","cat":"Safety Services"},{"code":"50-912","desc":"Fueling","cat":"Safety Services"},{"code":"50-913","desc":"Gate Services","cat":"Safety Services"},{"code":"50-914","desc":"Janitorial","cat":"Safety Services"},{"code":"50-915","desc":"Kiln Recaust","cat":"Safety Services"},{"code":"50-916","desc":"Labour","cat":"Safety Services"},{"code":"50-917","desc":"Machine Room","cat":"Safety Services"},{"code":"50-918","desc":"Materials","cat":"Safety Services"},{"code":"50-919","desc":"MCC Room","cat":"Safety Services"},{"code":"50-921","desc":"Misc","cat":"Safety Services"},{"code":"50-922","desc":"Other","cat":"Safety Services"},{"code":"50-923","desc":"Package Boiler","cat":"Safety Services"},{"code":"50-924","desc":"PostShut","cat":"Safety Services"},{"code":"50-925","desc":"Power Boiler","cat":"Safety Services"},{"code":"50-926","desc":"Precipitator","cat":"Safety Services"},{"code":"50-927","desc":"PreShut","cat":"Safety Services"},{"code":"50-928","desc":"R8 Building","cat":"Safety Services"},{"code":"50-929","desc":"Recovery Boiler","cat":"Safety Services"},{"code":"50-931","desc":"Steam & Recovery","cat":"Safety Services"},{"code":"50-932","desc":"Traffic Control","cat":"Safety Services"},{"code":"50-951","desc":"Safety Services Misc 1","cat":"Safety Services"},{"code":"50-952","desc":"Safety Services Misc 2","cat":"Safety Services"},{"code":"50-953","desc":"Safety Services Misc 3","cat":"Safety Services"},{"code":"50-954","desc":"Safety Services Misc 4","cat":"Safety Services"},{"code":"50-955","desc":"Safety Services Misc 5","cat":"Safety Services"},{"code":"50-999","desc":"Discount - Early Pmt","cat":"Safety Services"},{"code":"70-000","desc":"HUMAN RESOURCES","cat":"Human Resources"},{"code":"70-001","desc":"Sick Time","cat":"Human Resources"},{"code":"EX-000","desc":"EXCAVATORS","cat":"Excavators"},{"code":"EX-43E","desc":"Excavator 225","cat":"Excavators"},{"code":"LO-000","desc":"LOADERS","cat":"Loaders"},{"code":"LO-23E","desc":"966K Wheel Loader","cat":"Loaders"},{"code":"LT-000","desc":"LIGHT TRUCKS","cat":"Light Trucks"},{"code":"LT-05E","desc":"Water Truck (Kenworth)","cat":"Light Trucks"},{"code":"LT-17E","desc":"Fuel/Lube Truck","cat":"Light Trucks"},{"code":"LZ-000","desc":"LAZER","cat":"Lazer"},{"code":"PA-000","desc":"PACKERS","cat":"Packers"},{"code":"PA-31E","desc":"Packer 84\" Ride on Smooth Drum","cat":"Packers"},{"code":"RT-000","desc":"ROCK TRUCKS","cat":"Rock Trucks"},{"code":"SU-000","desc":"SURVEY","cat":"Survey"},{"code":"1-171","desc":"Covid-19 Management","cat":"Survey"}],"favouriteCodes":["2-100","2-101","2-102","2-106","2-107","2-108","2-111","2-114","2-200","2-201","2-202","2-204","2-205","2-206","2-215","2-217","2-219","2-226","2-240","2-261","1-041","1-042","1-062","1-067","1-293","1-294","1-295","1-296","50-120","50-121","50-160","50-932","70-001"]};</script>
+<script>
+/* RAM Timecard: a single-file, offline-first daily timecard.
+   Data lives on the phone (localStorage). A card is sent as plain text with a machine-readable block that the
+   finance system (finance/ramfin, `timecards` module) reads straight into the timesheet tables. */
+(() => {
+  'use strict';
+  const STORE = 'ramtc.v1';
+  const REF_CACHE = 'ramtc.ref';
+  const $ = (sel, el = document) => el.querySelector(sel);
+  const h = (tag, attrs = {}, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') el.className = v;
+      else if (k === 'html') el.innerHTML = v;
+      else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+      else if (v === false || v == null || (k === 'disabled' && !v)) continue;
+      else el.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  };
+
+  // ------------------------------------------------------------------ dates
+  const pad = (n) => String(n).padStart(2, '0');
+  const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const parseISO = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+  const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const addDays = (iso, n) => { const d = parseISO(iso); d.setDate(d.getDate() + n); return toISO(d); };
+  const daysBetween = (a, b) => Math.round((parseISO(b) - parseISO(a)) / 86400000);
+  const fmt = (iso, opts = { weekday: 'short', month: 'short', day: 'numeric' }) => parseISO(iso).toLocaleDateString('en-CA', opts);
+  const periodEnd = (iso) => {
+    const pp = REF.payPeriod; const diff = daysBetween(pp.anchorEnd, iso);
+    return addDays(pp.anchorEnd, pp.days * Math.ceil(diff / pp.days));
+  };
+  const periodDays = (pe) => Array.from({ length: REF.payPeriod.days }, (_, i) => addDays(pe, i - (REF.payPeriod.days - 1)));
+
+  // ------------------------------------------------------------------ state
+  const blank = () => ({ profile: { name: '', position: '', supervisor: '', defaultJob: '', submitTo: '' }, days: {}, recents: { codes: [], units: [], jobs: [] }, sent: {} });
+  let state = blank();
+  try { const raw = localStorage.getItem(STORE); if (raw) state = Object.assign(blank(), JSON.parse(raw)); } catch (e) { /* fresh start */ }
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { toast('Could not save on this phone (storage full or blocked)'); } };
+  const uid = () => Math.random().toString(36).slice(2, 9);
+  const num = (v) => { const n = parseFloat(v); return isFinite(n) && n > 0 ? Math.round(n * 4) / 4 : 0; };
+  const fmtH = (n) => (Math.round(n * 100) / 100).toString();
+
+  let REF = null;
+  const ui = { tab: 'day', date: todayISO() };
+
+  const getDay = (iso) => state.days[iso] || (state.days[iso] = { date: iso, lines: [], loa: false, pu: false, km: 0, notes: '' });
+  const dayHours = (d) => d.lines.reduce((a, l) => ({ reg: a.reg + l.reg, ot: a.ot + l.ot, dt: a.dt + l.dt, eq: a.eq + (l.unit ? l.eq : 0) }), { reg: 0, ot: 0, dt: 0, eq: 0 });
+  const labour = (l) => l.reg + l.ot + l.dt;
+  const hasWork = (d) => d && (d.lines.length || d.loa || d.pu || d.km);
+  const jobName = (no) => (REF.jobs.find((j) => j.no === no) || {}).name || '';
+  const codeDesc = (cc) => (REF.costCodes.find((c) => c.code === cc) || {}).desc || '';
+  const unitType = (u) => (REF.equipment.find((e) => e.unit === u) || {}).type || '';
+  const remember = (list, key, max = 8) => { const i = list.indexOf(key); if (i >= 0) list.splice(i, 1); list.unshift(key); list.length = Math.min(list.length, max); };
+
+  // ------------------------------------------------------------------ validation
+  const problems = (d) => {
+    const out = [];
+    if (!state.profile.name.trim()) out.push('Add your name under Me before sending.');
+    if (!d.lines.length && !d.loa && !d.pu && !d.km) out.push('Nothing on this day yet.');
+    d.lines.forEach((l, i) => {
+      if (!l.job) out.push(`Line ${i + 1}: pick a job.`);
+      if (!l.cc) out.push(`Line ${i + 1}: pick a cost code.`);
+      if (!labour(l) && !(l.unit && l.eq)) out.push(`Line ${i + 1}: no hours.`);
+      if (l.unit && l.eq > labour(l) && labour(l) > 0) out.push(`Line ${i + 1}: ${l.unit} has more hours than you do on that line. Fine if someone else ran it too, otherwise check it.`);
+    });
+    const t = dayHours(d);
+    if (t.reg + t.ot + t.dt > REF.maxHoursDay) out.push(`${fmtH(t.reg + t.ot + t.dt)} hours in one day. Check it before sending.`);
+    return out;
+  };
+
+  // ------------------------------------------------------------------ output
+  const buildText = (days) => {
+    const p = state.profile;
+    const pe = periodEnd(days[0].date);
+    const L = [];
+    L.push('RAM EXCAVATING TIMECARD');
+    L.push(`Employee: ${p.name}${p.position ? ' (' + p.position + ')' : ''}`);
+    if (p.supervisor) L.push(`Supervisor: ${p.supervisor}`);
+    L.push(`Pay period end: ${pe} (${fmt(pe, { month: 'short', day: 'numeric', year: 'numeric' })})`);
+    L.push('');
+    let reg = 0, ot = 0, dt = 0, eq = 0, loa = 0, pu = 0, km = 0;
+    for (const d of days) {
+      const t = dayHours(d); reg += t.reg; ot += t.ot; dt += t.dt; eq += t.eq; loa += d.loa ? 1 : 0; pu += d.pu ? 1 : 0; km += d.km || 0;
+      L.push(`${fmt(d.date, { weekday: 'long', month: 'long', day: 'numeric' })}  Reg ${fmtH(t.reg)}  OT ${fmtH(t.ot)}  DT ${fmtH(t.dt)}  Equip ${fmtH(t.eq)}`);
+      for (const l of d.lines) {
+        const bits = [`${l.job} ${jobName(l.job)}`.trim(), `${l.cc} ${codeDesc(l.cc)}`.trim()];
+        const hrs = []; if (l.reg) hrs.push(`${fmtH(l.reg)} reg`); if (l.ot) hrs.push(`${fmtH(l.ot)} OT`); if (l.dt) hrs.push(`${fmtH(l.dt)} DT`);
+        bits.push(hrs.join(' + ') || 'no labour');
+        if (l.unit) bits.push(`${l.unit} ${fmtH(l.eq)} h`);
+        L.push('  - ' + bits.join(' | ') + (l.desc ? `\n    ${l.desc.replace(/\n/g, '\n    ')}` : ''));
+      }
+      const extras = []; if (d.loa) extras.push('LOA'); if (d.pu) extras.push('P/U truck'); if (d.km) extras.push(`Travel ${d.km} km`);
+      if (extras.length) L.push('  ' + extras.join(' | '));
+      if (d.notes) L.push('  Notes: ' + d.notes.replace(/\n/g, ' '));
+      L.push('');
+    }
+    if (days.length > 1) L.push(`TOTALS  Reg ${fmtH(reg)}  OT ${fmtH(ot)}  DT ${fmtH(dt)}  Equip ${fmtH(eq)}  LOA ${loa}  P/U ${pu}  Travel ${km} km`);
+    L.push('');
+    L.push('--RAMTC1--');
+    L.push(JSON.stringify(buildPayload(days, pe)));
+    L.push('--END--');
+    return L.join('\n');
+  };
+  const buildPayload = (days, pe) => ({
+    v: 1, employee: state.profile.name.trim(), position: state.profile.position || undefined, supervisor: state.profile.supervisor || undefined,
+    periodEnd: pe, sentAt: new Date().toISOString(),
+    days: days.map((d) => ({
+      date: d.date, loa: !!d.loa, pu: !!d.pu, km: d.km || 0, notes: d.notes || undefined,
+      lines: d.lines.map((l) => ({ job: l.job, cc: l.cc, reg: l.reg, ot: l.ot, dt: l.dt, unit: l.unit || undefined, eq: l.unit ? l.eq : undefined, desc: l.desc || undefined })),
+    })),
+  });
+  const subjectFor = (days) => `RAM Timecard | ${state.profile.name.trim()} | ${days.length === 1 ? days[0].date : 'PP ' + periodEnd(days[0].date)}`;
+
+  async function send(days, how) {
+    const text = buildText(days); const subject = subjectFor(days); const to = state.profile.submitTo || REF.submitTo;
+    const mark = () => { const ts = new Date().toISOString(); days.forEach((d) => { state.sent[d.date] = ts; }); save(); render(); };
+    if (how === 'copy') {
+      try { await navigator.clipboard.writeText(text); toast('Copied. Paste it into an email or text to the office.'); mark(); }
+      catch (e) { openSheet(h('div', {}, h('h1', {}, 'Copy this'), h('pre', { class: 'preview' }, text))); }
+      return;
+    }
+    if (how === 'share' && navigator.share) {
+      const fname = `${subject.replace(/[^A-Za-z0-9]+/g, '_')}.txt`;
+      try {
+        const file = new File([text], fname, { type: 'text/plain' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ title: subject, text: `${subject}\n\n${text}`, files: [file] });
+        else await navigator.share({ title: subject, text });
+        toast('Shared'); mark();
+      } catch (e) { if (e && e.name !== 'AbortError') toast('Share did not work here. Try Email.'); }
+      return;
+    }
+    // email: the default. Works on any phone with a mail app; the office inbox is read by the finance system.
+    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+    setTimeout(mark, 800);
+  }
+
+  // ------------------------------------------------------------------ sheets, toasts, lists
+  // Sheets stack: a picker opens on top of the line editor and closing it brings the editor back.
+  const sheet = $('#sheet'); const sheetBody = $('#sheet-body'); const sheetStack = [];
+  function openSheet(node) { sheetStack.push(node); sheetBody.replaceChildren(node); sheet.hidden = false; document.body.style.overflow = 'hidden'; $('.sheet-panel').scrollTop = 0; }
+  function closeSheet() {
+    sheetStack.pop();
+    if (sheetStack.length) { sheetBody.replaceChildren(sheetStack[sheetStack.length - 1]); return; }
+    sheet.hidden = true; sheetBody.replaceChildren(); document.body.style.overflow = '';
+  }
+  sheet.addEventListener('click', (e) => { if (e.target.dataset.close !== undefined) closeSheet(); });
+  let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+
+  function pickList({ title, items, groups, selected, onPick, placeholder }) {
+    // items: [{key,label,sub,group}] ; groups: ordered group names (others follow alphabetically)
+    const q = h('input', { type: 'search', class: 'input', placeholder: placeholder || 'Search…', autocomplete: 'off', autocorrect: 'off', spellcheck: 'false' });
+    const list = h('div', { class: 'list' });
+    const draw = () => {
+      const needle = q.value.trim().toLowerCase(); const toks = needle.split(/\s+/).filter(Boolean);
+      const hit = (it) => !toks.length || toks.every((t) => `${it.key} ${it.label} ${it.sub || ''}`.toLowerCase().includes(t));
+      const rows = items.filter(hit);
+      list.replaceChildren();
+      const byGroup = new Map();
+      for (const it of rows) { const g = needle ? 'Results' : (it.group || 'All'); if (!byGroup.has(g)) byGroup.set(g, []); byGroup.get(g).push(it); }
+      const order = needle ? ['Results'] : [...(groups || []), ...[...byGroup.keys()].filter((g) => !(groups || []).includes(g)).sort()];
+      let n = 0;
+      for (const g of order) {
+        const its = byGroup.get(g); if (!its || !its.length) continue;
+        list.append(h('div', { class: 'group' }, g));
+        for (const it of its.slice(0, 200)) {
+          n++;
+          list.append(h('button', { class: 'item' + (it.key === selected ? ' sel' : ''), type: 'button', onclick: () => { onPick(it.key); closeSheet(); } },
+            h('span', { class: 'code' }, it.key), h('span', { class: 'name' }, it.label, it.sub ? h('div', { class: 'cat' }, it.sub) : null)));
+        }
+      }
+      if (!n) list.append(h('div', { class: 'empty-state' }, 'Nothing matches. Try fewer letters, or the number.'));
+    };
+    q.addEventListener('input', draw); draw();
+    openSheet(h('div', { class: 'stack' }, h('h1', {}, title), q, list, h('button', { class: 'btn block ghost', onclick: closeSheet }, 'Cancel')));
+    setTimeout(() => q.focus({ preventScroll: true }), 50);
+  }
+  const pickJob = (selected, onPick) => pickList({
+    title: 'Job', selected, onPick, placeholder: 'Job number or name',
+    items: REF.jobs.map((j) => ({ key: j.no, label: j.name, sub: j.client, group: state.recents.jobs.includes(j.no) ? 'Recent' : 'All jobs' })), groups: ['Recent', 'All jobs'],
+  });
+  const pickCode = (selected, onPick) => pickList({
+    title: 'Cost code', selected, onPick, placeholder: 'Code or words, e.g. 2-200 or water pipe',
+    items: REF.costCodes.filter((c) => !/-000$/.test(c.code)).map((c) => ({ key: c.code, label: c.desc, sub: c.cat, group: state.recents.codes.includes(c.code) ? 'Recent' : REF.favouriteCodes.includes(c.code) ? 'Common field codes' : c.cat || 'Other' })),
+    groups: ['Recent', 'Common field codes', 'Siteworks', 'General Requirements', 'Safety Services', 'Human Resources'],
+  });
+  const pickUnit = (selected, onPick) => pickList({
+    title: 'Equipment unit', selected, onPick, placeholder: 'Unit number or type',
+    items: [{ key: '', label: 'No equipment on this line', group: 'Recent' }, ...REF.equipment.map((e) => ({ key: e.unit, label: e.type, group: state.recents.units.includes(e.unit) ? 'Recent' : e.type }))],
+    groups: ['Recent', 'Excavator', 'Rock truck', 'Dozer', 'Loader', 'Grader', 'Smooth packer', 'Gravel truck'],
+  });
+
+  const stepper = (value, onChange, step = 0.5) => {
+    const inp = h('input', { type: 'number', inputmode: 'decimal', step: String(step), min: '0', value: value ? fmtH(value) : '' , placeholder: '0' });
+    const set = (v) => { inp.value = v ? fmtH(v) : ''; onChange(v); };
+    inp.addEventListener('change', () => set(num(inp.value)));
+    return h('div', { class: 'stepper' }, h('button', { type: 'button', onclick: () => set(Math.max(0, num(inp.value) - step)) }, '−'), inp, h('button', { type: 'button', onclick: () => set(num(inp.value) + step) }, '+'));
+  };
+
+  // ------------------------------------------------------------------ line editor
+  function editLine(day, line) {
+    const isNew = !line;
+    const l = line ? { ...line } : { id: uid(), job: state.profile.defaultJob || (day.lines.at(-1) || {}).job || '', cc: '', desc: '', reg: 0, ot: 0, dt: 0, unit: (day.lines.at(-1) || {}).unit || '', eq: 0 };
+    let eqTouched = !isNew && l.unit && l.eq !== labour(l);
+    const jobBtn = h('button', { type: 'button', class: 'picker', onclick: () => pickJob(l.job, (k) => { l.job = k; paint(); }) });
+    const ccBtn = h('button', { type: 'button', class: 'picker', onclick: () => pickCode(l.cc, (k) => { l.cc = k; paint(); }) });
+    const unitBtn = h('button', { type: 'button', class: 'picker', onclick: () => pickUnit(l.unit, (k) => { l.unit = k; if (k && !eqTouched) l.eq = labour(l) || 0; paint(); }) });
+    const eqWrap = h('div');
+    const desc = h('textarea', { placeholder: 'What you did, where. e.g. Laying 200 mm PVC water main, Sta 1+00 to 1+60, tie-in at hydrant.', oninput: () => { l.desc = desc.value; } }); desc.value = l.desc;
+    const syncEq = () => { if (l.unit && !eqTouched) { l.eq = labour(l); paint(); } };
+    const paint = () => {
+      jobBtn.replaceChildren(h('span', { class: 'val' + (l.job ? '' : ' empty') }, l.job ? `${l.job}  ${jobName(l.job)}` : 'Pick a job'), h('span', { class: 'chev' }, '›'));
+      ccBtn.replaceChildren(h('span', { class: 'val' + (l.cc ? '' : ' empty') }, l.cc ? `${l.cc}  ${codeDesc(l.cc)}` : 'Pick a cost code'), h('span', { class: 'chev' }, '›'));
+      unitBtn.replaceChildren(h('span', { class: 'val' + (l.unit ? '' : ' empty') }, l.unit ? `${l.unit}  ${unitType(l.unit)}` : 'No equipment (labour only)'), h('span', { class: 'chev' }, '›'));
+      eqWrap.replaceChildren(l.unit ? h('label', { class: 'field' }, h('span', {}, `${l.unit} hours`), stepper(l.eq, (v) => { l.eq = v; eqTouched = true; })) : null);
+    };
+    paint();
+    const saveLine = () => {
+      if (!l.job) return toast('Pick a job first');
+      if (!l.cc) return toast('Pick a cost code');
+      if (!labour(l) && !(l.unit && l.eq)) return toast('Enter some hours');
+      if (!l.unit) l.eq = 0;
+      const i = day.lines.findIndex((x) => x.id === l.id); if (i >= 0) day.lines[i] = l; else day.lines.push(l);
+      remember(state.recents.jobs, l.job); remember(state.recents.codes, l.cc, 12); if (l.unit) remember(state.recents.units, l.unit);
+      delete state.sent[day.date]; save(); closeSheet(); render();
+    };
+    openSheet(h('div', { class: 'stack' },
+      h('h1', {}, isNew ? 'Add time' : 'Edit time'),
+      h('label', { class: 'field' }, h('span', {}, 'Job'), jobBtn),
+      h('label', { class: 'field' }, h('span', {}, 'Cost code'), ccBtn),
+      h('div', { class: 'field-label' }, 'Your hours (labour)'),
+      h('div', { class: 'grid3' },
+        h('label', { class: 'field' }, h('span', {}, 'Regular'), stepper(l.reg, (v) => { l.reg = v; syncEq(); })),
+        h('label', { class: 'field' }, h('span', {}, 'Overtime'), stepper(l.ot, (v) => { l.ot = v; syncEq(); })),
+        h('label', { class: 'field' }, h('span', {}, 'Double time'), stepper(l.dt, (v) => { l.dt = v; syncEq(); }))),
+      h('label', { class: 'field' }, h('span', {}, 'Equipment you ran on this cost code'), unitBtn),
+      eqWrap,
+      h('label', { class: 'field' }, h('span', {}, 'Description'), desc),
+      h('button', { class: 'btn primary block', onclick: saveLine }, isNew ? 'Add to today' : 'Save'),
+      isNew ? null : h('button', { class: 'btn block ghost danger', onclick: () => { day.lines = day.lines.filter((x) => x.id !== l.id); delete state.sent[day.date]; save(); closeSheet(); render(); } }, 'Remove this line'),
+      h('button', { class: 'btn block ghost', onclick: closeSheet }, 'Cancel')));
+  }
+
+  // ------------------------------------------------------------------ views
+  function viewDay() {
+    const d = getDay(ui.date); const t = dayHours(d); const probs = problems(d); const pe = periodEnd(ui.date);
+    const dateInp = h('input', { type: 'date', value: ui.date, onchange: () => { if (dateInp.value) { ui.date = dateInp.value; render(); } } });
+    const lines = d.lines.length ? d.lines.map((l) => h('div', { class: 'line', role: 'button', tabindex: '0', onclick: () => editLine(d, l) },
+      h('div', {}, h('div', { class: 'job' }, `${l.job} ${jobName(l.job)}`), h('div', { class: 'cc' }, `${l.cc} ${codeDesc(l.cc)}`)),
+      h('div', {}, h('div', { class: 'hrs' }, `${fmtH(labour(l))} h`, l.ot || l.dt ? h('div', { class: 'small muted' }, [l.ot ? `${fmtH(l.ot)} OT` : '', l.dt ? `${fmtH(l.dt)} DT` : ''].filter(Boolean).join(' · ')) : null),
+        l.unit ? h('div', { class: 'eq' }, `${l.unit} · ${fmtH(l.eq)} h`) : null),
+      l.desc ? h('div', { class: 'desc' }, l.desc) : null))
+      : [h('div', { class: 'empty-state' }, h('div', { class: 'big' }, '⏱'), h('div', {}, 'No time on this day yet.'), h('div', { class: 'small' }, 'Add a line for each job and cost code you worked. Equipment hours go on the same line as the labour that ran it.'))];
+    const sentAt = state.sent[ui.date];
+    return h('div', {},
+      h('div', { class: 'daynav' },
+        h('button', { class: 'btn', onclick: () => { ui.date = addDays(ui.date, -1); render(); } }, '‹'),
+        dateInp,
+        h('button', { class: 'btn', onclick: () => { ui.date = addDays(ui.date, 1); render(); } }, '›')),
+      h('div', { class: 'card row between' },
+        h('div', {}, h('div', { class: 'total' }, fmtH(t.reg + t.ot + t.dt), h('small', {}, ' h labour')), h('div', { class: 'small muted' }, `Reg ${fmtH(t.reg)} · OT ${fmtH(t.ot)} · DT ${fmtH(t.dt)}`)),
+        h('div', { style: 'text-align:right' }, h('div', { class: 'total' }, fmtH(t.eq), h('small', {}, ' h equip')), h('div', { class: 'small muted' }, `Pay period ends ${fmt(pe)}`))),
+      h('div', { class: 'card' }, ...lines, h('button', { class: 'btn dark block', style: 'margin-top:10px', onclick: () => editLine(d) }, '+ Add job / cost code line')),
+      h('div', { class: 'card stack' },
+        h('div', { class: 'field-label' }, 'Allowances for the day'),
+        h('div', { class: 'chips' },
+          h('button', { class: 'chip' + (d.loa ? ' on' : ''), onclick: () => { d.loa = !d.loa; delete state.sent[d.date]; save(); render(); } }, `LOA  $${REF.allowances.loa}`),
+          h('button', { class: 'chip' + (d.pu ? ' on' : ''), onclick: () => { d.pu = !d.pu; delete state.sent[d.date]; save(); render(); } }, `Own truck (P/U)  $${REF.allowances.pickup}`)),
+        h('div', { class: 'grid2' },
+          h('label', { class: 'field' }, h('span', {}, `Travel km  ($${REF.allowances.travelKm}/km)`), h('input', { type: 'number', inputmode: 'decimal', min: '0', step: '1', value: d.km || '', placeholder: '0', onchange: (e) => { d.km = Math.max(0, parseFloat(e.target.value) || 0); delete state.sent[d.date]; save(); } })),
+          h('div')),
+        h('label', { class: 'field' }, h('span', {}, 'Notes for the office (optional)'), (() => { const ta = h('textarea', { placeholder: 'Rain day, waiting on materials, first aid, breakdown…', oninput: (e) => { d.notes = e.target.value; delete state.sent[d.date]; save(); } }); ta.value = d.notes || ''; return ta; })())),
+      h('div', { class: 'card stack' },
+        h('div', { class: 'row between' }, h('div', { class: 'field-label', style: 'margin:0' }, 'Send today\'s card'),
+          sentAt ? h('span', { class: 'tag ok' }, `sent ${new Date(sentAt).toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`) : null),
+        ...probs.map((p) => h('div', { class: /Check it|more hours/.test(p) ? 'warn-text' : 'bad-text' }, p)),
+        h('div', { class: 'grid2' },
+          h('button', { class: 'btn primary', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: () => send([d], 'email') }, '✉ Email'),
+          h('button', { class: 'btn', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: () => send([d], navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
+        h('div', { class: 'small muted' }, `Goes to ${state.profile.submitTo || REF.submitTo}. You can send one day at a time, or the whole pay period from the Pay period tab.`)));
+  }
+
+  function viewPeriod() {
+    const pe = periodEnd(ui.date); const days = periodDays(pe); const today = todayISO();
+    const worked = days.map((iso) => state.days[iso]).filter(hasWork);
+    const sum = new Map(); let reg = 0, ot = 0, dt = 0, eq = 0, loa = 0, pu = 0, km = 0;
+    for (const d of worked) {
+      const t = dayHours(d); reg += t.reg; ot += t.ot; dt += t.dt; eq += t.eq; loa += d.loa ? 1 : 0; pu += d.pu ? 1 : 0; km += d.km || 0;
+      for (const l of d.lines) { const k = `${l.job}|${l.cc}`; const s = sum.get(k) || { job: l.job, cc: l.cc, lab: 0, eq: 0, units: new Set() }; s.lab += labour(l); if (l.unit) { s.eq += l.eq; s.units.add(l.unit); } sum.set(k, s); }
+    }
+    const allSent = worked.length && worked.every((d) => state.sent[d.date]);
+    const probs = worked.flatMap((d) => problems(d).filter((p) => !/Check it|more hours/.test(p)).map((p) => `${fmt(d.date)}: ${p}`));
+    return h('div', {},
+      h('div', { class: 'card' },
+        h('div', { class: 'row between' },
+          h('button', { class: 'btn sm', onclick: () => { ui.date = addDays(pe, -REF.payPeriod.days); render(); } }, '‹ prev'),
+          h('div', { style: 'text-align:center' }, h('h1', {}, `${fmt(days[0], { month: 'short', day: 'numeric' })} – ${fmt(pe, { month: 'short', day: 'numeric' })}`), h('div', { class: 'small muted' }, `Pay period ends Sat ${fmt(pe, { month: 'short', day: 'numeric' })}`)),
+          h('button', { class: 'btn sm', onclick: () => { ui.date = addDays(pe, REF.payPeriod.days); render(); } }, 'next ›')),
+        h('div', { class: 'period-grid', style: 'margin-top:12px' }, ...days.map((iso) => {
+          const d = state.days[iso]; const t = d ? dayHours(d) : null; const lab = t ? t.reg + t.ot + t.dt : 0;
+          return h('button', { class: 'pday' + (iso === today ? ' today' : '') + (hasWork(d) ? '' : ' empty') + (state.sent[iso] ? ' sent' : ''), onclick: () => { ui.date = iso; ui.tab = 'day'; render(); } },
+            h('div', { class: 'd' }, fmt(iso, { weekday: 'short' })), h('div', { class: 'n' }, parseISO(iso).getDate()), h('div', { class: 'h' }, lab ? fmtH(lab) : (d && (d.loa || d.pu || d.km) ? '·' : '')));
+        }))),
+      h('div', { class: 'card' },
+        h('div', { class: 'row between' }, h('div', {}, h('div', { class: 'total' }, fmtH(reg + ot + dt), h('small', {}, ' h labour')), h('div', { class: 'small muted' }, `Reg ${fmtH(reg)} · OT ${fmtH(ot)} · DT ${fmtH(dt)}`)),
+          h('div', { style: 'text-align:right' }, h('div', { class: 'total' }, fmtH(eq), h('small', {}, ' h equip')), h('div', { class: 'small muted' }, `LOA ${loa} · P/U ${pu} · ${km} km`))),
+        sum.size ? h('table', { class: 'sum', style: 'margin-top:10px' }, h('thead', {}, h('tr', {}, h('th', {}, 'Job / cost code'), h('th', { class: 'num' }, 'Labour'), h('th', { class: 'num' }, 'Equip'))),
+          h('tbody', {}, ...[...sum.values()].sort((a, b) => a.job.localeCompare(b.job) || a.cc.localeCompare(b.cc)).map((s) => h('tr', {},
+            h('td', {}, h('div', {}, h('b', {}, s.job), ' ', jobName(s.job)), h('div', { class: 'small muted' }, `${s.cc} ${codeDesc(s.cc)}`)),
+            h('td', { class: 'num' }, fmtH(s.lab)), h('td', { class: 'num' }, s.eq ? h('span', {}, fmtH(s.eq), h('div', { class: 'small muted' }, [...s.units].join(', '))) : '–')))))
+          : h('div', { class: 'empty-state small' }, 'No time in this pay period yet.')),
+      h('div', { class: 'card stack' },
+        h('div', { class: 'row between' }, h('div', { class: 'field-label', style: 'margin:0' }, 'Send the whole pay period'), allSent ? h('span', { class: 'tag ok' }, 'all days sent') : null),
+        ...probs.map((p) => h('div', { class: 'bad-text' }, p)),
+        h('div', { class: 'grid2' },
+          h('button', { class: 'btn primary', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, 'email') }, '✉ Email period'),
+          h('button', { class: 'btn', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
+        h('button', { class: 'btn block ghost', disabled: !worked.length, onclick: () => openSheet(h('div', {}, h('h1', {}, 'What the office receives'), h('pre', { class: 'preview' }, buildText(worked)), h('button', { class: 'btn block', onclick: closeSheet }, 'Close'))) }, 'Preview'),
+        h('div', { class: 'small muted' }, 'Same as the paper weekly timesheet, plus the job, cost code and equipment split the office needs for job costing. Send by the deadline on the Employee Resources page.')));
+  }
+
+  function viewSettings() {
+    const p = state.profile;
+    const field = (label, key, attrs = {}) => h('label', { class: 'field' }, h('span', {}, label), h('input', Object.assign({ type: 'text', value: p[key] || '', onchange: (e) => { p[key] = e.target.value.trim(); save(); renderWho(); } }, attrs)));
+    const jobBtn = h('button', { type: 'button', class: 'picker', onclick: () => pickJob(p.defaultJob, (k) => { p.defaultJob = k; save(); render(); }) },
+      h('span', { class: 'val' + (p.defaultJob ? '' : ' empty') }, p.defaultJob ? `${p.defaultJob}  ${jobName(p.defaultJob)}` : 'Optional: the job you are usually on'), h('span', { class: 'chev' }, '›'));
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    return h('div', {},
+      h('div', { class: 'card' }, h('h1', {}, 'About you'),
+        field('Your name (as on your paycheque)', 'name', { autocomplete: 'name' }),
+        field('Position', 'position', { placeholder: 'Operator, Labourer, Foreman…' }),
+        field('Supervisor / foreman', 'supervisor'),
+        h('label', { class: 'field' }, h('span', {}, 'Default job'), jobBtn),
+        field('Send timecards to', 'submitTo', { type: 'email', placeholder: REF.submitTo, inputmode: 'email' })),
+      standalone ? null : h('div', { class: 'card' }, h('h1', {}, 'Put it on your home screen'),
+        isiOS ? h('div', { class: 'small' }, 'In Safari tap the ', h('b', {}, 'Share'), ' button, then ', h('b', {}, 'Add to Home Screen'), '. It opens like an app and works with no signal.')
+          : h('div', { class: 'small' }, 'In Chrome tap the ', h('b', {}, '⋮ menu'), ', then ', h('b', {}, 'Add to Home screen'), ' (or "Install app"). It opens like an app and works with no signal.')),
+      h('div', { class: 'card stack' }, h('h1', {}, 'Lists'),
+        h('div', { class: 'small muted' }, `${REF.jobs.length} jobs · ${REF.costCodes.length} cost codes · ${REF.equipment.length} units · list version ${REF.version}`),
+        h('button', { class: 'btn block', onclick: () => loadRef(true) }, 'Refresh job, cost code and equipment lists')),
+      h('div', { class: 'card stack' }, h('h1', {}, 'Your data'),
+        h('div', { class: 'small muted' }, `${Object.values(state.days).filter(hasWork).length} days on this phone. Nothing leaves the phone until you send it.`),
+        h('button', { class: 'btn block', onclick: async () => { const txt = JSON.stringify(state); try { await navigator.clipboard.writeText(txt); toast('Backup copied. Paste it somewhere safe (a note, an email to yourself).'); } catch (e) { openSheet(h('div', {}, h('h1', {}, 'Backup'), h('pre', { class: 'preview' }, txt))); } } }, 'Copy a backup'),
+        h('button', { class: 'btn block', onclick: () => { const ta = h('textarea', { placeholder: 'Paste a backup here' }); openSheet(h('div', { class: 'stack' }, h('h1', {}, 'Restore a backup'), ta, h('button', { class: 'btn primary block', onclick: () => { try { const s = JSON.parse(ta.value); if (!s.days) throw 0; state = Object.assign(blank(), s); save(); closeSheet(); render(); toast('Restored'); } catch (e) { toast('That is not a RAM Timecard backup'); } } }, 'Restore'))); } }, 'Restore a backup'),
+        h('button', { class: 'btn block ghost danger', onclick: () => { if (confirm('Delete every day on this phone? Sent cards are already with the office.')) { state = Object.assign(blank(), { profile: state.profile }); save(); render(); } } }, 'Clear all days')),
+      h('div', { class: 'small muted', style: 'text-align:center;padding:8px' }, 'RAM Excavating Limited · 1346 Winword Rd, Quesnel BC'));
+  }
+
+  // ------------------------------------------------------------------ shell
+  const renderWho = () => { $('#who').textContent = state.profile.name || 'Set your name under Me'; };
+  function render() {
+    if (!REF) return;
+    document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === ui.tab));
+    const v = ui.tab === 'day' ? viewDay() : ui.tab === 'period' ? viewPeriod() : viewSettings();
+    $('#view').replaceChildren(v); renderWho();
+  }
+  $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; ui.tab = b.dataset.tab; render(); window.scrollTo(0, 0); });
+
+  async function loadRef(force) {
+    if (window.__RAMTC_REF && !force) {           // single-file build (timecards/dist): the lists are baked in
+      REF = window.__RAMTC_REF; try { localStorage.setItem(REF_CACHE, JSON.stringify(REF)); } catch (e) { /* fine */ }
+      if (!state.profile.name && ui.tab === 'day' && !Object.keys(state.days).length) ui.tab = 'settings';
+      render(); return;
+    }
+    try {
+      const r = await fetch('data/reference.json' + (force ? '?t=' + Date.now() : ''), { cache: force ? 'reload' : 'default' });
+      if (!r.ok) throw new Error(r.status);
+      REF = await r.json(); localStorage.setItem(REF_CACHE, JSON.stringify(REF));
+      if (force) toast(`Lists updated (${REF.version})`);
+    } catch (e) {
+      if (window.__RAMTC_REF) { REF = window.__RAMTC_REF; toast('This copy has its lists built in. Get the newest copy from the office to update them.'); render(); return; }
+      const cached = localStorage.getItem(REF_CACHE);
+      if (cached) { REF = JSON.parse(cached); if (force) toast('No signal. Using the last lists you had.'); }
+      else { $('#view').replaceChildren(h('div', { class: 'empty-state' }, 'Could not load the job and cost code lists. Connect to the internet once and reopen.')); return; }
+    }
+    if (!state.profile.name && ui.tab === 'day' && !Object.keys(state.days).length) ui.tab = 'settings';
+    render();
+  }
+  if ('serviceWorker' in navigator && !window.__RAMTC_REF && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+  loadRef(false);
+})();
+
+</script>
+</body>
+</html>
