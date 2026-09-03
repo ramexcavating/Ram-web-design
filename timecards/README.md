@@ -5,6 +5,10 @@ A timecard app employees open on their phone, fill in at the end of the shift, a
 and hours** they ran on that cost code, plus a **description**. LOA, own-truck (P/U) and travel km match the current
 paper weekly timesheet, so payroll loses nothing and job costing gains the split it never had.
 
+| Today | Adding a line | Pay period |
+|---|---|---|
+| ![Today](docs/screen-day.png) | ![Line editor](docs/screen-line-editor.png) | ![Pay period](docs/screen-period.png) |
+
 ```
 timecards/
   app/                 the app itself: static files, no server, no login, works offline

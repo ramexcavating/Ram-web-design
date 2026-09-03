@@ -12,7 +12,7 @@
       if (k === 'class') el.className = v;
       else if (k === 'html') el.innerHTML = v;
       else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
-      else if (v === false || v == null) continue;
+      else if (v === false || v == null || (k === 'disabled' && !v)) continue;
       else el.setAttribute(k, v === true ? '' : v);
     }
     for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
@@ -137,9 +137,14 @@
   }
 
   // ------------------------------------------------------------------ sheets, toasts, lists
-  const sheet = $('#sheet'); const sheetBody = $('#sheet-body');
-  function openSheet(node) { sheetBody.replaceChildren(node); sheet.hidden = false; document.body.style.overflow = 'hidden'; }
-  function closeSheet() { sheet.hidden = true; sheetBody.replaceChildren(); document.body.style.overflow = ''; }
+  // Sheets stack: a picker opens on top of the line editor and closing it brings the editor back.
+  const sheet = $('#sheet'); const sheetBody = $('#sheet-body'); const sheetStack = [];
+  function openSheet(node) { sheetStack.push(node); sheetBody.replaceChildren(node); sheet.hidden = false; document.body.style.overflow = 'hidden'; $('.sheet-panel').scrollTop = 0; }
+  function closeSheet() {
+    sheetStack.pop();
+    if (sheetStack.length) { sheetBody.replaceChildren(sheetStack[sheetStack.length - 1]); return; }
+    sheet.hidden = true; sheetBody.replaceChildren(); document.body.style.overflow = '';
+  }
   sheet.addEventListener('click', (e) => { if (e.target.dataset.close !== undefined) closeSheet(); });
   let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
 
@@ -290,7 +295,7 @@
       h('div', { class: 'card' },
         h('div', { class: 'row between' },
           h('button', { class: 'btn sm', onclick: () => { ui.date = addDays(pe, -REF.payPeriod.days); render(); } }, '‹ prev'),
-          h('div', { style: 'text-align:center' }, h('h1', {}, `${fmt(days[0])} – ${fmt(pe)}`), h('div', { class: 'small muted' }, `Pay period ends Saturday ${fmt(pe, { month: 'long', day: 'numeric' })}`)),
+          h('div', { style: 'text-align:center' }, h('h1', {}, `${fmt(days[0], { month: 'short', day: 'numeric' })} – ${fmt(pe, { month: 'short', day: 'numeric' })}`), h('div', { class: 'small muted' }, `Pay period ends Sat ${fmt(pe, { month: 'short', day: 'numeric' })}`)),
           h('button', { class: 'btn sm', onclick: () => { ui.date = addDays(pe, REF.payPeriod.days); render(); } }, 'next ›')),
         h('div', { class: 'period-grid', style: 'margin-top:12px' }, ...days.map((iso) => {
           const d = state.days[iso]; const t = d ? dayHours(d) : null; const lab = t ? t.reg + t.ot + t.dt : 0;
@@ -309,8 +314,8 @@
         h('div', { class: 'row between' }, h('div', { class: 'field-label', style: 'margin:0' }, 'Send the whole pay period'), allSent ? h('span', { class: 'tag ok' }, 'all days sent') : null),
         ...probs.map((p) => h('div', { class: 'bad-text' }, p)),
         h('div', { class: 'grid2' },
-          h('button', { class: 'btn primary', disabled: !worked.length || probs.length, onclick: () => send(worked, 'email') }, '✉ Email period'),
-          h('button', { class: 'btn', disabled: !worked.length || probs.length, onclick: () => send(worked, navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
+          h('button', { class: 'btn primary', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, 'email') }, '✉ Email period'),
+          h('button', { class: 'btn', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
         h('button', { class: 'btn block ghost', disabled: !worked.length, onclick: () => openSheet(h('div', {}, h('h1', {}, 'What the office receives'), h('pre', { class: 'preview' }, buildText(worked)), h('button', { class: 'btn block', onclick: closeSheet }, 'Close'))) }, 'Preview'),
         h('div', { class: 'small muted' }, 'Same as the paper weekly timesheet, plus the job, cost code and equipment split the office needs for job costing. Send by the deadline on the Employee Resources page.')));
   }
