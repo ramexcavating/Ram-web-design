@@ -14,7 +14,7 @@ from pathlib import Path
 
 from . import db
 from .extract.extractor import ExtractionError
-from .ledger import intake
+from .ledger import intake, timecards
 from .models import Extraction
 from .notify import inbox
 from .notify.inbox import raise_item
@@ -43,6 +43,18 @@ def process_new_documents(conn: sqlite3.Connection, settings, extractor, filer, 
                     conn.commit()
                     continue
             data = local.read_bytes()
+            if timecards.is_timecard(data, d["filename"], d["subject"]):
+                payload = timecards.parse(data)
+                summary = timecards.record_timecard(conn, settings, d["id"], payload)
+                decision = timecards.filing_decision(payload, settings.sharepoint)
+                filed = filer.file(d["local_path"], decision)
+                conn.execute("UPDATE documents SET doc_type='timecard', status='filed', filed_path=?, extracted_json=?, confidence=1, legible=1, error=NULL WHERE id=?",
+                             (filed, __import__("json").dumps(payload), d["id"]))
+                stats["filed"] += 1
+                conn.commit()
+                Path(d["local_path"]).unlink(missing_ok=True)
+                log.info("doc %s %s -> timecard (%s)", d["id"], d["filename"], summary)
+                continue
             ctx = " | ".join(x for x in [f"from {d['sender']}" if d["sender"] else "", f"subject: {d['subject']}" if d["subject"] else "", f"source {d['source']}"] if x)
             ex = extractor.extract(data, d["filename"], ctx)
             received = parse_date((d["received_at"] or "")[:10])

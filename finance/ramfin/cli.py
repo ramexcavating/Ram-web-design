@@ -267,6 +267,20 @@ def cmd_backfill(a, settings):
     a.dbcmd = "push"; cmd_db(a, settings)
 
 
+def cmd_timecards(a, settings):
+    """Phone timecards: import a pasted card, or regenerate the app's reference lists from the database."""
+    from .ledger import timecards
+    conn = _conn(settings)
+    if a.tccmd == "import":
+        data = Path(a.file).read_bytes()
+        payload = timecards.parse(data)
+        print(timecards.record_timecard(conn, settings, None, payload))
+        print("would file to:", timecards.filing_decision(payload, settings.sharepoint).folder)
+    elif a.tccmd == "reference":
+        out = a.out or str(Path(__file__).resolve().parents[2] / "timecards" / "app" / "data" / "reference.json")
+        print(timecards.export_reference(conn, settings, out))
+
+
 def cmd_run_all(a, settings):
     if not a.local:
         a.dbcmd = "pull"; cmd_db(a, settings)
@@ -304,6 +318,9 @@ def main(argv=None):
     s = sub.add_parser("inbox"); s.add_argument("-v", "--verbose", action="store_true"); s.set_defaults(fn=cmd_inbox)
     sub.add_parser("index-existing").set_defaults(fn=cmd_index_existing)
     s = sub.add_parser("backfill"); s.add_argument("--send", action="store_true"); s.add_argument("--lookback-days", type=int, default=45); s.add_argument("--limit", type=int, default=300); s.set_defaults(fn=cmd_backfill)
+    s = sub.add_parser("timecards", help="phone timecards: import <file> | reference [--out path]"); s3 = s.add_subparsers(dest="tccmd", required=True)
+    si = s3.add_parser("import"); si.add_argument("file"); si.set_defaults(fn=cmd_timecards)
+    sr = s3.add_parser("reference"); sr.add_argument("--out"); sr.set_defaults(fn=cmd_timecards)
     s = sub.add_parser("run-all"); s.add_argument("--send", action="store_true"); s.add_argument("--local", action="store_true"); s.add_argument("--lookback-days", type=int, default=3); s.add_argument("--limit", type=int, default=200); s.set_defaults(fn=cmd_run_all)
     a = p.parse_args(argv)
     settings = load_settings(a.config)

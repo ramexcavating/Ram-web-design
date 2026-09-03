@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 BODY_RECEIPT_RX = re.compile(r"receipt|your order|payment (received|confirmation)|invoice|statement is ready|thank you for your (order|payment)", re.I)
 SKIP_SENDER_RX = re.compile(r"no-reply-claude@|noreply@github|linkedin|indeed", re.I)
 SKIP_SUBJECT_RX = re.compile(r"Weekly (Managers|Priorities|Business|Equipment|Lead)|RAM finance:|Deep-work pack|Daily Report|FLHA|Toolbox", re.I)
+TIMECARD_SUBJECT_RX = re.compile(r"^\s*(re:|fwd?:)?\s*RAM Timecard\b", re.I)
 MIN_IMAGE_BYTES = 25_000        # anything smaller is a signature logo or an icon
 MAX_ATTACHMENT_BYTES = 15_000_000
 
@@ -37,6 +38,15 @@ def scan_mailboxes(conn: sqlite3.Connection, settings, graph, lookback_days: int
                 received = msg.get("receivedDateTime") or since
                 newest = max(newest, received)
                 if SKIP_SENDER_RX.search(sender or "") or SKIP_SUBJECT_RX.search(subject):
+                    continue
+                if TIMECARD_SUBJECT_RX.search(subject):
+                    # a phone timecard: the body is the document (see ledger/timecards.py); attachments on it are ignored
+                    body = (msg.get("body") or {}).get("content") or msg.get("bodyPreview") or ""
+                    doc_id = register(conn, settings.inbox_dir, body.encode("utf-8"), f"{re.sub(r'[^A-Za-z0-9]+', '_', subject)[:60]}.ramtc.txt",
+                                      source=key, source_ref=msg.get("internetMessageId") or msg["id"], sender=sender, subject=subject,
+                                      received_at=received, mime="text/plain")
+                    if doc_id:
+                        new += 1
                     continue
                 if msg.get("hasAttachments"):
                     for att in graph.list_attachments(mbx, msg["id"]):

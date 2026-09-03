@@ -191,6 +191,20 @@ CREATE TABLE IF NOT EXISTS time_entries (
     description TEXT
 );
 
+CREATE TABLE IF NOT EXISTS timecard_days (        -- one row per day on a phone timecard: the allowances and notes that are not per line
+    id INTEGER PRIMARY KEY,
+    timesheet_id INTEGER REFERENCES timesheets(id) ON DELETE CASCADE,
+    work_date TEXT NOT NULL,
+    loa INTEGER DEFAULT 0,
+    pickup INTEGER DEFAULT 0,
+    travel_km REAL DEFAULT 0,
+    notes TEXT,
+    supervisor TEXT,
+    sent_at TEXT,
+    document_id INTEGER REFERENCES documents(id),
+    UNIQUE(timesheet_id, work_date)
+);
+
 CREATE TABLE IF NOT EXISTS payroll_runs (
     id INTEGER PRIMARY KEY,
     period_end TEXT NOT NULL UNIQUE,
@@ -282,7 +296,8 @@ def connect(path: str | Path = ":memory:") -> sqlite3.Connection:
     return conn
 
 
-MIGRATIONS = [("vendors", "default_job", "TEXT"), ("ap_invoices", "updated_at", "TEXT"), ("receipts", "personal", "INTEGER DEFAULT 0")]
+MIGRATIONS = [("vendors", "default_job", "TEXT"), ("ap_invoices", "updated_at", "TEXT"), ("receipts", "personal", "INTEGER DEFAULT 0"),
+              ("time_entries", "dt_hours", "REAL DEFAULT 0"), ("time_entries", "equipment_hours", "REAL DEFAULT 0")]
 
 
 def _migrate(conn: sqlite3.Connection) -> None:
