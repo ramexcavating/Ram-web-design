@@ -72,7 +72,8 @@ def equipment_cost(conn: sqlite3.Connection, settings, start: str | None = None,
         unit = r["notes"][1:r["notes"].index("]")] if "]" in r["notes"] else None
         if unit:
             out[unit][bucket(r["cost_code"], r["notes"])] += r["net"]; out[unit]["documents"] += 1
-    q = "SELECT equipment_id, SUM(hours+ot_hours) h FROM time_entries WHERE equipment_id IS NOT NULL"
+    q = ("SELECT equipment_id, SUM(CASE WHEN COALESCE(equipment_hours,0)>0 THEN equipment_hours ELSE hours+ot_hours+COALESCE(dt_hours,0) END) h "
+         "FROM time_entries WHERE equipment_id IS NOT NULL")
     p = []
     if start: q += " AND work_date>=?"; p.append(start)
     if end: q += " AND work_date<=?"; p.append(end)

@@ -118,3 +118,31 @@ def test_export_reference_for_the_phones(conn, settings, tmp_path):
     assert {c["code"] for c in ref["costCodes"]} >= {"01-100", "02-300"}
     assert ref["payPeriod"] == {"anchorEnd": "2026-08-08", "days": 14}      # conftest anchors pay day 2026-08-14 (Friday) -> period ended Saturday 08-08
     assert ref["submitTo"] == "accounts@ramexcavating.ca"
+
+
+def test_pay_period_summary_matches_the_paper_amounts_row(conn, settings):
+    # Ed Smith is in the conftest at $28/h. Two days: 6 reg + 2 reg + 1.5 OT, then 8 reg + 0.5 DT; LOA once, P/U once, 40 km.
+    timecards.record_timecard(conn, settings, None, CARD)
+    rows = timecards.pay_period_summary(conn, settings, "2026-08-15")
+    assert len(rows) == 1
+    r = rows[0]
+    assert (r["employee"], r["days"], r["reg"], r["ot"], r["dt"], r["equipment_hours"]) == ("Ed Smith", 2, 16.0, 1.5, 0.5, 14.5)
+    assert (r["loa_days"], r["pickup_days"], r["travel_km"]) == (1, 1, 40.0)
+    assert r["wages"] == round(16 * 28 + 1.5 * 28 * 1.5 + 0.5 * 28 * 2, 2) == 539.0
+    assert r["allowances"] == round(220 + 150 + 40 * 0.73, 2) == 399.2
+    assert r["gross"] == 938.2 and r["missing_rate"] is False
+    text = timecards.format_summary(rows, "2026-08-15")
+    assert "Ed Smith" in text and "938.20" in text and "TOTAL" in text
+    assert "No timesheets" in timecards.format_summary([], "2026-08-29")
+
+
+def test_equipment_hours_feed_the_unit_economics(conn, settings):
+    from ramfin.ledger import jobcost
+    conn.execute("INSERT INTO equipment(unit_id, description) VALUES('EX-03', 'Excavator')")
+    conn.execute("INSERT INTO equipment(unit_id, description) VALUES('EX-01', 'Excavator')")
+    timecards.record_timecard(conn, settings, None, CARD)
+    ec = jobcost.equipment_cost(conn, settings, "2026-08-01", "2026-08-31")
+    assert ec["EX-03"]["hours"] == 6.0 and ec["EX-01"]["hours"] == 8.5
+    from ramfin.ledger import timesheets as ts
+    by_job = {(r["job_no"], r["cost_code"]): r for r in ts.labour_cost_by_job(conn, settings, "2026-08-01", "2026-08-31")}
+    assert by_job[("260102", "01-100")]["dt_hours"] == 0.5 and by_job[("260102", "01-100")]["equipment_hours"] == 8.5

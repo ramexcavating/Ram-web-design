@@ -89,9 +89,16 @@ and `ramfin process` parses the block deterministically (no AI call). Unknown jo
 day over 14 hours, or a card from a name not in the employee list become action items in the daily digest instead of
 silently landing. A re-sent day replaces the earlier version of that day only; the rest of the pay period is untouched.
 
-You can also paste a card into a file and run `ramfin timecards import card.txt`, and `ramfin timecards reference`
-regenerates `timecards/app/data/reference.json` from the finance database so the pickers follow the job list ramfin
-already maintains.
+Three commands for the office:
+
+- `ramfin timecards summary [--period 2026-09-12] [--csv out.csv]`: one row per employee for the pay period, the same
+  Days / Reg / OT / DT / LOA / P-U / km / Amounts row the paper sheet has, plus equipment hours, ready for payroll.
+- `ramfin timecards import card.txt`: a card pasted into a file (a text message, a Teams chat) lands the same way.
+- `ramfin timecards reference`: regenerates `timecards/app/data/reference.json` from the finance database so the phones
+  follow the job list ramfin already maintains.
+
+Also try `timecards/dist/ram-timecard.html`: the whole app in one file (`python3 timecards/tools/build_single.py`) for
+trying it out from an attachment before hosting is set up.
 
 ## Keeping the lists current
 

@@ -29,6 +29,8 @@ BLOCK_RX = re.compile(r"--RAMTC1--\s*(\{.*?\})\s*--END--", re.S)
 MARKER = b"--RAMTC1--"
 
 # what the phone shows first in the cost code picker; everything else is searchable
+DEFAULT_ALLOWANCES = {"loa": 220.0, "pickup": 150.0, "travel_km": 0.73}     # the rates printed on the paper weekly timesheet
+
 FAVOURITE_CODES = ["2-100", "2-101", "2-102", "2-106", "2-107", "2-108", "2-111", "2-114", "2-200", "2-201", "2-202", "2-204", "2-205", "2-206",
                    "2-215", "2-217", "2-219", "2-226", "2-240", "2-261", "1-041", "1-042", "1-062", "1-067", "1-293", "1-294", "1-295", "1-296",
                    "50-120", "50-121", "50-160", "50-932", "70-001"]
@@ -186,3 +188,44 @@ def export_reference(conn: sqlite3.Connection, settings, out_path: str | Path, s
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(ref, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     return dict(jobs=len(jobs), cost_codes=len(codes), equipment=len(units), path=str(p))
+
+
+def allowance_rates(settings) -> dict:
+    """LOA, own-truck and travel rates: config `company.allowances`, else the rates on the paper sheet."""
+    raw = (getattr(settings, "company", None) or {}).get("allowances", {}) if settings is not None else {}
+    return {**DEFAULT_ALLOWANCES, **{k: float(v) for k, v in (raw or {}).items()}}
+
+
+def pay_period_summary(conn: sqlite3.Connection, settings, period_end: str | date) -> list[dict]:
+    """One row per employee for the pay period: hours by type, allowance days, km, and the dollar amounts the paper
+    timesheet's 'Amounts' row shows (OT at 1.5x, DT at 2x, allowances at the configured rates). Gross only; no burden."""
+    pe = period_end.isoformat() if isinstance(period_end, date) else str(period_end)
+    rates = allowance_rates(settings)
+    out = []
+    for ts in db.rows(conn, "SELECT ts.id, ts.status, e.name, e.position, e.base_rate FROM timesheets ts JOIN employees e ON e.id=ts.employee_id WHERE ts.period_end=? ORDER BY e.name", (pe,)):
+        h = conn.execute("SELECT COALESCE(SUM(hours),0) reg, COALESCE(SUM(ot_hours),0) ot, COALESCE(SUM(dt_hours),0) dt, "
+                         "COALESCE(SUM(CASE WHEN COALESCE(equipment_hours,0)>0 THEN equipment_hours ELSE 0 END),0) eq, COUNT(DISTINCT work_date) days "
+                         "FROM time_entries WHERE timesheet_id=?", (ts["id"],)).fetchone()
+        a = conn.execute("SELECT COALESCE(SUM(loa),0) loa, COALESCE(SUM(pickup),0) pu, COALESCE(SUM(travel_km),0) km FROM timecard_days WHERE timesheet_id=?", (ts["id"],)).fetchone()
+        rate = float(ts["base_rate"] or 0)
+        wages = round(h["reg"] * rate + h["ot"] * rate * 1.5 + h["dt"] * rate * 2.0, 2)
+        allow = round(a["loa"] * rates["loa"] + a["pu"] * rates["pickup"] + a["km"] * rates["travel_km"], 2)
+        out.append(dict(employee=ts["name"], position=ts["position"], status=ts["status"], base_rate=rate, days=h["days"], reg=h["reg"], ot=h["ot"], dt=h["dt"],
+                        equipment_hours=h["eq"], loa_days=a["loa"], pickup_days=a["pu"], travel_km=a["km"], wages=wages, allowances=allow, gross=round(wages + allow, 2),
+                        missing_rate=rate == 0))
+    return out
+
+
+def format_summary(rows: list[dict], period_end: str) -> str:
+    if not rows:
+        return f"No timesheets for pay period ending {period_end}."
+    L = [f"Pay period ending {period_end}", "",
+         f"{'Employee':<22}{'Days':>5}{'Reg':>7}{'OT':>6}{'DT':>6}{'Equip':>7}{'LOA':>5}{'P/U':>5}{'km':>7}{'Wages':>11}{'Allow.':>10}{'Gross':>11}  Status"]
+    for r in rows:
+        L.append(f"{r['employee'][:21]:<22}{r['days']:>5}{r['reg']:>7g}{r['ot']:>6g}{r['dt']:>6g}{r['equipment_hours']:>7g}{r['loa_days']:>5}{r['pickup_days']:>5}{r['travel_km']:>7g}"
+                 f"{r['wages']:>11,.2f}{r['allowances']:>10,.2f}{r['gross']:>11,.2f}  {r['status']}{'  NO BASE RATE' if r['missing_rate'] else ''}")
+    tot = {k: sum(r[k] for r in rows) for k in ("reg", "ot", "dt", "equipment_hours", "loa_days", "pickup_days", "travel_km", "wages", "allowances", "gross")}
+    L.append(f"{'TOTAL':<22}{'':>5}{tot['reg']:>7g}{tot['ot']:>6g}{tot['dt']:>6g}{tot['equipment_hours']:>7g}{tot['loa_days']:>5}{tot['pickup_days']:>5}{tot['travel_km']:>7g}"
+             f"{tot['wages']:>11,.2f}{tot['allowances']:>10,.2f}{tot['gross']:>11,.2f}")
+    L += ["", "Gross before burden. Wages: Reg x rate, OT x 1.5, DT x 2. Allowances at the rates on the paper timesheet unless company.allowances overrides them."]
+    return "\n".join(L)

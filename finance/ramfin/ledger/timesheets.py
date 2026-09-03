@@ -85,7 +85,8 @@ def loaded_rate(conn: sqlite3.Connection, settings, employee_id: int) -> float:
 
 
 def labour_cost_by_job(conn: sqlite3.Connection, settings, start: str | None = None, end: str | None = None) -> list[dict]:
-    q = ("SELECT te.job_no, te.cost_code, ts.employee_id, e.name, SUM(te.hours) h, SUM(te.ot_hours) ot FROM time_entries te "
+    q = ("SELECT te.job_no, te.cost_code, ts.employee_id, e.name, SUM(te.hours) h, SUM(te.ot_hours) ot, SUM(COALESCE(te.dt_hours,0)) dt, "
+         "SUM(CASE WHEN COALESCE(te.equipment_hours,0)>0 THEN te.equipment_hours ELSE 0 END) eq FROM time_entries te "
          "JOIN timesheets ts ON ts.id=te.timesheet_id JOIN employees e ON e.id=ts.employee_id WHERE 1=1")
     p: list = []
     if start:
@@ -96,8 +97,8 @@ def labour_cost_by_job(conn: sqlite3.Connection, settings, start: str | None = N
     out = []
     for r in db.rows(conn, q, p):
         rate = loaded_rate(conn, settings, r["employee_id"])
-        out.append(dict(job_no=r["job_no"], cost_code=r["cost_code"], employee=r["name"], hours=r["h"], ot_hours=r["ot"],
-                        cost=round(r["h"] * rate + r["ot"] * rate * 1.5, 2), rate=rate))
+        out.append(dict(job_no=r["job_no"], cost_code=r["cost_code"], employee=r["name"], hours=r["h"], ot_hours=r["ot"], dt_hours=r["dt"], equipment_hours=r["eq"],
+                        cost=round(r["h"] * rate + r["ot"] * rate * 1.5 + r["dt"] * rate * 2.0, 2), rate=rate))
     return out
 
 
