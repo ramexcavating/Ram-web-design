@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAM Timecard</title>
+<meta name="description" content="RAM Excavating daily timecard: job, cost code, labour and equipment hours.">
+<meta name="theme-color" content="#1f2937">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RAM Timecard">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="dot"></span> RAM Timecard</div>
+  <div class="who" id="who"></div>
+</header>
+
+<main id="view" class="view"></main>
+
+<nav class="tabs" id="tabs">
+  <button data-tab="day" class="active"><span class="ico">&#9711;</span>Today</button>
+  <button data-tab="period"><span class="ico">&#9638;</span>Pay period</button>
+  <button data-tab="settings"><span class="ico">&#9881;</span>Me</button>
+</nav>
+
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-backdrop" data-close></div>
+  <div class="sheet-panel" role="dialog" aria-modal="true">
+    <div class="sheet-grip"></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+# Publishes timecards/app as a static site on GitHub Pages every time it changes.
+# One-time setup in the repository: Settings -> Pages -> Source: "GitHub Actions".
+# The app then lives at https://<owner>.github.io/<repo>/ and can be pointed at a subdomain
+# such as time.ramexcavating.ca from Settings -> Pages -> Custom domain (see timecards/README.md).
+name: timecards-pages
+
+on:
+  push:
+    branches: ["**"]
+    paths: ["timecards/app/**", ".github/workflows/timecards-pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: timecards-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    # only the default branch publishes; other branches just prove the build works
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Stamp build version
+        run: |
+          sed -i "s/const VERSION = 'ramtc-v1';/const VERSION = 'ramtc-${GITHUB_SHA::8}';/" timecards/app/sw.js
+          grep VERSION timecards/app/sw.js | head -1
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: timecards/app
+      - id: deployment
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/deploy-pages@v4

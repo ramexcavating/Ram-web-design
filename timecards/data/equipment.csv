@@ -1,0 +1,44 @@
+unit,type
+EX-01,Excavator
+EX-02,Excavator
+EX-03,Excavator
+EX-04,Excavator
+EX-05,Excavator
+EX-06,Excavator
+AT-01,Rock truck
+AT-02,Rock truck
+AT-03,Rock truck
+PS-01,Pull scraper
+PS-02,Pull scraper
+DZR-01,Dozer
+DZR-02,Dozer
+LDR-01,Loader
+GRDR-01,Grader
+PCKR-01,Smooth packer
+AB-01,Auger bore
+DD-01,Directional drill
+GT-01,Gravel truck
+GT-02,Gravel truck
+TT-01,Tractor truck
+SNW-01,Plow truck
+PP-01,Pipe pusher
+RP-01,Remote packer
+RP-02,Remote packer
+RP-03,Remote packer
+JJ-01,Jumping jack
+JJ-02,Jumping jack
+JJ-03,Jumping jack
+JJ-04,Jumping jack
+JJ-05,Jumping jack
+PT-01,Plate tamper
+PT-02,Plate tamper
+PT-03,Plate tamper
+PT-04,Plate tamper
+PUP-01,Pup trailer
+PUP-02,Pup trailer
+QUD-01,Quad trailer
+ED-01,End dump trailer
+FDT-01,Flat deck trailer
+FSR-01,Fusing machine
+BK-01,Breaker
+LB-01,Low bed trailer

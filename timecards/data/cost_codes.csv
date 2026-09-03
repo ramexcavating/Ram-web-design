@@ -1,0 +1,827 @@
+code,description,category
+1-000,GENERAL REQUIREMENTS,General Requirements
+1-001,Architectural Consultant Fees,General Requirements
+1-002,Structural Consultant Fees,General Requirements
+1-003,Mechanical Consultant Fees,General Requirements
+1-004,Electrical Consultant Fees,General Requirements
+1-005,Landscape Consultant Fees,General Requirements
+1-006,Geotechnical Consultant Fees,General Requirements
+1-007,Traffic Consultant Fees,General Requirements
+1-008,Code Consultant Fees,General Requirements
+1-009,Interior Design Consultant Fee,General Requirements
+1-010,Civil Consultant Fees,General Requirements
+1-011,Environmental Consultant Fees,General Requirements
+1-012,Envelope Consultant Fees,General Requirements
+1-013,Misc Consultant Fees,General Requirements
+1-014,Consultants Disbursements,General Requirements
+1-015,Quality Mgnt Plant Consul Fees,General Requirements
+1-016,Joint Venture Partner Fee,General Requirements
+1-020,"Sanitary,Storm & Water Con Fee",General Requirements
+1-021,Gas Utility Connection Fees,General Requirements
+1-022,Hydro Connection Fees,General Requirements
+1-023,Telephone Connection Fees,General Requirements
+1-024,Cablevision Connection Fees,General Requirements
+1-041,Mobe/Demobe Site Setup,General Requirements
+1-042,Equipment Mobe/Demobe,General Requirements
+1-060,Construction Manager,General Requirements
+1-061,Project Manager,General Requirements
+1-062,Superintendent,General Requirements
+1-063,Field Cler/Contract Administra,General Requirements
+1-064,Field Engineer,General Requirements
+1-065,Certified Safety Officer,General Requirements
+1-066,Assistant Superintendent,General Requirements
+1-067,Site Labourer/Level 3 FA,General Requirements
+1-070,Project Management Reimburs Ex,General Requirements
+1-075,Procore Const Mgmt Software,General Requirements
+1-080,Survey,General Requirements
+1-081,Foundation Survey Cert/Legal S,General Requirements
+1-100,Development Cost Charges,General Requirements
+1-101,Building Permit,General Requirements
+1-102,Parking & Street Use Permit,General Requirements
+1-103,Hoarding Permit,General Requirements
+1-104,Shoring Permit,General Requirements
+1-105,Demolition Permit,General Requirements
+1-106,Inspection Fee,General Requirements
+1-107,Licences,General Requirements
+1-120,Travel Costs,General Requirements
+1-121,Living Out of Town Costs,General Requirements
+1-122,Unproductive Time,General Requirements
+1-140,Soild & Compaction Testing,General Requirements
+1-141,Concrete Testing,General Requirements
+1-142,Inspections,General Requirements
+1-143,Environmental & Erosion Mgnt,General Requirements
+1-144,Hydrostatic Testing of Tanks,General Requirements
+1-160,Safety Training,General Requirements
+1-161,Pre Access Testing,General Requirements
+1-162,Client Indoctrinations,General Requirements
+1-163,PPE,General Requirements
+1-164,First Aid Supplies,General Requirements
+1-165,Safety Railing & Guardrails,General Requirements
+1-166,Site Security,General Requirements
+1-167,Safety Awards,General Requirements
+1-168,Safety Watch,General Requirements
+1-169,Incident Management,General Requirements
+1-170,WSBC Claims Management,General Requirements
+1-180,General Liability Insurance,General Requirements
+1-181,COC Insurance,General Requirements
+1-182,All Risk Insurance,General Requirements
+1-183,Bonding,General Requirements
+1-184,Legal Costs,General Requirements
+1-200,Temp Sewer Connection,General Requirements
+1-201,Temp Power Connection Costs,General Requirements
+1-202,Temp Power & Equip,General Requirements
+1-203,Temp Power Consumption Costs,General Requirements
+1-204,Temp Gas Consumption Costs,General Requirements
+1-205,Temp Lighting,General Requirements
+1-206,Temp Heating & Hoarding,General Requirements
+1-207,Temp Telephone,General Requirements
+1-208,Temp Water Connection,General Requirements
+1-209,Temp Sanitary Facilities,General Requirements
+1-210,Temp Fire Protection,General Requirements
+1-211,Field Offices & Tool Cribs,General Requirements
+1-212,"Site Office,Lunch Tr & Tool Cr",General Requirements
+1-213,Setup & Site Fab of Field Offi,General Requirements
+1-214,Barriers & Barricades,General Requirements
+1-215,Construction Hoarding,General Requirements
+1-216,Access Roads,General Requirements
+1-217,Traffic Control & Flagging,General Requirements
+1-218,Project Sign,General Requirements
+1-219,Water Usage,General Requirements
+1-220,Temp Fencing,General Requirements
+1-230,Telehandler,General Requirements
+1-231,Hoisting,General Requirements
+1-232,Temp Enclosures,General Requirements
+1-233,Scaffolding & Platforms,General Requirements
+1-234,Temp Stairs & Ladders,General Requirements
+1-235,Cranes,General Requirements
+1-250,Const Ongoing Cleaning,General Requirements
+1-251,Garbage Bins & Disposal,General Requirements
+1-252,Street Cleaning,General Requirements
+1-253,Snow Removal,General Requirements
+1-254,Final Cleaning,General Requirements
+1-270,Office Equp/Furniture,General Requirements
+1-271,Office Supplies,General Requirements
+1-272,Office Courier Charges,General Requirements
+1-273,Plan Reproductions,General Requirements
+1-274,Drinking Water,General Requirements
+1-275,Photocopier Lease/Rental,General Requirements
+1-276,Cellphones & Radios,General Requirements
+1-277,Submittals,General Requirements
+1-290,1/2 Ton Pickup,General Requirements
+1-291,Crew Truck/Van,General Requirements
+1-292,Fuel for Vehicles,General Requirements
+1-293,Small Tools,General Requirements
+1-294,Fuel for Equipment,General Requirements
+1-295,Service for Equipment,General Requirements
+1-296,Equipment Repairs,General Requirements
+1-297,"Fuel,Oil,Grease & Gr Engagemen",General Requirements
+1-298,Rental Equipment,General Requirements
+1-310,Operation & Maint Manuals,General Requirements
+1-311,Deficiencies,General Requirements
+1-312,Publications & Advertising,General Requirements
+1-313,Maintenance,General Requirements
+1-314,Warranty Work,General Requirements
+1-315,Union Retro-Pay,General Requirements
+1-998,Wrong Coding,General Requirements
+1-999,Misc,General Requirements
+2-000,SITEWORKS,Siteworks
+2-010,General Demolition,Siteworks
+2-011,Building Demolition,Siteworks
+2-012,Select Demolition,Siteworks
+2-013,Masonry Demolition,Siteworks
+2-014,Stud/Drywall Demolition,Siteworks
+2-015,Ceiling Demolition,Siteworks
+2-016,Floor Finish Demolition,Siteworks
+2-017,Wall Finish Demolition,Siteworks
+2-018,Window/Storefront Demolition,Siteworks
+2-019,Exterior Finish Demolition,Siteworks
+2-020,Cabinet Removal,Siteworks
+2-021,Removal of Doors & Frames,Siteworks
+2-022,Conc Cutting & Coring Subtrade,Siteworks
+2-023,Concrete Removal,Siteworks
+2-024,Conc Sawcutting Slab & Walls,Siteworks
+2-025,Concrete Coring,Siteworks
+2-026,Asphalt Demolition,Siteworks
+2-027,Haul Demolition Debris,Siteworks
+2-028,Dump Fees,Siteworks
+2-029,Hazardous Material Abatement,Siteworks
+2-030,Asphalt Milling,Siteworks
+2-031,Remove Culverts,Siteworks
+2-032,Remove Exist Undgrd Utilities,Siteworks
+2-040,Site Clearing,Siteworks
+2-041,Tree & Shrub Removal,Siteworks
+2-042,Removal Topsoil,Siteworks
+2-043,Pre Loading or Dynamic Compact,Siteworks
+2-044,Dewatering,Siteworks
+2-045,Underpinning,Siteworks
+2-046,Shoring,Siteworks
+2-047,Utility Locates,Siteworks
+2-048,Erosion & Sediment Control,Siteworks
+2-049,Hydro Excavation,Siteworks
+2-079,Process Blast Rock,Siteworks
+2-080,Grading,Siteworks
+2-081,Rock Removal,Siteworks
+2-082,Drill and Blast,Siteworks
+2-083,Bulk Excavation,Siteworks
+2-085,Detail Excavation,Siteworks
+2-088,Excavation To Waste,Siteworks
+2-089,Excavation to Embankment,Siteworks
+2-090,Hand Excavation,Siteworks
+2-091,Detailed Backfill,Siteworks
+2-092,Select Granular Subbase (SGSB),Siteworks
+2-093,Well Graded Base (WGB),Siteworks
+2-094,Intermediate Graded Base (IGB),Siteworks
+2-095,Underslab Pllumbing & Elec Exc,Siteworks
+2-096,Trench Excavation,Siteworks
+2-097,Hand Excavation to Trenches,Siteworks
+2-098,Backfill for Trenches,Siteworks
+2-099,Backfill Trenches (Import),Siteworks
+2-100,Backfill Trenches (Native),Siteworks
+2-101,Bedding Sand,Siteworks
+2-102,Subgrade Preparation,Siteworks
+2-103,Granular Sub-base under SOG,Siteworks
+2-104,Base Course Under SOG(crush),Siteworks
+2-105,Soil Stabilization,Siteworks
+2-106,Finish Grading,Siteworks
+2-107,Bulk Backfill Native,Siteworks
+2-108,Bulk Backfill Import,Siteworks
+2-109,Rip Rap,Siteworks
+2-110,Geo Fabrics,Siteworks
+2-111,Rock Excavation,Siteworks
+2-113,Rock Fill,Siteworks
+2-114,Drain Rock,Siteworks
+2-115,Shouldering,Siteworks
+2-116,Liners,Siteworks
+2-140,Shotcrete & Rock Anchors,Siteworks
+2-141,WWM&Poly Exc Slpoe Protection,Siteworks
+2-142,Remove Shotcrete,Siteworks
+2-143,Detention/Remove Rock Anchors,Siteworks
+2-160,Piling,Siteworks
+2-161,Screw Piles,Siteworks
+2-162,Sheet Pile,Siteworks
+2-180,Asphalt Paving,Siteworks
+2-181,Concrete Paving,Siteworks
+2-182,Concrete Sidewalks,Siteworks
+2-183,Concrete Pavers,Siteworks
+2-184,Stone Pavers,Siteworks
+2-185,Grasscrete Pavers,Siteworks
+2-186,Concrete Curb and Gutter,Siteworks
+2-187,Pavement Repair,Siteworks
+2-188,Pavement Marking,Siteworks
+2-189,Concrete No Post Barriers,Siteworks
+2-200,Water Pipe,Siteworks
+2-201,Sewer Pipe,Siteworks
+2-202,Storm Pipe,Siteworks
+2-203,Fire Hydrants,Siteworks
+2-204,Valves,Siteworks
+2-205,Catch Basins,Siteworks
+2-206,Manholes,Siteworks
+2-207,Storm Water Retention System,Siteworks
+2-208,Foundation Drainage and Precas,Siteworks
+2-209,Sub-Drainage System,Siteworks
+2-210,Septic Systems,Siteworks
+2-211,Restoration of Underground Pip,Siteworks
+2-212,Ponds and Reservoirs,Siteworks
+2-213,Chorination Testing,Siteworks
+2-214,Pressure and Leak Testing,Siteworks
+2-215,Culverts,Siteworks
+2-216,Directional Drilling,Siteworks
+2-217,HDPE,Siteworks
+2-218,Force Mains,Siteworks
+2-219,Service Piping off Mains,Siteworks
+2-220,Specialty Precast,Siteworks
+2-221,Steel Casing Pipe,Siteworks
+2-222,Pipe Insulation,Siteworks
+2-223,Pipe Restraints  inc Thrust Bk,Siteworks
+2-224,Oil Inerceptors,Siteworks
+2-225,"Gas Service, Meter Pads",Siteworks
+2-226,Connect to Existing Main,Siteworks
+2-240,Electrical Power Trans/Ducting,Siteworks
+2-241,Communication Trans/Ducting,Siteworks
+2-242,Concrete Protection to Ducts,Siteworks
+2-243,Lamp and Pole Bases,Siteworks
+2-244,Pull Boxes and Vaults,Siteworks
+2-245,Car Plugs,Siteworks
+2-260,Wood Fence,Siteworks
+2-261,Chainlink Fence,Siteworks
+2-262,Parking Accessories,Siteworks
+2-263,Playfield Equip and Structure,Siteworks
+2-264,Site and Street Furnishings,Siteworks
+2-265,Benches,Siteworks
+2-266,Bollards,Siteworks
+2-267,Bicycle Racks,Siteworks
+2-268,Flag Poles,Siteworks
+2-269,Fountains,Siteworks
+2-270,Tree Grates,Siteworks
+2-271,Trash Receptacles,Siteworks
+2-272,Retaining Walls,Siteworks
+2-273,Retaining Walls - Lock Block,Siteworks
+2-274,Retaining Walls - Reinforced C,Siteworks
+2-275,Street and Parking Signs,Siteworks
+2-290,Landscaping,Siteworks
+2-291,Irrigation Systems,Siteworks
+2-292,Lawns & Grasses,Siteworks
+2-293,Plants,Siteworks
+2-294,Landscape Maintenance,Siteworks
+2-295,Landscape Accessories,Siteworks
+2-296,Retaining Walls - Allen Block,Siteworks
+2-297,Retaining Walls - Rock,Siteworks
+2-298,Landscape - subgrade preparati,Siteworks
+2-299,hydroseeding,Siteworks
+3-000,CONCRETE,Concrete
+3-100,Concrete Formwork Subtrade,Concrete
+3-101,Forms - Mudslab,Concrete
+3-102,Forms-Strip/Cont Footings,Concrete
+3-103,Forms - Pad Footings,Concrete
+3-104,Forms - Pile Caps,Concrete
+3-105,Forms - Grade Beam,Concrete
+3-106,Forms - Pilasters,Concrete
+3-107,Forms - Slab on Grade,Concrete
+3-108,Forms - Sidewalks/Curbs,Concrete
+3-109,Forms - Slab Bulkheads,Concrete
+3-110,Forms - Aprons,Concrete
+3-111,Forms - Trench Drains/Sumps,Concrete
+3-112,Forms - Walls to 4',Concrete
+3-113,Form - Walls to 8',Concrete
+3-114,Form - Walls to 12',Concrete
+3-115,Forms - Gang Forms,Concrete
+3-116,Bollards Complete,Concrete
+3-120,Forms - Round Columns,Concrete
+3-121,Forms - Rectangular Column,Concrete
+3-122,Forms - Beam,Concrete
+3-123,Forms - Suspended Flat Slab,Concrete
+3-124,Forms - Concrete Stair,Concrete
+3-125,Forms - Topping Slab,Concrete
+3-126,Forms - Slab on Metal Deck,Concrete
+3-127,Forms - Equipment Pads and Cur,Concrete
+3-128,Forms- Upstands,Concrete
+3-129,Forms - Miscellaneous,Concrete
+3-160,S&I Reinforcing Steel Subtrade,Concrete
+3-161,Supply Only Reinforcing Steel,Concrete
+3-162,Install Only Reinforcing Steel,Concrete
+3-163,Drill and Install Dowels,Concrete
+3-180,Pour Mud,Concrete
+3-181,Pour Pad & Strip Footings,Concrete
+3-182,Pour Pile Caps,Concrete
+3-183,Pour Grade Beams,Concrete
+3-184,Pour Slab on Grade,Concrete
+3-185,Pour Sidewalks,Concrete
+3-186,Pour Walls to 12',Concrete
+3-187,Pour Gang Forms,Concrete
+3-188,Pour Columns,Concrete
+3-189,Pour Stairs,Concrete
+3-190,Pour Suspended Slabs,Concrete
+3-191,Pour Metal Deck Concrete,Concrete
+3-192,Pour Aprons,Concrete
+3-193,Pour Trench Drains/Sumps,Concrete
+3-194,Pour Equip Pads & Curbs,Concrete
+3-250,Concrete Accessories,Concrete
+3-251,Water Stop,Concrete
+3-252,Expansion Joints,Concrete
+3-253,Key-Cold Joint,Concrete
+3-254,Control Joints,Concrete
+3-255,Concrete Sealers,Concrete
+3-256,Concrete Hardner,Concrete
+3-257,Embedded Metals,Concrete
+3-258,Anchor Bolts,Concrete
+3-259,Rigid Insulation to Foundation,Concrete
+3-260,Voidform,Concrete
+3-350,Slab Finishing,Concrete
+3-351,Finished - Misc.,Concrete
+3-352,Plug Patch & Sack,Concrete
+3-353,Concrete Curing,Concrete
+3-354,Concrete Bonding Agents,Concrete
+3-355,Sawcut Slab,Concrete
+3-356,Foundation Waterproofing,Concrete
+3-357,Foundation Damp Proofing,Concrete
+3-400,Precast Concrete,Concrete
+3-401,Tilt-Up Concrete Subtrade,Concrete
+3-402,Form Tilt-up Panels,Concrete
+3-403,Conc Accessories & Hardware,Concrete
+3-404,Place & Finish Conc Tilt-up,Concrete
+3-405,Crane Rental for Tilt-up Panel,Concrete
+3-406,Erection of Tilt-up Panels,Concrete
+3-407,Grouting Tilt-up Panels,Concrete
+3-408,Caulking Tilt-up Panels,Concrete
+3-409,Patch/Sack Tilt-up Panels,Concrete
+3-410,Engineering for Tilt-Up Panels,Concrete
+3-411,Shipping Precast,Concrete
+3-500,Cementitious Decks&Toppings,Concrete
+3-501,Gypsum Concrete,Concrete
+3-502,Insulating Concrete Decks,Concrete
+3-503,Cementitious Wood Fiber System,Concrete
+3-504,Composite Conc/Insulation Deck,Concrete
+3-505,Concrete Toppings,Concrete
+3-600,Grout,Concrete
+3-601,Grout Columns & Baseplates,Concrete
+3-999,Cellular Concrete,Concrete
+4-000,MASONRY,Masonry
+4-150,Masonry Accessories,Masonry
+4-200,Unit Masonry,Masonry
+4-210,Brick Unit Masonry,Masonry
+4-220,Concrete Unit Masonry,Masonry
+4-225,Precast Material,Masonry
+4-230,Reinforcing for CMU,Masonry
+4-270,Glass Unit Masonry,Masonry
+4-400,Stone,Masonry
+4-430,Simulated Stone,Masonry
+4-455,Marble,Masonry
+4-460,Limestone,Masonry
+4-465,Granite,Masonry
+4-470,Sandstone,Masonry
+4-475,Slate,Masonry
+5-000,METALS,Metals
+5-100,S&I Structural Steel,Metals
+5-101,Supply Structural Steel,Metals
+5-102,Install Structural Steel,Metals
+5-150,Light Gauge Steel Structure,Metals
+5-300,Metal Decking,Metals
+5-310,Steel Floor Deck,Metals
+5-315,Steel Roof Deck,Metals
+5-500,Metal Fabrications,Metals
+5-505,Embedded Misc Iron,Metals
+5-510,Metal Stairs,Metals
+5-515,Ladders,Metals
+5-520,Handralils & Railings,Metals
+5-525,Alum Railings w/Temp Glass/Pic,Metals
+5-530,Gratings,Metals
+5-535,Floor Plates,Metals
+5-540,Castings,Metals
+5-600,Stainless Steel Fabrications,Metals
+5-601,Stainless Steel -Kitchen Equip,Metals
+5-700,Ornamental Metal,Metals
+5-800,Expansion Control,Metals
+5-810,Expansion Joint Covers,Metals
+5-820,Slide Bearings,Metals
+6-000,WOOD & PLASTIC,Wood & Plastic
+6-050,Fasteners & Adhesives,Wood & Plastic
+6-100,Rough Carpentry,Wood & Plastic
+6-101,Window Liners,Wood & Plastic
+6-102,Backing for Door Frames,Wood & Plastic
+6-103,Roof Carpentry,Wood & Plastic
+6-104,Telephone/Electrical Backboard,Wood & Plastic
+6-105,Framing for Storage Lockers,Wood & Plastic
+6-106,Backing for Washroom Accessori,Wood & Plastic
+6-107,Backing for Milwork&MiscEquip,Wood & Plastic
+6-108,Framing Lumber Material,Wood & Plastic
+6-109,Framing Plywood Material,Wood & Plastic
+6-110,Framing Labour,Wood & Plastic
+6-111,Hold Down Anchors,Wood & Plastic
+6-112,Roof Framing,Wood & Plastic
+6-113,Roof Sheathing,Wood & Plastic
+6-114,Parapet Framing,Wood & Plastic
+6-115,Wall Framing,Wood & Plastic
+6-116,Wall Sheathing,Wood & Plastic
+6-117,Floor Sheathing,Wood & Plastic
+6-118,Floor Framing,Wood & Plastic
+6-119,Roof Curbs,Wood & Plastic
+6-130,Heavy Timber Construction,Wood & Plastic
+6-135,Log Work,Wood & Plastic
+6-170,Prefabricated Structural Wood,Wood & Plastic
+6-180,Glu Laminated Beams,Wood & Plastic
+6-190,Wood Trusses,Wood & Plastic
+6-200,Finish Carpentry,Wood & Plastic
+6-201,Wood Baseboard,Wood & Plastic
+6-202,Wood Window Sill,Wood & Plastic
+6-203,Wood Mantle,Wood & Plastic
+6-204,Wood Crown Moulding,Wood & Plastic
+6-205,Misc Wood Trims,Wood & Plastic
+6-206,Wood Panelling,Wood & Plastic
+6-207,Shelving,Wood & Plastic
+6-210,Install Metal Doors,Wood & Plastic
+6-211,Install Wood Doors,Wood & Plastic
+6-212,Install Roof Hatch,Wood & Plastic
+6-220,Install Washroom Accessories,Wood & Plastic
+6-221,Install Mail Boxes,Wood & Plastic
+6-290,"Nails,Fasteners,glue,sandpaper",Wood & Plastic
+6-300,Wood Treatment,Wood & Plastic
+6-400,Architectural Woodwork,Wood & Plastic
+6-700,Misc Materials & Sundries,Wood & Plastic
+7-000,THERMAL & MOISTURE PROT.,Thermal & Moisture Prot.
+7-100,Waterproofing,Thermal & Moisture Prot.
+7-150,Damproofing,Thermal & Moisture Prot.
+7-180,Water Repellents,Thermal & Moisture Prot.
+7-190,Vapor Retarders,Thermal & Moisture Prot.
+7-195,Air Barriers,Thermal & Moisture Prot.
+7-196,Underslab Vapour Barriers,Thermal & Moisture Prot.
+7-200,Insulation,Thermal & Moisture Prot.
+7-210,Batt Insulation,Thermal & Moisture Prot.
+7-212,Rigid Insulation,Thermal & Moisture Prot.
+7-214,Foamed-in Place Insulation,Thermal & Moisture Prot.
+7-216,Loose Fill Insulation,Thermal & Moisture Prot.
+7-218,Sprayed Insulation,Thermal & Moisture Prot.
+7-220,Roof & Deck Insulation,Thermal & Moisture Prot.
+7-222,Vapour Barriers,Thermal & Moisture Prot.
+7-223,Concrete Faced Insulation Boar,Thermal & Moisture Prot.
+7-224,Void Form,Thermal & Moisture Prot.
+7-225,Foundaton Drainage Matt,Thermal & Moisture Prot.
+7-240,Ext Insulation & Finish System,Thermal & Moisture Prot.
+7-250,Firproofing,Thermal & Moisture Prot.
+7-255,Cementitious Fireproofing,Thermal & Moisture Prot.
+7-260,Intumescent Mastic Fireproofin,Thermal & Moisture Prot.
+7-265,Mineral Fiber Fireproofing,Thermal & Moisture Prot.
+7-270,Firestopping,Thermal & Moisture Prot.
+7-300,Shingles & Roofing Tiles,Thermal & Moisture Prot.
+7-400,Metal Roofing & Cladding,Thermal & Moisture Prot.
+7-401,Metal Roofing,Thermal & Moisture Prot.
+7-402,Metal Cladding,Thermal & Moisture Prot.
+7-403,Cementitous Cladding,Thermal & Moisture Prot.
+7-404,Vinyl Cadding,Thermal & Moisture Prot.
+7-405,Downspourts,Thermal & Moisture Prot.
+7-460,Performed Panels,Thermal & Moisture Prot.
+7-461,Subgirts,Thermal & Moisture Prot.
+7-462,Panel Layout,Thermal & Moisture Prot.
+7-500,Membrane Roofing,Thermal & Moisture Prot.
+7-570,Traffic Coatings,Thermal & Moisture Prot.
+7-600,Flashing & Sheetmetal,Thermal & Moisture Prot.
+7-601,Parapet Cap Flashing,Thermal & Moisture Prot.
+7-700,Roof Specialties,Thermal & Moisture Prot.
+7-710,Manufactured Roof Specialties,Thermal & Moisture Prot.
+7-720,Roof Accessories,Thermal & Moisture Prot.
+7-800,Skylights,Thermal & Moisture Prot.
+7-900,Joint Sealers,Thermal & Moisture Prot.
+8-000,DOORS & WINDOWS,Doors & Windows
+8-100,Hollow Metal Doors & Frames,Doors & Windows
+8-200,Wood & Plastic Doors & Frames,Doors & Windows
+8-300,Special Doors,Doors & Windows
+8-305,Access Doors,Doors & Windows
+8-310,Sliding Doors & Grilles,Doors & Windows
+8-320,Security Doors,Doors & Windows
+8-325,Cold Storage Doors,Doors & Windows
+8-330,Coiling Doors & Grilles,Doors & Windows
+8-350,Floding Doors & Grilles,Doors & Windows
+8-360,Sectional Overhead Doors,Doors & Windows
+8-370,Fire Shutters,Doors & Windows
+8-410,"Comm Windows, Entrances & S/Fr",Doors & Windows
+8-460,Automatic Entrance Doors,Doors & Windows
+8-470,Revolving Entrance Doors,Doors & Windows
+8-500,Residential Aluminum Windows,Doors & Windows
+8-610,Wood Windows,Doors & Windows
+8-630,Vinyl Windows,Doors & Windows
+8-655,Special Windows,Doors & Windows
+8-700,Hardware,Doors & Windows
+8-800,Glazing,Doors & Windows
+8-900,Glazed Curtain Walls,Doors & Windows
+8-970,Structural Glass Curtain Walls,Doors & Windows
+9-000,FINISHES,Finishes
+9-200,Stucco,Finishes
+9-210,Lath & Plaster,Finishes
+9-250,Steel Studs & Drywall,Finishes
+9-310,Ceramic Tile,Finishes
+9-320,Thin Brick Tile,Finishes
+9-330,Quarry Tile,Finishes
+9-340,Paver Tile,Finishes
+9-350,Glass Mosaics,Finishes
+9-360,Fibre Reinforced Wall Panels,Finishes
+9-370,Metal Tile,Finishes
+9-400,Terrazzo,Finishes
+9-500,Acoustical Treatment,Finishes
+9-510,Acoustical Ceilings,Finishes
+9-520,Acoustical Wall Treatment,Finishes
+9-550,Wood Flooring,Finishes
+9-560,Wood Strip Flooring,Finishes
+9-565,Wood Block Flooring,Finishes
+9-570,Wood Parquet Flooring,Finishes
+9-580,Wood Composition Flooring,Finishes
+9-590,Resilient Wood Flooring system,Finishes
+9-591,Sleepers for Wood Flooring,Finishes
+9-600,Stone Flooring,Finishes
+9-610,Flagstone Flooring,Finishes
+9-615,Marble Flooring,Finishes
+9-620,Granite Flooring,Finishes
+9-625,Slate Flooring,Finishes
+9-650,Resilient Flooring,Finishes
+9-660,Resilient Tile Flooring,Finishes
+9-665,Resilient Sheet Flooring,Finishes
+9-670,Fluid-Applied Resilient Floori,Finishes
+9-675,Static Control Resilient Floor,Finishes
+9-678,Resileint Base & Accessories,Finishes
+9-680,Carpet,Finishes
+9-695,Wall Carpet,Finishes
+9-698,Indoor/Outdoor Carpet,Finishes
+9-700,Special Flooring,Finishes
+9-705,Resinous Flooring,Finishes
+9-710,Magnesium Oxychloride Flooring,Finishes
+9-720,Epoxy-Marble Chip Flooring,Finishes
+9-725,Seamless Quartz Flooring,Finishes
+9-730,Elastomeric Liquid Flooring,Finishes
+9-790,Slip Resistant Finishes,Finishes
+9-900,Painting,Finishes
+9-901,Epoxy Paint Floors,Finishes
+9-902,Sandblasting,Finishes
+9-905,Paint Preparation,Finishes
+9-908,Primers & Sealers,Finishes
+9-910,Exterior Painting,Finishes
+9-920,Interior Painting,Finishes
+9-930,Transparent Finishes,Finishes
+9-935,Stains,Finishes
+9-940,Decorative Finishes,Finishes
+9-945,Specialty Painting,Finishes
+9-950,Wall Coverings,Finishes
+9-955,Vinyl-Coated Fabrics Wall Cove,Finishes
+9-960,Vinyl Wall Coverings,Finishes
+9-965,Cork Wall Coverings,Finishes
+9-970,Wallpaper,Finishes
+9-975,Wall Fabrics,Finishes
+9-980,Flexible Wood Sheets & Veneers,Finishes
+10-000,SPECIALTIES,Specialties
+10-110,Chalkboards,Specialties
+10-115,Markerboards,Specialties
+10-120,Tackboards,Specialties
+10-130,Ooperable Board Units,Specialties
+10-140,Display Track System,Specialties
+10-145,Visual Aid Board Units,Specialties
+10-160,Metal Toilet Compartments,Specialties
+10-185,Shower & Dressing Compartments,Specialties
+10-190,Cubicle Track,Specialties
+10-200,Louvers & Vents,Specialties
+10-240,Grilles & Screens,Specialties
+10-250,Service Wall Systems,Specialties
+10-260,Wall & Corner Guards,Specialties
+10-270,Access Flooring,Specialties
+10-290,Pest Control,Specialties
+10-305,Manufactured Fireplaces,Specialties
+10-310,Fireplace Specialties & Access,Specialties
+10-340,Manufactured Exterior Special,Specialties
+10-350,Flagpoles,Specialties
+10-400,Identifying Devices,Specialties
+10-410,Directories,Specialties
+10-415,Bulletin Boards,Specialties
+10-420,Plaques,Specialties
+10-430,Exterior Signs,Specialties
+10-440,Interior Signs,Specialties
+10-450,Pedestrain Control Devices,Specialties
+10-460,Fire Safety Plan,Specialties
+10-500,Lockers,Specialties
+10-520,Fire Protection Specialties,Specialties
+10-522,Fire Exting Cabinest & Access,Specialties
+10-526,Fire Blankets & Cabinets,Specialties
+10-530,Protective Coverings,Specialties
+10-532,Walkway Covers,Specialties
+10-534,Car Shelters,Specialties
+10-536,Awnings,Specialties
+10-538,Canopies,Specialties
+10-550,Postal Specialties,Specialties
+10-552,Mail Boxes,Specialties
+10-600,Demountable Partitions,Specialties
+10-650,Operable Partitions,Specialties
+10-670,Storage Shelving,Specialties
+10-675,Metal Storage Shelving,Specialties
+10-683,Mobile Storage Systems,Specialties
+10-685,Wire Shelving,Specialties
+10-688,Prefab Wood Storage Shelving,Specialties
+10-700,Exterior Prot Devices for Open,Specialties
+10-705,Exterior Sun Control Devices,Specialties
+10-710,Exterior Shutters,Specialties
+10-715,Storm Panels,Specialties
+10-750,Telephone Specialties,Specialties
+10-755,Telephone Enclosures,Specialties
+10-760,Telephone Directory Units,Specialties
+10-765,Telephone Shelves,Specialties
+10-800,Toilet & Bath Accessories,Specialties
+10-801,Glass Shower Doors,Specialties
+10-880,Scales,Specialties
+10-900,Wardrobe & Closet Specialties,Specialties
+11-000,EQUIPMENT,Equipment
+11-010,Maintenance Equipment,Equipment
+11-012,Vacuum Cleaning Systems,Equipment
+11-014,Window Washing Systems,Equipment
+11-016,Floor & Wall Cleaning Equip,Equipment
+11-020,Security & Vault Equip,Equipment
+11-024,Security & Emergency Systems,Equipment
+11-026,Safes,Equipment
+11-028,Safe Deposit Boxes,Equipment
+11-030,Tellet & Service Equip,Equipment
+11-040,Ecclesiastical Equip,Equipment
+11-050,Library Equip,Equipment
+11-060,Theater & Stage Equip,Equipment
+11-070,Instrumental Equip,Equipment
+11-080,Registration Equip,Equipment
+11-090,Checkroom Equip,Equipment
+11-100,Mercantile Equip,Equipment
+11-120,Vending Equip,Equipment
+11-130,Audio-Visual Equip,Equipment
+11-140,Vehicle Service Equip,Equipment
+11-150,Parking Control Equip,Equipment
+11-160,Loading Dock Equip,Equipment
+11-163,Portable Ramps Bridges & Platf,Equipment
+11-170,Solid Waste Handling Equip,Equipment
+11-200,Water Supply & Treatment Equip,Equipment
+11-400,Food Service Equip,Equipment
+11-410,Food Service Equip Venting,Equipment
+11-450,Residential Equip,Equipment
+11-452,Residential Appliances,Equipment
+11-460,Unit Kitchens,Equipment
+11-470,Darkroom Equip,Equipment
+11-480,Gymnasium Equip,Equipment
+11-481,Scoreboards,Equipment
+11-484,Bowling Alleys,Equipment
+11-485,Shooting Ranges,Equipment
+11-487,Exercise Equip,Equipment
+11-490,Therapy Equip,Equipment
+11-495,Craft Equip,Equipment
+11-680,Office Equip,Equipment
+11-700,Medical Equip,Equipment
+11-800,Owner Supplied Equip,Equipment
+12-000,FURNISHINGS,Furnishings
+12-050,Fabrics,Furnishings
+12-100,Artwork,Furnishings
+12-300,Manufactured Casework,Furnishings
+12-345,Laboratory Casework,Furnishings
+12-350,Medical Casework,Furnishings
+12-360,Educational Casework,Furnishings
+12-370,Residential Casework,Furnishings
+12-375,Residential Shelving Systems,Furnishings
+12-380,Speciality Casework,Furnishings
+12-500,Window Treatment,Furnishings
+12-525,Solar Control Film,Furnishings
+12-600,Furniture & Accessories,Furnishings
+12-670,Rugs & Mats,Furnishings
+12-700,Multiple Seating,Furnishings
+12-710,Fixed Audience Seating,Furnishings
+12-800,Interior Plants & Planters,Furnishings
+13-000,SPECIAL CONTRUCTION,Special Contruction
+13-010,Air Supported Structures,Special Contruction
+13-020,Integrated Assemblies,Special Contruction
+13-030,Special Purpose Rooms,Special Contruction
+13-052,Saunas,Special Contruction
+13-053,Steam Rooms,Special Contruction
+13-080,Sound Vibration&Seismic Contro,Special Contruction
+13-090,Radiation Protection,Special Contruction
+13-120,Pre-engineered Structures-Supp,Special Contruction
+13-121,Pre-engineered Structure Insta,Special Contruction
+13-122,Metal Building Systems,Special Contruction
+13-123,Glazed Structures,Special Contruction
+13-150,Aquatic Facilities,Special Contruction
+13-152,Swimming Pools,Special Contruction
+13-170,Ice Rink Facilities,Special Contruction
+13-185,Kennels & Animal Shelters,Special Contruction
+13-200,Liquid & Gas Storage Tanks,Special Contruction
+13-400,Industrial & Process Control,Special Contruction
+13-500,Recording Instrumentation,Special Contruction
+13-550,Transportation Control Instrum,Special Contruction
+13-600,Solar Energy Systems,Special Contruction
+13-700,Wind Energy Systems,Special Contruction
+13-800,Building Automation Systems,Special Contruction
+13-900,Fire Suppression & Supervisory,Special Contruction
+13-950,Special Security Construction,Special Contruction
+14-000,CONVEYING SYSTEMS,Conveying Systems
+14-100,Dumbwaiters,Conveying Systems
+14-110,Manual Dumbwaiters,Conveying Systems
+14-120,Electric Dumbwaiters,Conveying Systems
+14-140,Hydraulic Dumbwaiters,Conveying Systems
+14-200,Elevators,Conveying Systems
+14-210,Electric Traction Elevators,Conveying Systems
+14-240,Hydraulic Elevators,Conveying Systems
+14-310,Escalators,Conveying Systems
+14-320,Moving Walks,Conveying Systems
+14-400,Lifts,Conveying Systems
+14-410,People Lifts,Conveying Systems
+14-420,Wheelchair Lifts,Conveying Systems
+14-430,Platform Lifts,Conveying Systems
+14-450,Vehicle Lifts,Conveying Systems
+14-500,Material Handling Systems,Conveying Systems
+14-560,Chutes,Conveying Systems
+14-580,Pneumatic Tube Systems,Conveying Systems
+14-600,Hoist & Cranes,Conveying Systems
+14-700,Turntables,Conveying Systems
+15-000,MECHANICAL,Mechanical
+15-010,Mechanical,Mechanical
+15-050,Basic Mechanical Materials,Mechanical
+15-250,Mechanical Insulation,Mechanical
+15-300,Fire Protection,Mechanical
+15-400,Plumbing,Mechanical
+15-410,Rough-in Plumbing,Mechanical
+15-450,Plumbing Fixtures,Mechanical
+15-480,Pool/Spa Connections,Mechanical
+15-500,HVAC,Mechanical
+15-530,Sheet Metal,Mechanical
+16-000,ELECTRICAL,Electrical
+16-050,Electrical,Electrical
+16-100,Exterior Pad Transformer,Electrical
+16-200,Heat Trace,Electrical
+16-300,Pool/Spa Connections,Electrical
+16-500,Lighting,Electrical
+16-520,Lighting Fixtures-Exterior,Electrical
+16-530,Lighting Fixtures-Pool Area,Electrical
+16-550,Lighting Fixtures-Parking Lot,Electrical
+16-560,Lighting Fixtures-Landscaping,Electrical
+16-570,Light Fixtures-Street,Electrical
+16-700,Communications,Electrical
+16-710,Telephone Prewire,Electrical
+16-720,Cablevision,Electrical
+16-730,Data,Electrical
+16-800,Security,Electrical
+16-810,Security Rough-in,Electrical
+16-820,Enterphone,Electrical
+16-830,Intercom Systems,Electrical
+16-840,Access Control,Electrical
+17-000,CASH ALLOWANCES,Cash Allowances
+18-000,Removal,Removal
+19-000,Snow removal,Snow Removal
+50-000,Safety Services,Safety Services
+50-001,Safety Services General,Safety Services
+50-010,Equipment,Safety Services
+50-011,Estimating,Safety Services
+50-020,Meals,Safety Services
+50-022,Safety Services,Safety Services
+50-030,Other,Safety Services
+50-040,Mobe-Demobe,Safety Services
+50-061,Project Manager,Safety Services
+50-063,Administration,Safety Services
+50-065,Certified Safety Officer,Safety Services
+50-120,Travel,Safety Services
+50-121,LOA,Safety Services
+50-160,Training,Safety Services
+50-163,PPE,Safety Services
+50-212,Site Office Lunch Tr Tool Crib,Safety Services
+50-271,Office Supplies,Safety Services
+50-292,Fuel for Vehicles,Safety Services
+50-902,Auxilary Boiler,Safety Services
+50-903,Bleach,Safety Services
+50-904,Capital,Safety Services
+50-905,Chem Prep,Safety Services
+50-906,Clarifier,Safety Services
+50-907,Cooling Tower,Safety Services
+50-908,Digester,Safety Services
+50-909,Elevator,Safety Services
+50-912,Fueling,Safety Services
+50-913,Gate Services,Safety Services
+50-914,Janitorial,Safety Services
+50-915,Kiln Recaust,Safety Services
+50-916,Labour,Safety Services
+50-917,Machine Room,Safety Services
+50-918,Materials,Safety Services
+50-919,MCC Room,Safety Services
+50-921,Misc,Safety Services
+50-922,Other,Safety Services
+50-923,Package Boiler,Safety Services
+50-924,PostShut,Safety Services
+50-925,Power Boiler,Safety Services
+50-926,Precipitator,Safety Services
+50-927,PreShut,Safety Services
+50-928,R8 Building,Safety Services
+50-929,Recovery Boiler,Safety Services
+50-931,Steam & Recovery,Safety Services
+50-932,Traffic Control,Safety Services
+50-951,Safety Services Misc 1,Safety Services
+50-952,Safety Services Misc 2,Safety Services
+50-953,Safety Services Misc 3,Safety Services
+50-954,Safety Services Misc 4,Safety Services
+50-955,Safety Services Misc 5,Safety Services
+50-999,Discount - Early Pmt,Safety Services
+70-000,HUMAN RESOURCES,Human Resources
+70-001,Sick Time,Human Resources
+EX-000,EXCAVATORS,Excavators
+EX-43E,Excavator 225,Excavators
+LO-000,LOADERS,Loaders
+LO-23E,966K Wheel Loader,Loaders
+LT-000,LIGHT TRUCKS,Light Trucks
+LT-05E,Water Truck (Kenworth),Light Trucks
+LT-17E,Fuel/Lube Truck,Light Trucks
+LZ-000,LAZER,Lazer
+PA-000,PACKERS,Packers
+PA-31E,"Packer 84"" Ride on Smooth Drum",Packers
+RT-000,ROCK TRUCKS,Rock Trucks
+SU-000,SURVEY,Survey
+1-171,Covid-19 Management,Survey
