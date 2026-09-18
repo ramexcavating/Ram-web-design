@@ -100,6 +100,32 @@ Three commands for the office:
 Also try `timecards/dist/ram-timecard.html`: the whole app in one file (`python3 timecards/tools/build_single.py`) for
 trying it out from an attachment before hosting is set up.
 
+## Supervisor and PM approval
+
+Anyone who approves timecards turns on **I approve timecards** under **Me**. That adds an **Approve** tab with a badge
+showing how many cards are waiting.
+
+1. A crew member sends their card. Put the supervisor's name in the card's **Supervisor** field so the office knows who
+   signs it off; the employee can also send or forward the same card to the supervisor.
+2. The supervisor opens the card message, selects all, copies, then taps **Approve → + Add card → Paste from clipboard**
+   (or pastes into the box). The card shows every day and line, labour and equipment, allowances and notes.
+3. **Approve** or **Reject** (a rejection needs a note). The button turns green with a check mark, the phone gives a
+   short double pulse, and the decision goes to the office as a `RAM Timecard APPROVED | <name> | PP <end>` email with
+   the card attached. `ramfin process` marks the timesheet `approved` (or `rejected`, which raises an action item) and
+   `ramfin timecards summary` shows who approved each row.
+
+Nothing needs a login or a server: the approval is an email signed with the approver's name, filed beside the card as
+`<end>_<NAME>_Timecard_<dates>_APPROVED.txt`. If RAM later wants approvals to happen without the copy-and-paste step,
+the next step is a small shared inbox the app reads from (Microsoft Graph with a RAM login), not a change to the cards.
+
+## Button feedback
+
+Every button shows a press (it shrinks slightly and darkens while your finger is down) and a completed action turns the
+button green with a check mark for a moment: **Mail opened**, **Copied**, **Shared**, **Added**, **Approved**.
+Android phones also give a short vibration on every press and a double pulse when an action lands. iPhones do not let
+web pages trigger the vibration motor, so on iOS the feedback is visual only; that is an Apple restriction, not a
+setting.
+
 ## Keeping the lists current
 
 - **Jobs:** edit `timecards/data/jobs.csv` (or, once ramfin is the source of truth, let `ramfin timecards reference`

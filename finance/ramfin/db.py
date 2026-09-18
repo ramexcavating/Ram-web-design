@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS timesheets (
     document_id INTEGER REFERENCES documents(id),
     total_hours REAL,
     total_ot_hours REAL DEFAULT 0,
-    status TEXT DEFAULT 'received',     -- received | validated | sent_to_payroll | paid
+    status TEXT DEFAULT 'received',     -- received | validated | approved | rejected | sent_to_payroll | paid
     filed_path TEXT,
     created_at TEXT NOT NULL,
     UNIQUE(employee_id, period_end)
@@ -297,7 +297,8 @@ def connect(path: str | Path = ":memory:") -> sqlite3.Connection:
 
 
 MIGRATIONS = [("vendors", "default_job", "TEXT"), ("ap_invoices", "updated_at", "TEXT"), ("receipts", "personal", "INTEGER DEFAULT 0"),
-              ("time_entries", "dt_hours", "REAL DEFAULT 0"), ("time_entries", "equipment_hours", "REAL DEFAULT 0")]
+              ("time_entries", "dt_hours", "REAL DEFAULT 0"), ("time_entries", "equipment_hours", "REAL DEFAULT 0"),
+              ("timesheets", "approved_by", "TEXT"), ("timesheets", "approved_at", "TEXT"), ("timesheets", "approval_note", "TEXT")]
 
 
 def _migrate(conn: sqlite3.Connection) -> None:

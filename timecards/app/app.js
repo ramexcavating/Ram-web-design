@@ -34,7 +34,7 @@
   const periodDays = (pe) => Array.from({ length: REF.payPeriod.days }, (_, i) => addDays(pe, i - (REF.payPeriod.days - 1)));
 
   // ------------------------------------------------------------------ state
-  const blank = () => ({ profile: { name: '', position: '', supervisor: '', defaultJob: '', submitTo: '' }, days: {}, recents: { codes: [], units: [], jobs: [] }, sent: {} });
+  const blank = () => ({ profile: { name: '', position: '', supervisor: '', defaultJob: '', submitTo: '', approver: false }, days: {}, recents: { codes: [], units: [], jobs: [] }, sent: {}, approvals: {} });
   let state = blank();
   try { const raw = localStorage.getItem(STORE); if (raw) state = Object.assign(blank(), JSON.parse(raw)); } catch (e) { /* fresh start */ }
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { toast('Could not save on this phone (storage full or blocked)'); } };
@@ -113,11 +113,14 @@
   });
   const subjectFor = (days) => `RAM Timecard | ${state.profile.name.trim()} | ${days.length === 1 ? days[0].date : 'PP ' + periodEnd(days[0].date)}`;
 
-  async function send(days, how) {
+  // one place opens the mail app, so a test harness can catch the mailto: link instead of navigating
+  const goMail = (href) => { if (typeof window.__RAMTC_ONMAIL === 'function') return window.__RAMTC_ONMAIL(href); window.location.href = href; };
+
+  async function send(days, how, btn) {
     const text = buildText(days); const subject = subjectFor(days); const to = state.profile.submitTo || REF.submitTo;
-    const mark = () => { const ts = new Date().toISOString(); days.forEach((d) => { state.sent[d.date] = ts; }); save(); render(); };
+    const mark = (label) => { const ts = new Date().toISOString(); days.forEach((d) => { state.sent[d.date] = ts; }); save(); flash(btn, label); setTimeout(render, 1500); };
     if (how === 'copy') {
-      try { await navigator.clipboard.writeText(text); toast('Copied. Paste it into an email or text to the office.'); mark(); }
+      try { await navigator.clipboard.writeText(text); toast('Copied. Paste it into an email or text to the office.'); mark('Copied'); }
       catch (e) { openSheet(h('div', {}, h('h1', {}, 'Copy this'), h('pre', { class: 'preview' }, text))); }
       return;
     }
@@ -127,13 +130,109 @@
         const file = new File([text], fname, { type: 'text/plain' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ title: subject, text: `${subject}\n\n${text}`, files: [file] });
         else await navigator.share({ title: subject, text });
-        toast('Shared'); mark();
+        mark('Shared');
       } catch (e) { if (e && e.name !== 'AbortError') toast('Share did not work here. Try Email.'); }
       return;
     }
     // email: the default. Works on any phone with a mail app; the office inbox is read by the finance system.
-    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
-    setTimeout(mark, 800);
+    goMail(`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`);
+    setTimeout(() => mark('Mail opened'), 400);
+  }
+
+  // ------------------------------------------------------------------ approvals (supervisor / PM)
+  const BLOCK_RX = /--RAMTC1--\s*(\{[\s\S]*?\})\s*--END--/;
+  function parseCard(text) {
+    const t = String(text || '').replace(/\u00a0/g, ' ');
+    const m = BLOCK_RX.exec(t); if (!m) throw new Error('That is not a RAM Timecard. Copy the whole message, including the --RAMTC1-- block at the bottom.');
+    let payload = null;
+    for (const fix of [(x) => x, (x) => x.replace(/[\r\n]+/g, ''), (x) => x.replace(/[\r\n]+/g, ' ')]) { try { payload = JSON.parse(fix(m[1])); break; } catch (e) { /* try next */ } }
+    if (!payload || payload.v !== 1 || !payload.employee || !Array.isArray(payload.days)) throw new Error('The timecard block is damaged. Ask for it to be re-sent.');
+    return payload;
+  }
+  const cardTotals = (pl) => pl.days.reduce((a, d) => { for (const l of d.lines || []) { a.lab += (l.reg || 0) + (l.ot || 0) + (l.dt || 0); a.ot += l.ot || 0; a.dt += l.dt || 0; if (l.unit) a.eq += l.eq || 0; } a.loa += d.loa ? 1 : 0; a.pu += d.pu ? 1 : 0; a.km += d.km || 0; return a; }, { lab: 0, ot: 0, dt: 0, eq: 0, loa: 0, pu: 0, km: 0 });
+  const cardSpan = (pl) => { const ds = pl.days.map((d) => d.date).sort(); return ds.length ? (ds.length === 1 ? fmt(ds[0]) : `${fmt(ds[0])} – ${fmt(ds[ds.length - 1])}`) : 'no dates'; };
+  const cardKey = (pl) => `${pl.employee}|${pl.periodEnd || ''}|${pl.days.map((d) => d.date).sort().join(',')}`;
+
+  function addCard(text) {
+    const payload = parseCard(text); const key = cardKey(payload);
+    const existing = Object.values(state.approvals).find((a) => a.key === key && a.status === 'pending');
+    const id = existing ? existing.id : uid();
+    state.approvals[id] = { id, key, payload, status: 'pending', receivedAt: new Date().toISOString() };
+    save(); return id;
+  }
+
+  function decide(a, decision, note, btn) {
+    const who = state.profile.name.trim(); if (!who) { toast('Put your name in under Me first: the approval carries it.'); return; }
+    const at = new Date().toISOString();
+    const approval = { by: who, at, decision, note: note || undefined };
+    const payload = { ...a.payload, approval };
+    const pe = a.payload.periodEnd || '';
+    const L = [`RAM EXCAVATING TIMECARD ${decision.toUpperCase()}`, `Employee: ${a.payload.employee}`, `${decision === 'approved' ? 'Approved' : 'Rejected'} by: ${who} on ${new Date(at).toLocaleString('en-CA')}`];
+    if (note) L.push(`Note: ${note}`);
+    L.push(`Pay period end: ${pe}`, `Days: ${cardSpan(a.payload)}`, '');
+    const t = cardTotals(a.payload);
+    L.push(`Labour ${fmtH(t.lab)} h (OT ${fmtH(t.ot)}, DT ${fmtH(t.dt)})  Equipment ${fmtH(t.eq)} h  LOA ${t.loa}  P/U ${t.pu}  Travel ${t.km} km`, '', '--RAMTC1--', JSON.stringify(payload), '--END--');
+    const text = L.join('\n');
+    const subject = `RAM Timecard ${decision.toUpperCase()} | ${a.payload.employee} | ${pe ? 'PP ' + pe : cardSpan(a.payload)}`;
+    const to = state.profile.submitTo || REF.submitTo;
+    a.status = decision; a.decidedAt = at; a.note = note || ''; a.by = who; save();
+    flash(btn, decision === 'approved' ? 'Approved' : 'Rejected');
+    setTimeout(() => {
+      goMail(`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`);
+      closeSheet(); render();
+    }, 700);
+  }
+
+  function showCard(a) {
+    const pl = a.payload; const t = cardTotals(pl); const note = h('input', { type: 'text', class: 'input', placeholder: 'Optional note back to the office / employee' });
+    const body = h('div', { class: 'stack' },
+      h('h1', {}, pl.employee), h('div', { class: 'muted small' }, `${pl.position ? pl.position + ' · ' : ''}${cardSpan(pl)}${pl.periodEnd ? ' · pay period ends ' + fmt(pl.periodEnd) : ''}${pl.supervisor ? ' · supervisor on card: ' + pl.supervisor : ''}`),
+      h('div', { class: 'card row between' },
+        h('div', {}, h('div', { class: 'total' }, fmtH(t.lab), h('small', {}, ' h labour')), h('div', { class: 'small muted' }, `OT ${fmtH(t.ot)} · DT ${fmtH(t.dt)}`)),
+        h('div', { style: 'text-align:right' }, h('div', { class: 'total' }, fmtH(t.eq), h('small', {}, ' h equip')), h('div', { class: 'small muted' }, `LOA ${t.loa} · P/U ${t.pu} · ${t.km} km`))),
+      ...pl.days.map((d) => h('div', { class: 'card' },
+        h('div', { class: 'row between' }, h('b', {}, fmt(d.date, { weekday: 'long', month: 'short', day: 'numeric' })), h('span', { class: 'small muted' }, [d.loa ? 'LOA' : '', d.pu ? 'P/U' : '', d.km ? `${d.km} km` : ''].filter(Boolean).join(' · '))),
+        ...(d.lines || []).map((l) => h('div', { class: 'line' },
+          h('div', {}, h('div', { class: 'job' }, `${l.job} ${jobName(l.job)}`), h('div', { class: 'cc' }, `${l.cc} ${codeDesc(l.cc)}`)),
+          h('div', {}, h('div', { class: 'hrs' }, `${fmtH((l.reg || 0) + (l.ot || 0) + (l.dt || 0))} h`, (l.ot || l.dt) ? h('div', { class: 'small muted' }, [l.ot ? `${fmtH(l.ot)} OT` : '', l.dt ? `${fmtH(l.dt)} DT` : ''].filter(Boolean).join(' · ')) : null),
+            l.unit ? h('div', { class: 'eq' }, `${l.unit} · ${fmtH(l.eq || 0)} h`) : null),
+          l.desc ? h('div', { class: 'desc' }, l.desc) : null)),
+        d.notes ? h('div', { class: 'small muted', style: 'margin-top:6px' }, 'Notes: ' + d.notes) : null)),
+      a.status === 'pending' ? h('div', { class: 'stack' }, note,
+        h('div', { class: 'grid2' },
+          h('button', { class: 'btn primary big', onclick: (e) => decide(a, 'approved', note.value.trim(), e.currentTarget) }, '✓ Approve'),
+          h('button', { class: 'btn danger big', onclick: (e) => { if (!note.value.trim()) { toast('Add a note so the employee knows what to fix.'); note.focus(); return; } decide(a, 'rejected', note.value.trim(), e.currentTarget); } }, '✕ Reject')),
+        h('div', { class: 'small muted' }, `Approving emails the decision to ${state.profile.submitTo || REF.submitTo} with the card attached; the finance system marks the timesheet approved.`))
+        : h('div', { class: 'tag ' + (a.status === 'approved' ? 'ok' : 'warn') }, `${a.status} by ${a.by} · ${new Date(a.decidedAt).toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}${a.note ? ' · ' + a.note : ''}`),
+      h('button', { class: 'btn block ghost danger', onclick: () => { delete state.approvals[a.id]; save(); closeSheet(); render(); } }, 'Remove from this phone'),
+      h('button', { class: 'btn block ghost', onclick: closeSheet }, 'Close'));
+    openSheet(body);
+  }
+
+  function pasteCardSheet() {
+    const ta = h('textarea', { placeholder: 'Paste the whole timecard message here. The important part is the --RAMTC1-- block at the bottom.', style: 'min-height:160px' });
+    const add = (e) => { try { const id = addCard(ta.value); flash(e.currentTarget, 'Added'); setTimeout(() => { closeSheet(); render(); showCard(state.approvals[id]); }, 500); } catch (err) { toast(err.message); } };
+    openSheet(h('div', { class: 'stack' }, h('h1', {}, 'Add a timecard to approve'),
+      h('div', { class: 'small muted' }, 'Open the employee\'s timecard email or text, select all, copy, then paste it here. Or use the clipboard button.'),
+      ta,
+      navigator.clipboard && navigator.clipboard.readText ? h('button', { class: 'btn block', onclick: async (e) => { try { ta.value = await navigator.clipboard.readText(); add(e); } catch (err) { toast('Could not read the clipboard. Paste into the box instead.'); } } }, '⎘ Paste from clipboard') : null,
+      h('button', { class: 'btn primary block', onclick: add }, 'Add to approvals'),
+      h('button', { class: 'btn block ghost', onclick: closeSheet }, 'Cancel')));
+  }
+
+  function viewApprovals() {
+    const all = Object.values(state.approvals).sort((a, b) => (b.receivedAt || '').localeCompare(a.receivedAt || ''));
+    const pending = all.filter((a) => a.status === 'pending'); const done = all.filter((a) => a.status !== 'pending');
+    const row = (a) => { const t = cardTotals(a.payload); return h('button', { class: 'line approval', onclick: () => showCard(a) },
+      h('div', {}, h('div', { class: 'job' }, a.payload.employee), h('div', { class: 'cc small muted' }, cardSpan(a.payload))),
+      h('div', {}, h('div', { class: 'hrs' }, `${fmtH(t.lab)} h`), t.eq ? h('div', { class: 'eq' }, `${fmtH(t.eq)} h equip`) : null),
+      a.status !== 'pending' ? h('div', { class: 'desc' }, h('span', { class: 'tag ' + (a.status === 'approved' ? 'ok' : 'warn') }, a.status)) : null); };
+    return h('div', {},
+      h('div', { class: 'card' },
+        h('div', { class: 'row between' }, h('h1', {}, pending.length ? `${pending.length} to approve` : 'Nothing waiting'), h('button', { class: 'btn sm dark', onclick: pasteCardSheet }, '+ Add card')),
+        ...(pending.length ? pending.map(row) : [h('div', { class: 'empty-state' }, h('div', { class: 'big' }, '✓'), h('div', {}, 'No timecards waiting for you.'), h('div', { class: 'small' }, 'When a crew member sends you a card, copy the message and tap Add card.'))])),
+      done.length ? h('div', { class: 'card' }, h('h2', {}, 'Decided on this phone'), ...done.slice(0, 30).map(row)) : null,
+      h('div', { class: 'small muted', style: 'padding:4px 8px' }, 'Approvals are emailed to the office as you make them. The list here is your own record; clearing it does not undo an approval.'));
   }
 
   // ------------------------------------------------------------------ sheets, toasts, lists
@@ -147,6 +246,21 @@
   }
   sheet.addEventListener('click', (e) => { if (e.target.dataset.close !== undefined) closeSheet(); });
   let toastT; function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+  // Haptics: a short tap on every button press, a double pulse when an action lands. Android and most browsers honour
+  // navigator.vibrate; iPhone Safari does not expose it, so iOS relies on the visual press state below.
+  const buzz = (pattern) => { try { if (navigator.vibrate) navigator.vibrate(pattern); } catch (e) { /* not available */ } };
+  document.addEventListener('pointerdown', (e) => {
+    const b = e.target.closest('button'); if (!b || b.disabled) return;
+    b.classList.add('pressed'); buzz(8);
+    const off = () => { setTimeout(() => b.classList.remove('pressed'), 120); document.removeEventListener('pointerup', off); document.removeEventListener('pointercancel', off); };
+    document.addEventListener('pointerup', off); document.addEventListener('pointercancel', off);
+  }, { passive: true });
+  // Show the outcome on the button that was pressed: it turns green with a check mark for a moment.
+  function flash(btn, label) {
+    if (!btn) return; buzz([12, 40, 12]);
+    const was = btn.innerHTML; btn.classList.add('done'); btn.innerHTML = `✓ ${label}`;
+    setTimeout(() => { btn.classList.remove('done'); if (btn.isConnected) btn.innerHTML = was; }, 1600);
+  }
 
   function pickList({ title, items, groups, selected, onPick, placeholder }) {
     // items: [{key,label,sub,group}] ; groups: ordered group names (others follow alphabetically)
@@ -223,7 +337,7 @@
       if (!l.unit) l.eq = 0;
       const i = day.lines.findIndex((x) => x.id === l.id); if (i >= 0) day.lines[i] = l; else day.lines.push(l);
       remember(state.recents.jobs, l.job); remember(state.recents.codes, l.cc, 12); if (l.unit) remember(state.recents.units, l.unit);
-      delete state.sent[day.date]; save(); closeSheet(); render();
+      delete state.sent[day.date]; save(); buzz([12, 40, 12]); closeSheet(); render();
     };
     openSheet(h('div', { class: 'stack' },
       h('h1', {}, isNew ? 'Add time' : 'Edit time'),
@@ -276,8 +390,8 @@
           sentAt ? h('span', { class: 'tag ok' }, `sent ${new Date(sentAt).toLocaleString('en-CA', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`) : null),
         ...probs.map((p) => h('div', { class: /Check it|more hours/.test(p) ? 'warn-text' : 'bad-text' }, p)),
         h('div', { class: 'grid2' },
-          h('button', { class: 'btn primary', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: () => send([d], 'email') }, '✉ Email'),
-          h('button', { class: 'btn', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: () => send([d], navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
+          h('button', { class: 'btn primary', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: (e) => send([d], 'email', e.currentTarget) }, '✉ Email'),
+          h('button', { class: 'btn', disabled: probs.some((p) => !/Check it|more hours/.test(p)), onclick: (e) => send([d], navigator.share ? 'share' : 'copy', e.currentTarget) }, navigator.share ? '⇪ Share' : '⎘ Copy')),
         h('div', { class: 'small muted' }, `Goes to ${state.profile.submitTo || REF.submitTo}. You can send one day at a time, or the whole pay period from the Pay period tab.`)));
   }
 
@@ -314,8 +428,8 @@
         h('div', { class: 'row between' }, h('div', { class: 'field-label', style: 'margin:0' }, 'Send the whole pay period'), allSent ? h('span', { class: 'tag ok' }, 'all days sent') : null),
         ...probs.map((p) => h('div', { class: 'bad-text' }, p)),
         h('div', { class: 'grid2' },
-          h('button', { class: 'btn primary', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, 'email') }, '✉ Email period'),
-          h('button', { class: 'btn', disabled: !worked.length || probs.length > 0, onclick: () => send(worked, navigator.share ? 'share' : 'copy') }, navigator.share ? '⇪ Share' : '⎘ Copy')),
+          h('button', { class: 'btn primary', disabled: !worked.length || probs.length > 0, onclick: (e) => send(worked, 'email', e.currentTarget) }, '✉ Email period'),
+          h('button', { class: 'btn', disabled: !worked.length || probs.length > 0, onclick: (e) => send(worked, navigator.share ? 'share' : 'copy', e.currentTarget) }, navigator.share ? '⇪ Share' : '⎘ Copy')),
         h('button', { class: 'btn block ghost', disabled: !worked.length, onclick: () => openSheet(h('div', {}, h('h1', {}, 'What the office receives'), h('pre', { class: 'preview' }, buildText(worked)), h('button', { class: 'btn block', onclick: closeSheet }, 'Close'))) }, 'Preview'),
         h('div', { class: 'small muted' }, 'Same as the paper weekly timesheet, plus the job, cost code and equipment split the office needs for job costing. Send by the deadline on the Employee Resources page.')));
   }
@@ -333,7 +447,9 @@
         field('Position', 'position', { placeholder: 'Operator, Labourer, Foreman…' }),
         field('Supervisor / foreman', 'supervisor'),
         h('label', { class: 'field' }, h('span', {}, 'Default job'), jobBtn),
-        field('Send timecards to', 'submitTo', { type: 'email', placeholder: REF.submitTo, inputmode: 'email' })),
+        field('Send timecards to', 'submitTo', { type: 'email', placeholder: REF.submitTo, inputmode: 'email' }),
+        h('label', { class: 'field toggle' }, h('input', { type: 'checkbox', checked: !!p.approver, onchange: (e) => { p.approver = e.target.checked; save(); render(); } }),
+          h('span', {}, h('b', {}, 'I approve timecards'), h('div', { class: 'small muted' }, 'Supervisors and PMs: adds an Approve tab where crew cards can be checked and signed off.')))),
       standalone ? null : h('div', { class: 'card' }, h('h1', {}, 'Put it on your home screen'),
         isiOS ? h('div', { class: 'small' }, 'In Safari tap the ', h('b', {}, 'Share'), ' button, then ', h('b', {}, 'Add to Home Screen'), '. It opens like an app and works with no signal.')
           : h('div', { class: 'small' }, 'In Chrome tap the ', h('b', {}, '⋮ menu'), ', then ', h('b', {}, 'Add to Home screen'), ' (or "Install app"). It opens like an app and works with no signal.')),
@@ -352,8 +468,11 @@
   const renderWho = () => { $('#who').textContent = state.profile.name || 'Set your name under Me'; };
   function render() {
     if (!REF) return;
+    const pendingN = Object.values(state.approvals).filter((a) => a.status === 'pending').length;
+    const approveTab = $('#tabs button[data-tab=approve]'); approveTab.hidden = !state.profile.approver; approveTab.querySelector('.badge').textContent = pendingN || ''; approveTab.querySelector('.badge').hidden = !pendingN;
+    if (ui.tab === 'approve' && !state.profile.approver) ui.tab = 'day';
     document.querySelectorAll('#tabs button').forEach((b) => b.classList.toggle('active', b.dataset.tab === ui.tab));
-    const v = ui.tab === 'day' ? viewDay() : ui.tab === 'period' ? viewPeriod() : viewSettings();
+    const v = ui.tab === 'day' ? viewDay() : ui.tab === 'period' ? viewPeriod() : ui.tab === 'approve' ? viewApprovals() : viewSettings();
     $('#view').replaceChildren(v); renderWho();
   }
   $('#tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; ui.tab = b.dataset.tab; render(); window.scrollTo(0, 0); });

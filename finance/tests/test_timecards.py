@@ -146,3 +146,23 @@ def test_equipment_hours_feed_the_unit_economics(conn, settings):
     from ramfin.ledger import timesheets as ts
     by_job = {(r["job_no"], r["cost_code"]): r for r in ts.labour_cost_by_job(conn, settings, "2026-08-01", "2026-08-31")}
     assert by_job[("260102", "01-100")]["dt_hours"] == 0.5 and by_job[("260102", "01-100")]["equipment_hours"] == 8.5
+
+
+def test_supervisor_approval_marks_the_timesheet(conn, settings):
+    timecards.record_timecard(conn, settings, None, CARD)
+    assert conn.execute("SELECT status FROM timesheets").fetchone()["status"] == "validated"
+    approved = {**CARD, "approval": {"by": "Rodney Mickey", "at": "2026-08-13T15:00:00Z", "decision": "approved"}}
+    summary = timecards.record_timecard(conn, settings, None, approved)
+    assert "approved by Rodney Mickey" in summary
+    ts = conn.execute("SELECT * FROM timesheets").fetchone()
+    assert (ts["status"], ts["approved_by"], ts["approved_at"]) == ("approved", "Rodney Mickey", "2026-08-13T15:00:00Z")
+    assert conn.execute("SELECT COUNT(*) n FROM time_entries").fetchone()["n"] == 3      # re-recording the same days does not duplicate
+    assert timecards.filing_decision(approved, settings.sharepoint).filename.endswith("_APPROVED.txt")
+    rows = timecards.pay_period_summary(conn, settings, "2026-08-15")
+    assert rows[0]["status"] == "approved (Rodney Mickey)"
+    rejected = {**CARD, "approval": {"by": "Rodney Mickey", "at": "2026-08-13T16:00:00Z", "decision": "rejected", "note": "EX-03 was on Dunkley on the 10th"}}
+    timecards.record_timecard(conn, settings, None, rejected)
+    assert conn.execute("SELECT status, approval_note FROM timesheets").fetchone()[:] == ("rejected", "EX-03 was on Dunkley on the 10th")
+    assert conn.execute("SELECT COUNT(*) n FROM action_items WHERE title LIKE '%REJECTED%'").fetchone()["n"] == 1
+    # the approval subject line is still recognised as a timecard
+    assert timecards.is_timecard(b"x", subject="RAM Timecard APPROVED | Ed Smith | PP 2026-08-15")

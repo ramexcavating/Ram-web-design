@@ -56,6 +56,20 @@ h2 { font-size: 1.05rem; margin: 1rem 0 .5rem; color: var(--muted); font-weight:
 .btn.block { width: 100%; }
 .btn.sm { min-height: 38px; padding: 0 12px; font-size: .9rem; }
 .btn:disabled { opacity: .5; }
+.btn, .chip, .picker, .tabs button, .stepper button, .list .item, .pday, .line.approval { transition: transform .08s ease, filter .08s ease, background-color .15s ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn:active, .btn.pressed, .chip.pressed, .picker.pressed, .stepper button.pressed, .list .item.pressed, .pday.pressed, .line.approval.pressed { transform: scale(.96); filter: brightness(.9); }
+.tabs button.pressed .ico { transform: scale(.85); }
+.btn.done, .btn.done:disabled { background: var(--ok); border-color: var(--ok); color: #fff; opacity: 1; transition: none; filter: none; transform: none; }
+.btn.big { min-height: 56px; font-size: 1.05rem; }
+.btn.danger.big { border-color: var(--bad); }
+.tabs button .ico { position: relative; transition: transform .08s ease; }
+.badge { position: absolute; top: -6px; right: -12px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: var(--accent-ink); font-size: .7rem; font-weight: 700; line-height: 18px; text-align: center; }
+.badge[hidden] { display: none; }
+.tabs button[hidden] { display: none; }
+label.field.toggle { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; }
+label.field.toggle input { width: 24px; height: 24px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+.line.approval { width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--line); color: inherit; font: inherit; }
+.line.approval:first-of-type { border-top: 0; }
 
 label.field { display: block; margin-bottom: 10px; }
 label.field > span, .field-label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 4px; font-weight: 600; }

@@ -154,20 +154,32 @@ def record_timecard(conn: sqlite3.Connection, settings, doc_id: int | None, payl
         days_done += 1
 
     tot = conn.execute("SELECT COALESCE(SUM(hours),0) h, COALESCE(SUM(ot_hours),0) ot FROM time_entries WHERE timesheet_id=?", (tsid,)).fetchone()
-    conn.execute("UPDATE timesheets SET total_hours=?, total_ot_hours=?, status=? WHERE id=?", (tot["h"], tot["ot"], "validated" if not issues else "received", tsid))
+    status = "validated" if not issues else "received"
+    approval = payload.get("approval") if isinstance(payload.get("approval"), dict) else None
+    if approval and approval.get("decision") in ("approved", "rejected") and approval.get("by"):
+        # a supervisor / PM signed off from the app. Approval overrides validation state; issues still go to the digest.
+        status = approval["decision"]
+        conn.execute("UPDATE timesheets SET approved_by=?, approved_at=?, approval_note=? WHERE id=?",
+                     (str(approval["by"]).strip(), approval.get("at") or db.now_iso(), (approval.get("note") or None), tsid))
+        if status == "rejected":
+            raise_item(conn, "timesheet_issue", f"Timecard {name} PP {pe} REJECTED by {approval['by']}", approval.get("note") or "No note given.", "timesheets", tsid, priority=2)
+    conn.execute("UPDATE timesheets SET total_hours=?, total_ot_hours=?, status=? WHERE id=?", (tot["h"], tot["ot"], status, tsid))
     if issues:
         raise_item(conn, "timesheet_issue", f"Timecard {name} PP {pe}: {len(issues)} issue(s)", "\n".join(dict.fromkeys(issues)), "timesheets", tsid, priority=2)
     ensure_payroll_run(conn, settings, pe)
     conn.commit()
-    return f"timecard {name} PP {pe}: {days_done} day(s), {lines_done} line(s), {len(issues)} issue(s)"
+    tag = f", {status} by {approval['by']}" if approval else ""
+    return f"timecard {name} PP {pe}: {days_done} day(s), {lines_done} line(s), {len(issues)} issue(s){tag}"
 
 
 def filing_decision(payload: dict, sharepoint: dict, ext: str = "txt") -> FilingDecision:
     pe = _period_end(payload) or date.today()
     ds = sorted(d.get("date") for d in payload.get("days", []) if d.get("date"))
     span = ds[0] if len(ds) == 1 else (f"{ds[0]}_to_{ds[-1]}" if ds else "nodates")
+    ap = payload.get("approval") if isinstance(payload.get("approval"), dict) else None
+    tail = f"_{str(ap.get('decision', '')).upper()}" if ap and ap.get("decision") else ""
     return FilingDecision(f"{sharepoint.get('timesheets', '04_PAYROLL/01_TIMESHEETS')}/{pe.strftime('%Y')}/PP_{pe.isoformat()}",
-                          f"{pe.isoformat()}_{slug(payload['employee'], 30)}_Timecard_{span}.{ext}")
+                          f"{pe.isoformat()}_{slug(payload['employee'], 30)}_Timecard_{span}{tail}.{ext}")
 
 
 def export_reference(conn: sqlite3.Connection, settings, out_path: str | Path, submit_to: str = "accounts@ramexcavating.ca") -> dict:
@@ -202,7 +214,7 @@ def pay_period_summary(conn: sqlite3.Connection, settings, period_end: str | dat
     pe = period_end.isoformat() if isinstance(period_end, date) else str(period_end)
     rates = allowance_rates(settings)
     out = []
-    for ts in db.rows(conn, "SELECT ts.id, ts.status, e.name, e.position, e.base_rate FROM timesheets ts JOIN employees e ON e.id=ts.employee_id WHERE ts.period_end=? ORDER BY e.name", (pe,)):
+    for ts in db.rows(conn, "SELECT ts.id, ts.status, ts.approved_by, e.name, e.position, e.base_rate FROM timesheets ts JOIN employees e ON e.id=ts.employee_id WHERE ts.period_end=? ORDER BY e.name", (pe,)):
         h = conn.execute("SELECT COALESCE(SUM(hours),0) reg, COALESCE(SUM(ot_hours),0) ot, COALESCE(SUM(dt_hours),0) dt, "
                          "COALESCE(SUM(CASE WHEN COALESCE(equipment_hours,0)>0 THEN equipment_hours ELSE 0 END),0) eq, COUNT(DISTINCT work_date) days "
                          "FROM time_entries WHERE timesheet_id=?", (ts["id"],)).fetchone()
@@ -210,7 +222,7 @@ def pay_period_summary(conn: sqlite3.Connection, settings, period_end: str | dat
         rate = float(ts["base_rate"] or 0)
         wages = round(h["reg"] * rate + h["ot"] * rate * 1.5 + h["dt"] * rate * 2.0, 2)
         allow = round(a["loa"] * rates["loa"] + a["pu"] * rates["pickup"] + a["km"] * rates["travel_km"], 2)
-        out.append(dict(employee=ts["name"], position=ts["position"], status=ts["status"], base_rate=rate, days=h["days"], reg=h["reg"], ot=h["ot"], dt=h["dt"],
+        out.append(dict(employee=ts["name"], position=ts["position"], status=ts["status"] + (f" ({ts['approved_by']})" if ts["approved_by"] else ""), base_rate=rate, days=h["days"], reg=h["reg"], ot=h["ot"], dt=h["dt"],
                         equipment_hours=h["eq"], loa_days=a["loa"], pickup_days=a["pu"], travel_km=a["km"], wages=wages, allowances=allow, gross=round(wages + allow, 2),
                         missing_rate=rate == 0))
     return out
