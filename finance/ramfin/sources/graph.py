@@ -54,7 +54,8 @@ class GraphClient:
         headers["Authorization"] = f"Bearer {self.token()}"
         for attempt in range(5):
             r = self.s.request(method, url, headers=headers, timeout=120, **kw)
-            if r.status_code in (429, 503, 504):
+            # 502 is a transient gateway fault too: one on sendMail failed the whole Nov 12 run after the reports were built.
+            if r.status_code in (429, 502, 503, 504):
                 wait = int(r.headers.get("Retry-After", 2 ** attempt))
                 log.warning("Graph %s -> %s, retrying in %ss", url, r.status_code, wait)
                 time.sleep(wait)
